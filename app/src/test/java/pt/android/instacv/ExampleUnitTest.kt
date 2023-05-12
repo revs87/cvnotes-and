@@ -1,4 +1,4 @@
-package pt.android.mycv
+package pt.android.instacv
 
 import org.junit.Test
 

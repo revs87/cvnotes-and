@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".InstaApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -10,12 +11,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyCV"
+        android:theme="@style/Theme.InstaCV"
         tools:targetApi="33">
         <activity
-            android:name="pt.android.mycv.MainActivity"
+            android:name="pt.android.instacv.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyCV">
+            android:theme="@style/Theme.InstaCV">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

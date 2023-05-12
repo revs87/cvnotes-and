@@ -6,17 +6,17 @@ plugins {
 }
 
 android {
-    namespace 'pt.android.cv'
+    namespace 'pt.android.instacv'
     compileSdk 33
 
     defaultConfig {
-        applicationId "pt.android.cv"
+        applicationId "pt.android.instacv"
         minSdk 28
         targetSdk 33
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "pt.android.instacv.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -46,6 +46,9 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    kapt {
+        correctErrorTypes true
+    }
 }
 dependencies {
 
@@ -71,7 +74,6 @@ dependencies {
     //Dagger - Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
 
     // Room

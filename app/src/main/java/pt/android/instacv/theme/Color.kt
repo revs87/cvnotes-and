@@ -1,4 +1,4 @@
-package pt.android.mycv.theme
+package pt.android.instacv.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package pt.android.mycv
+package pt.android.instacv
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,8 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import pt.android.mycv.theme.MyTheme
+import dagger.hilt.android.AndroidEntryPoint
+import pt.android.instacv.theme.MyTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
