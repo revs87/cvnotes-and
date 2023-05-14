@@ -14,7 +14,7 @@
         android:theme="@style/Theme.InstaCV"
         tools:targetApi="33">
         <activity
-            android:name="pt.android.instacv.MainActivity"
+            android:name="pt.android.instacv.ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.InstaCV">
             <intent-filter>

@@ -1,4 +1,4 @@
-package pt.android.instacv
+package pt.android.instacv.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

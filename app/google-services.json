@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "634060105298",
+    "project_id": "myfirebaseproject-5c8ae",
+    "storage_bucket": "myfirebaseproject-5c8ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634060105298:android:9915641b83ff1cd864a18b",
+        "android_client_info": {
+          "package_name": "com.example.myfirebaseusertester"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "634060105298-41pe72unbjb8rp4t4pbs8spnhhasldjr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsid_5t969d3dhYhPCfx-fFnZ84D84oZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "634060105298-41pe72unbjb8rp4t4pbs8spnhhasldjr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634060105298:android:1f94e138f4111d6564a18b",
+        "android_client_info": {
+          "package_name": "pt.android.instacv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "634060105298-41pe72unbjb8rp4t4pbs8spnhhasldjr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsid_5t969d3dhYhPCfx-fFnZ84D84oZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "634060105298-41pe72unbjb8rp4t4pbs8spnhhasldjr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
