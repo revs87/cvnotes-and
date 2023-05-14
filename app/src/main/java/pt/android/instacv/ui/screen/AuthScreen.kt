@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -20,7 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import pt.android.instacv.theme.MyTheme
 import pt.android.instacv.ui.util.Screen
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AuthScreen(
     navController: NavController,
@@ -39,6 +45,8 @@ fun AuthScreen(
     val state: AuthState = viewModel.state.value
     val fieldsState: AuthFieldsState = viewModel.fieldsState.value
     val snackbarHostState = remember { SnackbarHostState() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     if (state.isLoggedIn) { navController.navigate(route = Screen.HomeScreen.route) }
 
@@ -51,36 +59,77 @@ fun AuthScreen(
                     color = MaterialTheme.colorScheme.primary,
                     trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
                     strokeWidth = 4.dp,
-                    modifier = Modifier.size(40.dp).align(Alignment.BottomEnd).padding(16.dp)
+                    modifier = Modifier
+                        .size(40.dp)
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp)
                 )
             }
         }
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            TextField(value = fieldsState.emailValue, onValueChange = { viewModel.updateEmail(it) })
-            TextField(
-                value = fieldsState.pwdValue,
-                onValueChange = { viewModel.updatePwd(it) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Send
-                ),
-            )
-            Button(onClick = { viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue) }) {
-                Text(text = "Sign in".uppercase())
+        when (state.section) {
+            AuthSection.INTRO -> {
+
+            }
+            AuthSection.REGISTER -> {
+                RegisterSection(
+                    fieldsState,
+                    viewModel,
+                    keyboardController,
+                    focusManager)
+            }
+            AuthSection.LOGIN -> {
+
             }
         }
         if (state.errorMessage.isNotBlank()) {
-            LaunchedEffect(state.errorMessage) {
+            LaunchedEffect(System.currentTimeMillis()) {
                 snackbarHostState.showSnackbar(state.errorMessage)
             }
         }
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun RegisterSection(
+    fieldsState: AuthFieldsState = AuthFieldsState("",""),
+    viewModel: AuthViewModel,
+    keyboardController: SoftwareKeyboardController?,
+    focusManager: FocusManager
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TextField(
+            label = { Text(text = "Email".uppercase()) },
+            value = fieldsState.emailValue,
+            onValueChange = { viewModel.updateEmail(it) },
+        )
+        TextField(
+            label = { Text(text = "Password".uppercase()) },
+            value = fieldsState.pwdValue,
+            onValueChange = { viewModel.updatePwd(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Send
+            ),
+            keyboardActions = KeyboardActions(
+                onSend = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue)
+                }
+            )
+        )
+        Button(onClick = { viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue) }) {
+            Text(text = "Sign in".uppercase())
+        }
+    }
+}
 
 
 @Preview(showBackground = true)

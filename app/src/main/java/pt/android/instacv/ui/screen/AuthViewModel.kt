@@ -23,16 +23,43 @@ class AuthViewModel @Inject constructor(
 
 
     fun createUser(email: String, pwd: String) {
-        _state.value = AuthState(isLoading = true)
+        _state.value = asLoadingActive()
         dataRepository.register(email, pwd)
             .onEach { res ->
                 when (res) {
-                    is Result.Error -> _state.value = AuthState(errorMessage = res.message)
-                    is Result.Success -> _state.value = AuthState(isLoggedIn = true)
+                    is Result.Error -> _state.value = asError(res)
+                    is Result.Success -> {
+
+                        _state.value = asSuccess()
+                    }
                 }
             }
             .launchIn(viewModelScope)
     }
+
+    private fun asSuccess() =
+        AuthState(
+            section = _state.value.section,
+            isLoggedIn = true,
+            isLoading = false,
+            errorMessage = _state.value.errorMessage,
+        )
+
+    private fun asError(res: Result.Error) =
+        AuthState(
+            section = _state.value.section,
+            isLoggedIn = _state.value.isLoggedIn,
+            isLoading = false,
+            errorMessage = res.message,
+        )
+
+    private fun asLoadingActive() =
+        AuthState(
+            section = _state.value.section,
+            isLoggedIn = _state.value.isLoggedIn,
+            isLoading = true,
+            errorMessage = _state.value.errorMessage,
+        )
 
     fun updateEmail(emailChange: String) {
         _fieldsState.value = AuthFieldsState(emailChange, _fieldsState.value.pwdValue)

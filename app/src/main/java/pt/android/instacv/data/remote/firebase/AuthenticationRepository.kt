@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.dto.UserDTO
+import pt.android.instacv.data.local.SPKey
+import pt.android.instacv.data.local.SharedPreferencesRepository
 
 interface AuthenticationRepository {
     fun register(email: String, pwd: String): Flow<Result<UserDTO>>
@@ -13,14 +15,19 @@ interface AuthenticationRepository {
     fun logout(): Flow<Result<Unit>>
 }
 
-internal class AuthenticationRepositoryImpl : AuthenticationRepository {
+internal class AuthenticationRepositoryImpl(
+    private val spRepository: SharedPreferencesRepository
+) : AuthenticationRepository {
     private val mAuth = FirebaseAuth.getInstance()
 
     override fun register(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
         try {
             val res = mAuth.createUserWithEmailAndPassword(email, pwd).result
-            if (!res.isValid()) { emit(Result.Error("Registered user is not valid")) }
-            else { emit(Result.Success(res.toUserDTO())) }
+            if (res.isValid()) {
+                cacheUser(res)
+                emit(Result.Success(res.toUserDTO()))
+            }
+            else { emit(Result.Error("Registered user is not valid")) }
         }
         catch (e: Exception) { emit(Result.Error("Creating user failed")) }
     }
@@ -28,8 +35,11 @@ internal class AuthenticationRepositoryImpl : AuthenticationRepository {
     override fun login(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
         try {
             val res = mAuth.signInWithEmailAndPassword(email, pwd).result
-            if (!res.isValid()) { emit(Result.Error("User is not valid")) }
-            else { emit(Result.Success(res.toUserDTO())) }
+            if (res.isValid()) {
+                cacheUser(res)
+                emit(Result.Success(res.toUserDTO()))
+            }
+            else { emit(Result.Error("User is not valid")) }
         }
         catch (e: Exception) { emit(Result.Error("Signing in failed")) }
     }
@@ -40,6 +50,19 @@ internal class AuthenticationRepositoryImpl : AuthenticationRepository {
             emit(Result.Success(Unit))
         }
         catch (e: Exception) { emit(Result.Error("Signing out failed")) }
+    }
+
+    private fun cacheUser(res: AuthResult) {
+        res.user?.let {
+            spRepository.putString(SPKey.UID.key, it.uid)
+            spRepository.putString(SPKey.EMAIL.key, it.email.orEmpty())
+            spRepository.putString(SPKey.DISPLAY_NAME.key, it.displayName.orEmpty())
+            spRepository.putString(SPKey.PHONE_NUMBER.key, it.phoneNumber.orEmpty())
+            spRepository.putString(SPKey.PHOTO_URL.key, it.photoUrl?.path.orEmpty())
+        }
+        res.additionalUserInfo?.let {
+            spRepository.putString(SPKey.USERNAME.key, it.username.orEmpty())
+        }
     }
 
     private fun AuthResult?.toUserDTO(): UserDTO = UserDTO(
@@ -60,4 +83,3 @@ internal class AuthenticationRepositoryImpl : AuthenticationRepository {
         else -> true
     }
 }
-

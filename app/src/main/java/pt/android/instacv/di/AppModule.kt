@@ -25,6 +25,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesAuthenticationRepository(): AuthenticationRepository = AuthenticationRepositoryImpl()
-
+    fun providesAuthenticationRepository(spRepository: SharedPreferencesRepository): AuthenticationRepository {
+        return AuthenticationRepositoryImpl(spRepository)
+    }
 }
