@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import pt.android.instacv.theme.MyTheme
+import pt.android.instacv.ui.component.LoadingIndicator
 import pt.android.instacv.ui.util.Screen
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -49,25 +50,15 @@ fun AuthScreen(
     val focusManager = LocalFocusManager.current
 
     if (state.isLoggedIn) {
-        navController.navigate(route = Screen.HomeScreen.route)
+        LaunchedEffect(Unit) {
+            navController.navigate(route = Screen.HomeScreen.route)
+        }
     }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
-                    strokeWidth = 4.dp,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp)
-                )
-            }
-        }
+        LoadingIndicator(state.isLoading)
         when (state.section) {
             AuthSection.INTRO -> IntroSection(viewModel)
             AuthSection.REGISTER -> {

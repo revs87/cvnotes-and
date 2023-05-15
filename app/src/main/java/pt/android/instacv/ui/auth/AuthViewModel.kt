@@ -8,17 +8,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import pt.android.instacv.data.Result
+import pt.android.instacv.data.local.SPKey
+import pt.android.instacv.data.local.SharedPreferencesRepository
 import pt.android.instacv.data.remote.firebase.AuthenticationRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val dataRepository: AuthenticationRepository
+    private val dataRepository: AuthenticationRepository,
+    private val spRepository: SharedPreferencesRepository,
 ) : ViewModel() {
 
     private val _fieldsState = mutableStateOf(AuthFieldsState())
     val fieldsState: State<AuthFieldsState> = _fieldsState
-    private val _state = mutableStateOf(AuthState())
+    private val _state = mutableStateOf(AuthState(isLoggedIn = isLoggedIn()))
     val state: State<AuthState> = _state
 
 
@@ -49,7 +52,7 @@ class AuthViewModel @Inject constructor(
     private fun asSuccess() =
         AuthState(
             section = _state.value.section,
-            isLoggedIn = true,
+            isLoggedIn = isLoggedIn(),
             isLoading = false,
             errorMessage = _state.value.errorMessage,
         )
@@ -57,7 +60,7 @@ class AuthViewModel @Inject constructor(
     private fun asError(res: Result.Error) =
         AuthState(
             section = _state.value.section,
-            isLoggedIn = _state.value.isLoggedIn,
+            isLoggedIn = isLoggedIn(),
             isLoading = false,
             errorMessage = res.message,
         )
@@ -65,10 +68,11 @@ class AuthViewModel @Inject constructor(
     private fun asLoadingActive() =
         AuthState(
             section = _state.value.section,
-            isLoggedIn = _state.value.isLoggedIn,
+            isLoggedIn = isLoggedIn(),
             isLoading = true,
             errorMessage = _state.value.errorMessage,
         )
+    private fun isLoggedIn(): Boolean = spRepository.getString(SPKey.UID.key).isNotBlank()
 
     fun updateEmail(emailChange: String) {
         _fieldsState.value = AuthFieldsState(emailChange, _fieldsState.value.pwdValue)
