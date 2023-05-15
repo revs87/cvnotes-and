@@ -1,7 +1,7 @@
 package pt.android.instacv.ui.home
 
 enum class HomeSection {
-    MAIN
+    AUTH, MAIN
 }
 
 data class HomeState(

@@ -35,7 +35,7 @@ class HomeViewModel @Inject constructor(
 
     private fun asSuccess() =
         HomeState(
-            section = _state.value.section,
+            section = HomeSection.AUTH,
             isLoading = false,
             errorMessage = _state.value.errorMessage,
         )

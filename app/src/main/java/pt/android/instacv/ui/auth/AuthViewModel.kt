@@ -75,10 +75,10 @@ class AuthViewModel @Inject constructor(
     private fun isLoggedIn(): Boolean = spRepository.getString(SPKey.UID.key).isNotBlank()
 
     fun updateEmail(emailChange: String) {
-        _fieldsState.value = AuthFieldsState(emailChange, _fieldsState.value.pwdValue)
+        _fieldsState.value = AuthFieldsState(emailChange.trim(), _fieldsState.value.pwdValue)
     }
     fun updatePwd(pwdChange: String) {
-        _fieldsState.value = AuthFieldsState(_fieldsState.value.emailValue, pwdChange)
+        _fieldsState.value = AuthFieldsState(_fieldsState.value.emailValue, pwdChange.trim())
     }
     fun onRegisterClick() {
         _state.value = AuthState(

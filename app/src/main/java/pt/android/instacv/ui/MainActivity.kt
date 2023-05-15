@@ -10,12 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import pt.android.instacv.theme.MyTheme
 import pt.android.instacv.ui.auth.AuthScreen
+import pt.android.instacv.ui.auth.AuthViewModel
 import pt.android.instacv.ui.home.HomeScreen
 import pt.android.instacv.ui.util.Screen
 
@@ -30,10 +32,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val viewModel : AuthViewModel = hiltViewModel()
+                    val startingRoute =
+                        if (viewModel.state.value.isLoggedIn) { Screen.HomeScreen.route }
+                        else { Screen.AuthScreen.route }
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.AuthScreen.route
+                        startDestination = startingRoute
                     ) {
                         composable(route = Screen.AuthScreen.route) {
                             AuthScreen(navController)
