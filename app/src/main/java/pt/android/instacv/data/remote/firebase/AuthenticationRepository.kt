@@ -4,6 +4,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.dto.UserDTO
 import pt.android.instacv.data.local.SPKey
@@ -22,7 +23,7 @@ internal class AuthenticationRepositoryImpl(
 
     override fun register(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
         try {
-            val res = mAuth.createUserWithEmailAndPassword(email, pwd).result
+            val res = mAuth.createUserWithEmailAndPassword(email, pwd).await()
             if (res.isValid()) {
                 cacheUser(res)
                 emit(Result.Success(res.toUserDTO()))
@@ -34,7 +35,7 @@ internal class AuthenticationRepositoryImpl(
 
     override fun login(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
         try {
-            val res = mAuth.signInWithEmailAndPassword(email, pwd).result
+            val res = mAuth.signInWithEmailAndPassword(email, pwd).await()
             if (res.isValid()) {
                 cacheUser(res)
                 emit(Result.Success(res.toUserDTO()))
@@ -47,6 +48,7 @@ internal class AuthenticationRepositoryImpl(
     override fun logout() = flow {
         try {
             mAuth.signOut()
+            spRepository.purgeAll()
             emit(Result.Success(Unit))
         }
         catch (e: Exception) { emit(Result.Error("Signing out failed")) }

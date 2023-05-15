@@ -1,4 +1,4 @@
-package pt.android.instacv.ui.screen
+package pt.android.instacv.ui.auth
 
 data class AuthFieldsState(
     val emailValue: String = "",

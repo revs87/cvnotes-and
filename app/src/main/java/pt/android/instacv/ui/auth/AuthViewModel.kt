@@ -1,4 +1,4 @@
-package pt.android.instacv.ui.screen
+package pt.android.instacv.ui.auth
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +28,19 @@ class AuthViewModel @Inject constructor(
             .onEach { res ->
                 when (res) {
                     is Result.Error -> _state.value = asError(res)
-                    is Result.Success -> {
+                    is Result.Success -> _state.value = asSuccess()
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 
-                        _state.value = asSuccess()
-                    }
+    fun logUser(email: String, pwd: String) {
+        _state.value = asLoadingActive()
+        dataRepository.login(email, pwd)
+            .onEach { res ->
+                when (res) {
+                    is Result.Error -> _state.value = asError(res)
+                    is Result.Success -> _state.value = asSuccess()
                 }
             }
             .launchIn(viewModelScope)
@@ -64,9 +73,23 @@ class AuthViewModel @Inject constructor(
     fun updateEmail(emailChange: String) {
         _fieldsState.value = AuthFieldsState(emailChange, _fieldsState.value.pwdValue)
     }
-
     fun updatePwd(pwdChange: String) {
         _fieldsState.value = AuthFieldsState(_fieldsState.value.emailValue, pwdChange)
     }
-
+    fun onRegisterClick() {
+        _state.value = AuthState(
+            section = AuthSection.REGISTER,
+            isLoggedIn = _state.value.isLoggedIn,
+            isLoading = false,
+            errorMessage = _state.value.errorMessage,
+        )
+    }
+    fun onLoginClick() {
+        _state.value = AuthState(
+            section = AuthSection.LOGIN,
+            isLoggedIn = _state.value.isLoggedIn,
+            isLoading = false,
+            errorMessage = _state.value.errorMessage,
+        )
+    }
 }

@@ -1,4 +1,4 @@
-package pt.android.instacv.ui.screen
+package pt.android.instacv.ui.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,7 +48,9 @@ fun AuthScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
-    if (state.isLoggedIn) { navController.navigate(route = Screen.HomeScreen.route) }
+    if (state.isLoggedIn) {
+        navController.navigate(route = Screen.HomeScreen.route)
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -67,9 +69,7 @@ fun AuthScreen(
             }
         }
         when (state.section) {
-            AuthSection.INTRO -> {
-
-            }
+            AuthSection.INTRO -> IntroSection(viewModel)
             AuthSection.REGISTER -> {
                 RegisterSection(
                     fieldsState,
@@ -78,7 +78,11 @@ fun AuthScreen(
                     focusManager)
             }
             AuthSection.LOGIN -> {
-
+                LoginSection(
+                    fieldsState,
+                    viewModel,
+                    keyboardController,
+                    focusManager)
             }
         }
         if (state.errorMessage.isNotBlank()) {
@@ -91,8 +95,30 @@ fun AuthScreen(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
+private fun IntroSection(
+    viewModel: AuthViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Do you already have an account?")
+        Button(onClick = { viewModel.onRegisterClick() }) {
+            Text(text = "Create account".uppercase())
+        }
+        Button(onClick = { viewModel.onLoginClick() }) {
+            Text(text = "Login".uppercase())
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
 private fun RegisterSection(
-    fieldsState: AuthFieldsState = AuthFieldsState("",""),
+    fieldsState: AuthFieldsState,
     viewModel: AuthViewModel,
     keyboardController: SoftwareKeyboardController?,
     focusManager: FocusManager
@@ -104,6 +130,54 @@ private fun RegisterSection(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(text = "Create your account.")
+        TextField(
+            label = { Text(text = "New email".uppercase()) },
+            value = fieldsState.emailValue,
+            onValueChange = { viewModel.updateEmail(it) },
+        )
+        TextField(
+            label = { Text(text = "New password".uppercase()) },
+            value = fieldsState.pwdValue,
+            onValueChange = { viewModel.updatePwd(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Send
+            ),
+            keyboardActions = KeyboardActions(
+                onSend = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue)
+                }
+            )
+        )
+        Button(onClick = {
+            keyboardController?.hide()
+            focusManager.clearFocus()
+            viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue)
+        }) {
+            Text(text = "Sign in".uppercase())
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun LoginSection(
+    fieldsState: AuthFieldsState,
+    viewModel: AuthViewModel,
+    keyboardController: SoftwareKeyboardController?,
+    focusManager: FocusManager
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Log into your account.")
         TextField(
             label = { Text(text = "Email".uppercase()) },
             value = fieldsState.emailValue,
@@ -121,12 +195,16 @@ private fun RegisterSection(
                 onSend = {
                     keyboardController?.hide()
                     focusManager.clearFocus()
-                    viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue)
+                    viewModel.logUser(fieldsState.emailValue, fieldsState.pwdValue)
                 }
             )
         )
-        Button(onClick = { viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue) }) {
-            Text(text = "Sign in".uppercase())
+        Button(onClick = {
+            keyboardController?.hide()
+            focusManager.clearFocus()
+            viewModel.logUser(fieldsState.emailValue, fieldsState.pwdValue)
+        }) {
+            Text(text = "Log in".uppercase())
         }
     }
 }

@@ -1,4 +1,4 @@
-package pt.android.instacv.ui.screen
+package pt.android.instacv.ui.auth
 
 enum class AuthSection {
     INTRO, REGISTER, LOGIN

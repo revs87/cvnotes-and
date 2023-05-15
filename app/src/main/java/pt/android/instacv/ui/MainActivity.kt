@@ -15,7 +15,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import pt.android.instacv.theme.MyTheme
-import pt.android.instacv.ui.screen.AuthScreen
+import pt.android.instacv.ui.auth.AuthScreen
+import pt.android.instacv.ui.home.HomeScreen
 import pt.android.instacv.ui.util.Screen
 
 @AndroidEntryPoint
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
                             AuthScreen(navController)
                         }
                         composable(route = Screen.HomeScreen.route) {
-//                            HomeScreen(navController)
+                            HomeScreen(navController)
                         }
                     }
                 }
