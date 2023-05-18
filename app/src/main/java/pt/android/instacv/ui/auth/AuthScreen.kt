@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package pt.android.instacv.ui.auth
 
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +20,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.AutofillNode
+import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalAutofill
+import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
@@ -60,20 +70,37 @@ fun AuthScreen(
     ) { padding ->
         LoadingIndicator(state.isLoading)
         when (state.section) {
-            AuthSection.INTRO -> IntroSection(viewModel)
+            AuthSection.INTRO -> IntroSection(
+                { viewModel.onRegisterClick() },
+                { viewModel.onLoginClick() }
+            )
             AuthSection.REGISTER -> {
-                RegisterSection(
-                    fieldsState,
-                    viewModel,
-                    keyboardController,
-                    focusManager)
+                AuthSection(
+                    title = "Create your account.",
+                    emailTitle = "New email",
+                    pwdTitle = "New password",
+                    emailValue = fieldsState.emailValue,
+                    pwdValue = fieldsState.pwdValue,
+                    btnText = "Sign in",
+                    updateEmail = { viewModel.updateEmail(it) },
+                    updatePwd = { viewModel.updatePwd(it) },
+                    createUser =  { email, pwd -> viewModel.createUser(email, pwd) },
+                    keyboardController = keyboardController,
+                    focusManager = focusManager)
             }
             AuthSection.LOGIN -> {
-                LoginSection(
-                    fieldsState,
-                    viewModel,
-                    keyboardController,
-                    focusManager)
+                AuthSection(
+                    title = "Log into your account.",
+                    emailTitle = "Email",
+                    pwdTitle = "Password",
+                    btnText = "Log in",
+                    emailValue = fieldsState.emailValue,
+                    pwdValue = fieldsState.pwdValue,
+                    updateEmail = { viewModel.updateEmail(it) },
+                    updatePwd = { viewModel.updatePwd(it) },
+                    createUser =  { email, pwd -> viewModel.logUser(email, pwd) },
+                    keyboardController = keyboardController,
+                    focusManager = focusManager)
             }
         }
         if (state.errorMessage.isNotBlank()) {
@@ -86,119 +113,119 @@ fun AuthScreen(
 
 @Composable
 private fun IntroSection(
-    viewModel: AuthViewModel
+    onRegisterClick: () -> Unit = {},
+    onLoginClick: () -> Unit = {},
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Do you already have an account?")
-        Button(onClick = { viewModel.onRegisterClick() }) {
-            Text(text = "Create account".uppercase())
-        }
-        Button(onClick = { viewModel.onLoginClick() }) {
-            Text(text = "Login".uppercase())
-        }
+        Button(onClick = { onRegisterClick.invoke() }) { Text(text = "Create account".uppercase()) }
+        Button(onClick = { onLoginClick.invoke() }) { Text(text = "Login".uppercase()) }
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun RegisterSection(
-    fieldsState: AuthFieldsState,
-    viewModel: AuthViewModel,
-    keyboardController: SoftwareKeyboardController?,
-    focusManager: FocusManager
+private fun AuthSection(
+    title: String = "Title",
+    emailTitle: String = "Email title",
+    pwdTitle: String = "Pwd title",
+    btnText: String = "Btn text",
+    emailValue: String = "",
+    pwdValue: String = "",
+    updateEmail: (newValue: String) -> Unit = {},
+    updatePwd: (newValue: String) -> Unit = {},
+    createUser: ((email: String, pwd: String) -> Unit)? = null,
+    logUser: ((email: String, pwd: String) -> Unit?)? = null,
+    keyboardController: SoftwareKeyboardController? = null,
+    focusManager: FocusManager? = null
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Create your account.")
-        TextField(
-            label = { Text(text = "New email".uppercase()) },
-            value = fieldsState.emailValue,
-            onValueChange = { viewModel.updateEmail(it) },
-        )
-        TextField(
-            label = { Text(text = "New password".uppercase()) },
-            value = fieldsState.pwdValue,
-            onValueChange = { viewModel.updatePwd(it) },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Send
-            ),
-            keyboardActions = KeyboardActions(
-                onSend = {
-                    keyboardController?.hide()
-                    focusManager.clearFocus()
-                    viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue)
-                }
-            )
-        )
+        Text(text = title)
+        EmailField(emailTitle, emailValue) { updateEmail.invoke(it) }
+        PasswordField(pwdTitle, pwdValue, { updatePwd.invoke(it) }) {
+            keyboardController?.hide()
+            focusManager?.clearFocus()
+            createUser?.invoke(emailValue, pwdValue)
+            logUser?.invoke(emailValue, pwdValue)
+        }
         Button(onClick = {
             keyboardController?.hide()
-            focusManager.clearFocus()
-            viewModel.createUser(fieldsState.emailValue, fieldsState.pwdValue)
+            focusManager?.clearFocus()
+            createUser?.invoke(emailValue, pwdValue)
+            logUser?.invoke(emailValue, pwdValue)
         }) {
-            Text(text = "Sign in".uppercase())
+            Text(text = btnText.uppercase())
         }
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun LoginSection(
-    fieldsState: AuthFieldsState,
-    viewModel: AuthViewModel,
-    keyboardController: SoftwareKeyboardController?,
-    focusManager: FocusManager
+private fun EmailField(
+    title: String = "",
+    value: String = "",
+    onValueChange: (newValue: String) -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Log into your account.")
-        TextField(
-            label = { Text(text = "Email".uppercase()) },
-            value = fieldsState.emailValue,
-            onValueChange = { viewModel.updateEmail(it) },
-        )
-        TextField(
-            label = { Text(text = "Password".uppercase()) },
-            value = fieldsState.pwdValue,
-            onValueChange = { viewModel.updatePwd(it) },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Send
-            ),
-            keyboardActions = KeyboardActions(
-                onSend = {
-                    keyboardController?.hide()
-                    focusManager.clearFocus()
-                    viewModel.logUser(fieldsState.emailValue, fieldsState.pwdValue)
-                }
-            )
-        )
-        Button(onClick = {
-            keyboardController?.hide()
-            focusManager.clearFocus()
-            viewModel.logUser(fieldsState.emailValue, fieldsState.pwdValue)
-        }) {
-            Text(text = "Log in".uppercase())
-        }
-    }
+    TextField(
+        modifier = Modifier.autofill(
+            autofillTypes = listOf(AutofillType.EmailAddress),
+            onFill = { onValueChange.invoke(it) },
+        ),
+        label = { Text(text = title.uppercase()) },
+        value = value,
+        onValueChange = { onValueChange.invoke(it) },
+    )
 }
 
+@Composable
+private fun PasswordField(
+    title: String = "",
+    value: String = "",
+    onValueChange: (newValue: String) -> Unit = {},
+    onKeyboardAction: () -> Unit = {}
+) {
+    TextField(
+        label = { Text(text = title.uppercase()) },
+        value = value,
+        onValueChange = { onValueChange.invoke(it) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Send
+        ),
+        keyboardActions = KeyboardActions(
+            onSend = { onKeyboardAction.invoke() }
+        )
+    )
+}
+
+private fun Modifier.autofill(
+    autofillTypes: List<AutofillType>,
+    onFill: ((String) -> Unit),
+) = composed {
+    val autofill = LocalAutofill.current
+    val autofillNode = AutofillNode(onFill = onFill, autofillTypes = autofillTypes)
+    LocalAutofillTree.current += autofillNode
+
+    this
+        .onGloballyPositioned {
+            autofillNode.boundingBox = it.boundsInWindow()
+        }
+        .onFocusChanged { focusState ->
+            autofill?.run {
+                if (focusState.isFocused) {
+                    requestAutofillForNode(autofillNode)
+                } else {
+                    cancelAutofillForNode(autofillNode)
+                }
+            }
+        }
+}
 
 @Preview(showBackground = true)
 @Composable
