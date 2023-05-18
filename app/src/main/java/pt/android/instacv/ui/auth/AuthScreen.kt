@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -16,7 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -32,13 +38,16 @@ import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import pt.android.instacv.R
 import pt.android.instacv.theme.MyTheme
 import pt.android.instacv.ui.component.LoadingIndicator
 import pt.android.instacv.ui.util.Screen
@@ -177,6 +186,7 @@ private fun EmailField(
             autofillTypes = listOf(AutofillType.EmailAddress),
             onFill = { onValueChange.invoke(it) },
         ),
+        singleLine = true,
         label = { Text(text = title.uppercase()) },
         value = value,
         onValueChange = { onValueChange.invoke(it) },
@@ -190,9 +200,13 @@ private fun PasswordField(
     onValueChange: (newValue: String) -> Unit = {},
     onKeyboardAction: () -> Unit = {}
 ) {
+    var passwordVisible: Boolean by remember { mutableStateOf(false) }
+
     TextField(
         label = { Text(text = title.uppercase()) },
         value = value,
+        singleLine = true,
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         onValueChange = { onValueChange.invoke(it) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
@@ -200,7 +214,18 @@ private fun PasswordField(
         ),
         keyboardActions = KeyboardActions(
             onSend = { onKeyboardAction.invoke() }
-        )
+        ),
+        trailingIcon = {
+            IconButton(
+                onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        modifier = Modifier.size(45.dp).padding(8.dp),
+                        painter = painterResource(
+                            id = if (passwordVisible) R.drawable.visibility else R.drawable.visibility_off),
+                            contentDescription = ""
+                    )
+            }
+        },
     )
 }
 
@@ -231,7 +256,6 @@ private fun Modifier.autofill(
 @Composable
 fun DefaultPreview() {
     MyTheme {
-        val navController = rememberNavController()
-        AuthScreen(navController)
+        PasswordField()
     }
 }
