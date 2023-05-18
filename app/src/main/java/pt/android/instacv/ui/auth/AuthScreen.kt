@@ -84,7 +84,6 @@ fun AuthScreen(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun IntroSection(
     viewModel: AuthViewModel

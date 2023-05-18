@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 import pt.android.instacv.data.local.SharedPreferencesRepository
 import pt.android.instacv.data.local.SharedPreferencesRepositoryImpl
 import pt.android.instacv.data.remote.firebase.AuthenticationRepository
-import pt.android.instacv.data.remote.firebase.AuthenticationRepositoryImpl
+import pt.android.instacv.data.remote.firebase.FirebaseAuthRepositoryImpl
 import javax.inject.Singleton
 
 
@@ -26,6 +26,6 @@ object AppModule {
     @Provides
     @Singleton
     fun providesAuthenticationRepository(spRepository: SharedPreferencesRepository): AuthenticationRepository {
-        return AuthenticationRepositoryImpl(spRepository)
+        return FirebaseAuthRepositoryImpl(spRepository)
     }
 }

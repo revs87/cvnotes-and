@@ -16,7 +16,7 @@ interface AuthenticationRepository {
     fun logout(): Flow<Result<Unit>>
 }
 
-internal class AuthenticationRepositoryImpl(
+internal class FirebaseAuthRepositoryImpl(
     private val spRepository: SharedPreferencesRepository
 ) : AuthenticationRepository {
     private val mAuth = FirebaseAuth.getInstance()
