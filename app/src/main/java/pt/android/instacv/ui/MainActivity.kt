@@ -27,25 +27,39 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val authViewModel: AuthViewModel = hiltViewModel()
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            val startingRoute =
+                if (authViewModel.state.value.isLoggedIn) { Screen.HomeScreen.route }
+                else { Screen.AuthScreen.route }
+            val navController = rememberNavController()
+
             MyTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val authViewModel : AuthViewModel = hiltViewModel()
-                    val homeViewModel : HomeViewModel = hiltViewModel()
-                    val startingRoute =
-                        if (authViewModel.state.value.isLoggedIn) { Screen.HomeScreen.route }
-                        else { Screen.AuthScreen.route }
-                    val navController = rememberNavController()
                     NavHost(
                         navController = navController,
                         startDestination = startingRoute
                     ) {
                         composable(route = Screen.AuthScreen.route) {
                             AuthScreen(
-                                navController = navController
+                                navigateHomeListener = {
+                                    navController.navigate(route = Screen.HomeScreen.route) {
+                                        popUpTo(Screen.AuthScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                },
+                                state = authViewModel.state.value,
+                                fieldsState = authViewModel.fieldsState.value,
+                                registerClickListener = { authViewModel.onRegisterClick() },
+                                loginClickListener = { authViewModel.onLoginClick() },
+                                updateEmailListener = { authViewModel.updateEmail(it) },
+                                updatePwdListener = { authViewModel.updatePwd(it) },
+                                createUserListener = { email, pwd -> authViewModel.createUser(email, pwd) },
+                                logUserListener = { email, pwd -> authViewModel.logUser(email, pwd) },
                             )
                         }
                         composable(route = Screen.HomeScreen.route) {

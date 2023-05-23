@@ -55,22 +55,23 @@ import pt.android.instacv.ui.util.Screen
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AuthScreen(
-    navController: NavController,
-    viewModel: AuthViewModel = hiltViewModel()
+    navigateHomeListener: () -> Unit = {},
+    state: AuthState,
+    fieldsState: AuthFieldsState,
+    registerClickListener: () -> Unit = {},
+    loginClickListener: () -> Unit = {},
+    updateEmailListener: (newValue: String) -> Unit = {},
+    updatePwdListener: (newValue: String) -> Unit = {},
+    createUserListener: (email: String, pwd: String) -> Unit = { _, _ -> },
+    logUserListener: (email: String, pwd: String) -> Unit = { _, _ -> },
 ) {
-    val state: AuthState = viewModel.state.value
-    val fieldsState: AuthFieldsState = viewModel.fieldsState.value
     val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
     if (state.isLoggedIn) {
         LaunchedEffect(Unit) {
-            navController.navigate(route = Screen.HomeScreen.route) {
-                popUpTo(Screen.AuthScreen.route) {
-                    inclusive = true
-                }
-            }
+            navigateHomeListener.invoke()
         }
     }
 
@@ -80,8 +81,8 @@ fun AuthScreen(
         LoadingIndicator(state.isLoading)
         when (state.section) {
             AuthSection.INTRO -> IntroSection(
-                { viewModel.onRegisterClick() },
-                { viewModel.onLoginClick() }
+                registerClickListener,
+                loginClickListener
             )
             AuthSection.REGISTER -> {
                 AuthSection(
@@ -91,9 +92,9 @@ fun AuthScreen(
                     emailValue = fieldsState.emailValue,
                     pwdValue = fieldsState.pwdValue,
                     btnText = "Sign in",
-                    updateEmail = { viewModel.updateEmail(it) },
-                    updatePwd = { viewModel.updatePwd(it) },
-                    createUser =  { email, pwd -> viewModel.createUser(email, pwd) },
+                    updateEmail = updateEmailListener,
+                    updatePwd = updatePwdListener,
+                    createUser = { email, pwd -> createUserListener(email, pwd) },
                     keyboardController = keyboardController,
                     focusManager = focusManager)
             }
@@ -105,9 +106,9 @@ fun AuthScreen(
                     btnText = "Log in",
                     emailValue = fieldsState.emailValue,
                     pwdValue = fieldsState.pwdValue,
-                    updateEmail = { viewModel.updateEmail(it) },
-                    updatePwd = { viewModel.updatePwd(it) },
-                    createUser =  { email, pwd -> viewModel.logUser(email, pwd) },
+                    updateEmail = updateEmailListener,
+                    updatePwd = updatePwdListener,
+                    createUser =  { email, pwd -> logUserListener(email, pwd) },
                     keyboardController = keyboardController,
                     focusManager = focusManager)
             }
