@@ -10,27 +10,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.compose.ui.tooling.preview.Preview
+import pt.android.instacv.theme.MyTheme
 import pt.android.instacv.ui.component.LoadingIndicator
-import pt.android.instacv.ui.util.Screen
 
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    state: HomeState = HomeState(),
+    logoutListener: () -> Unit = {},
+    navigateAuthListener: () -> Unit = {}
 ) {
-    val state: HomeState = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
 
     if (state.section == HomeSection.AUTH) {
         LaunchedEffect(Unit) {
-            navController.navigate(route = Screen.AuthScreen.route) {
-                popUpTo(Screen.HomeScreen.route) {
-                    inclusive = true
-                }
-            }
+            navigateAuthListener.invoke()
         }
     }
 
@@ -39,7 +34,7 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
         LoadingIndicator(state.isLoading)
-        Button(onClick = { viewModel.logout() }) {
+        Button(onClick = { logoutListener.invoke() }) {
             Text(text = "Log out".uppercase())
         }
         if (state.errorMessage.isNotBlank()) {
@@ -47,5 +42,13 @@ fun HomeScreen(
                 snackbarHostState.showSnackbar(state.errorMessage)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Preview() {
+    MyTheme {
+        HomeScreen()
     }
 }

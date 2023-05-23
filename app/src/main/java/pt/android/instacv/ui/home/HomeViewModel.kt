@@ -9,13 +9,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import pt.android.instacv.data.AuthenticationRepository
 import pt.android.instacv.data.Result
-import pt.android.instacv.data.local.SharedPreferencesRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val dataRepository: AuthenticationRepository,
-    private val spRepository: SharedPreferencesRepository,
 ) : ViewModel() {
 
     private val _state = mutableStateOf(HomeState())

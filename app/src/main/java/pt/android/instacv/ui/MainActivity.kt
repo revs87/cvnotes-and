@@ -19,6 +19,7 @@ import pt.android.instacv.theme.MyTheme
 import pt.android.instacv.ui.auth.AuthScreen
 import pt.android.instacv.ui.auth.AuthViewModel
 import pt.android.instacv.ui.home.HomeScreen
+import pt.android.instacv.ui.home.HomeViewModel
 import pt.android.instacv.ui.util.Screen
 
 @AndroidEntryPoint
@@ -32,9 +33,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val viewModel : AuthViewModel = hiltViewModel()
+                    val authViewModel : AuthViewModel = hiltViewModel()
+                    val homeViewModel : HomeViewModel = hiltViewModel()
                     val startingRoute =
-                        if (viewModel.state.value.isLoggedIn) { Screen.HomeScreen.route }
+                        if (authViewModel.state.value.isLoggedIn) { Screen.HomeScreen.route }
                         else { Screen.AuthScreen.route }
                     val navController = rememberNavController()
                     NavHost(
@@ -42,10 +44,22 @@ class MainActivity : ComponentActivity() {
                         startDestination = startingRoute
                     ) {
                         composable(route = Screen.AuthScreen.route) {
-                            AuthScreen(navController)
+                            AuthScreen(
+                                navController = navController
+                            )
                         }
                         composable(route = Screen.HomeScreen.route) {
-                            HomeScreen(navController)
+                            HomeScreen(
+                                state = homeViewModel.state.value,
+                                logoutListener = { homeViewModel.logout() },
+                                navigateAuthListener = {
+                                    navController.navigate(route = Screen.AuthScreen.route) {
+                                        popUpTo(Screen.HomeScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                            )
                         }
                     }
                 }
