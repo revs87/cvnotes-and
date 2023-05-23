@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import pt.android.instacv.data.AuthenticationRepository
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.local.SharedPreferencesRepository
-import pt.android.instacv.data.remote.firebase.AuthenticationRepository
 import javax.inject.Inject
 
 @HiltViewModel

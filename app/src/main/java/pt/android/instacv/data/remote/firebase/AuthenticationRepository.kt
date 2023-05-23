@@ -5,16 +5,11 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import pt.android.instacv.data.AuthenticationRepository
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.dto.UserDTO
 import pt.android.instacv.data.local.SPKey
 import pt.android.instacv.data.local.SharedPreferencesRepository
-
-interface AuthenticationRepository {
-    fun register(email: String, pwd: String): Flow<Result<UserDTO>>
-    fun login(email: String, pwd: String): Flow<Result<UserDTO>>
-    fun logout(): Flow<Result<Unit>>
-}
 
 internal class FirebaseAuthRepositoryImpl(
     private val spRepository: SharedPreferencesRepository
