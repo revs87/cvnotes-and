@@ -1,4 +1,4 @@
-package pt.android.instacv.ui.component
+package pt.android.instacv.ui._component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -1,7 +1,6 @@
 package pt.android.instacv.ui.home
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -12,7 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import pt.android.instacv.theme.MyTheme
-import pt.android.instacv.ui.component.LoadingIndicator
+import pt.android.instacv.theme.button.PrimaryButton
+import pt.android.instacv.ui._component.LoadingIndicator
 
 
 @Composable
@@ -34,7 +34,7 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
         LoadingIndicator(state.isLoading)
-        Button(onClick = { logoutListener.invoke() }) {
+        PrimaryButton(onClick = { logoutListener.invoke() }) {
             Text(text = "Log out".uppercase())
         }
         if (state.errorMessage.isNotBlank()) {
