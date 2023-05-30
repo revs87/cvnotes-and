@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillNode
 import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.composed
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.boundsInWindow
@@ -63,7 +64,9 @@ fun AuthFields(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = title)
-        EmailField(emailTitle, emailValue) { updateEmail.invoke(it) }
+        EmailField(emailTitle, emailValue, { updateEmail.invoke(it) }) {
+            focusManager?.moveFocus(FocusDirection.Down)
+        }
         PasswordField(pwdTitle, pwdValue, { updatePwd.invoke(it) }) {
             keyboardController?.hide()
             focusManager?.clearFocus()
@@ -88,7 +91,8 @@ fun AuthFields(
 private fun EmailField(
     title: String = "",
     value: String = "",
-    onValueChange: (newValue: String) -> Unit = {}
+    onValueChange: (newValue: String) -> Unit = {},
+    onKeyboardAction: () -> Unit = {}
 ) {
     TextField(
         modifier = Modifier.autofill(
@@ -99,6 +103,13 @@ private fun EmailField(
         placeholder = { Text(text = title.uppercase()) },
         value = value,
         onValueChange = { onValueChange.invoke(it) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = { onKeyboardAction.invoke() }
+        )
     )
 }
 

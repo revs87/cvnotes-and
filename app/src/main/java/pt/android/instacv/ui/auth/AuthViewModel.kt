@@ -59,11 +59,7 @@ class AuthViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun asSuccess() =
-        AuthState(
-            isLoggedIn = isLoggedIn(),
-            isLoading = false,
-        )
+    private fun asSuccess() = AuthState(isLoggedIn = isLoggedIn(), isLoading = false)
     private fun asError(error: AuthError): AuthState {
         L.e(TAG, error.message)
         viewModelScope.launch { _errors.send(
@@ -72,16 +68,9 @@ class AuthViewModel @Inject constructor(
                 is RegisterError -> error.userMessage
             }
         )}
-        return AuthState(
-            isLoggedIn = isLoggedIn(),
-            isLoading = false,
-        )
+        return AuthState(isLoggedIn = isLoggedIn(), isLoading = false)
     }
-    private fun asLoadingActive() =
-        AuthState(
-            isLoggedIn = isLoggedIn(),
-            isLoading = true,
-        )
+    private fun asLoadingActive() = AuthState(isLoggedIn = isLoggedIn(), isLoading = true)
     private fun isLoggedIn(): Boolean = spRepository.getString(SPKey.UID.key).isNotBlank()
 
 
