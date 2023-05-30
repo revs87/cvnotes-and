@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -76,8 +77,8 @@ class MainActivity : ComponentActivity() {
                                     LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
                                 }
                                 IntroScreen(
-                                    { navigateTo(navController, RegisterScreen.route) },
-                                    { navigateTo(navController, LoginScreen.route)  }
+                                    { authViewModel.cleanFields(); navigateTo(navController, RegisterScreen.route) },
+                                    { authViewModel.cleanFields(); navigateTo(navController, LoginScreen.route)  }
                                 )
                             }
                             composable(route = RegisterScreen.route) {
@@ -85,9 +86,11 @@ class MainActivity : ComponentActivity() {
                                 if (authViewModel.state.value.isLoggedIn) {
                                     LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
                                 }
+                                val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
                                 RegistrationScreen(
                                     state = authViewModel.state.value,
                                     fieldsState = authViewModel.fieldsState.value,
+                                    errorMessage = errorEvent.value,
                                     updateEmailListener = { authViewModel.updateEmail(it) },
                                     updatePwdListener = { authViewModel.updatePwd(it) },
                                     createUserListener = { email, pwd -> authViewModel.createUser(email, pwd) },
@@ -98,9 +101,11 @@ class MainActivity : ComponentActivity() {
                                 if (authViewModel.state.value.isLoggedIn) {
                                     LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
                                 }
+                                val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
                                 LoginScreen(
                                     state = authViewModel.state.value,
                                     fieldsState = authViewModel.fieldsState.value,
+                                    errorMessage = errorEvent.value,
                                     updateEmailListener = { authViewModel.updateEmail(it) },
                                     updatePwdListener = { authViewModel.updatePwd(it) },
                                     logUserListener = { email, pwd -> authViewModel.logUser(email, pwd) },

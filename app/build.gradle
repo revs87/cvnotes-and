@@ -1,9 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -54,6 +54,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.10.1'
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
 
     // Compose UI
     implementation 'androidx.activity:activity-compose:1.7.1'

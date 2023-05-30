@@ -49,6 +49,7 @@ fun AuthFields(
     btnText: String = "Btn text",
     emailValue: String = "",
     pwdValue: String = "",
+    submitBtnEnabled: Boolean = false,
     updateEmail: (newValue: String) -> Unit = {},
     updatePwd: (newValue: String) -> Unit = {},
     createUser: ((email: String, pwd: String) -> Unit)? = null,
@@ -69,12 +70,14 @@ fun AuthFields(
             createUser?.invoke(emailValue, pwdValue)
             logUser?.invoke(emailValue, pwdValue)
         }
-        PrimaryButton(onClick = {
-            keyboardController?.hide()
-            focusManager?.clearFocus()
-            createUser?.invoke(emailValue, pwdValue)
-            logUser?.invoke(emailValue, pwdValue)
-        }) {
+        PrimaryButton(
+            enabled = submitBtnEnabled,
+            onClick = {
+                keyboardController?.hide()
+                focusManager?.clearFocus()
+                createUser?.invoke(emailValue, pwdValue)
+                logUser?.invoke(emailValue, pwdValue)
+            }) {
             Text(text = btnText.uppercase())
         }
     }

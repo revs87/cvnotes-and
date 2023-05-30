@@ -1,17 +1,24 @@
 package pt.android.instacv.ui.auth
 
+import android.util.Patterns
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import pt.android.instacv.data.AuthenticationRepository
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.local.SPKey
 import pt.android.instacv.data.local.SharedPreferencesRepository
 import pt.android.instacv.ui._component.AuthFieldsState
+import pt.android.instacv.ui.auth.AuthError.LoginError
+import pt.android.instacv.ui.auth.AuthError.RegisterError
+import pt.android.instacv.ui.util.L
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +31,8 @@ class AuthViewModel @Inject constructor(
     val fieldsState: State<AuthFieldsState> = _fieldsState
     private val _state = mutableStateOf(AuthState(isLoggedIn = isLoggedIn()))
     val state: State<AuthState> = _state
+    private val _errors = Channel<String>()
+    val errors = _errors.receiveAsFlow()
 
 
     fun createUser(email: String, pwd: String) {
@@ -31,7 +40,7 @@ class AuthViewModel @Inject constructor(
         dataRepository.register(email, pwd)
             .onEach { res ->
                 when (res) {
-                    is Result.Error -> _state.value = asError(res)
+                    is Result.Error -> _state.value = asError(RegisterError(res.message))
                     is Result.Success -> _state.value = asSuccess()
                 }
             }
@@ -43,7 +52,7 @@ class AuthViewModel @Inject constructor(
         dataRepository.login(email, pwd)
             .onEach { res ->
                 when (res) {
-                    is Result.Error -> _state.value = asError(res)
+                    is Result.Error -> _state.value = asError(LoginError(res.message))
                     is Result.Success -> _state.value = asSuccess()
                 }
             }
@@ -54,29 +63,42 @@ class AuthViewModel @Inject constructor(
         AuthState(
             isLoggedIn = isLoggedIn(),
             isLoading = false,
-            errorMessage = _state.value.errorMessage,
         )
-
-    private fun asError(res: Result.Error) =
-        AuthState(
+    private fun asError(error: AuthError): AuthState {
+        L.e(TAG, error.message)
+        viewModelScope.launch { _errors.send(
+            when (error) {
+                is LoginError -> error.userMessage
+                is RegisterError -> error.userMessage
+            }
+        )}
+        return AuthState(
             isLoggedIn = isLoggedIn(),
             isLoading = false,
-            errorMessage = res.message,
         )
-
+    }
     private fun asLoadingActive() =
         AuthState(
             isLoggedIn = isLoggedIn(),
             isLoading = true,
-            errorMessage = _state.value.errorMessage,
         )
     private fun isLoggedIn(): Boolean = spRepository.getString(SPKey.UID.key).isNotBlank()
 
 
     fun updateEmail(emailChange: String) {
-        _fieldsState.value = AuthFieldsState(emailChange.trim(), _fieldsState.value.pwdValue)
+        _fieldsState.value = AuthFieldsState(emailChange.trim(), _fieldsState.value.pwdValue, emailChange.isValidEmail())
     }
     fun updatePwd(pwdChange: String) {
-        _fieldsState.value = AuthFieldsState(_fieldsState.value.emailValue, pwdChange.trim())
+        _fieldsState.value = AuthFieldsState(_fieldsState.value.emailValue, pwdChange.trim(), _fieldsState.value.submitBtnEnabled)
+    }
+    fun cleanFields() {
+        _fieldsState.value = AuthFieldsState("", "", false)
+    }
+
+    private fun String.isValidEmail(): Boolean = Patterns.EMAIL_ADDRESS.matcher(this).matches()
+
+
+    companion object {
+        const val TAG = "AuthViewModel"
     }
 }

@@ -1,5 +1,6 @@
 package pt.android.instacv.ui.auth
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,12 +19,15 @@ import pt.android.instacv.theme.MyTheme
 import pt.android.instacv.ui._component.AuthFields
 import pt.android.instacv.ui._component.AuthFieldsState
 import pt.android.instacv.ui._component.LoadingIndicator
+import pt.android.instacv.ui.auth.AuthError.*
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegistrationScreen(
     state: AuthState = AuthState(),
     fieldsState: AuthFieldsState = AuthFieldsState(),
+    errorMessage: String = "",
     updateEmailListener: (newValue: String) -> Unit = {},
     updatePwdListener: (newValue: String) -> Unit = {},
     createUserListener: (email: String, pwd: String) -> Unit = { _, _ -> },
@@ -39,7 +43,7 @@ fun RegistrationScreen(
         ) {
             Scaffold(
                 snackbarHost = { SnackbarHost(snackbarHostState) }
-            ) { padding ->
+            ) {
                 LoadingIndicator(state.isLoading)
                 AuthFields(
                     title = "Create your account.",
@@ -47,6 +51,7 @@ fun RegistrationScreen(
                     pwdTitle = "New password",
                     emailValue = fieldsState.emailValue,
                     pwdValue = fieldsState.pwdValue,
+                    submitBtnEnabled = fieldsState.submitBtnEnabled,
                     btnText = "Sign in",
                     updateEmail = updateEmailListener,
                     updatePwd = updatePwdListener,
@@ -54,9 +59,9 @@ fun RegistrationScreen(
                     keyboardController = keyboardController,
                     focusManager = focusManager
                 )
-                if (state.errorMessage.isNotBlank()) {
-                    LaunchedEffect(System.currentTimeMillis()) {
-                        snackbarHostState.showSnackbar(state.errorMessage)
+                if (errorMessage.isNotBlank()) {
+                    LaunchedEffect(true) {
+                        snackbarHostState.showSnackbar(errorMessage)
                     }
                 }
             }
