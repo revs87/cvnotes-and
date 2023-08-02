@@ -31,14 +31,15 @@ import pt.android.instacv.ui.auth.LoginScreen
 import pt.android.instacv.ui.auth.RegistrationScreen
 import pt.android.instacv.ui.home.HomeScreen
 import pt.android.instacv.ui.home.HomeViewModel
-import pt.android.instacv.ui.util.Screen.AboutScreen
+import pt.android.instacv.ui.splash.SplashScreen
+import pt.android.instacv.ui.util.Screen.About
 import pt.android.instacv.ui.util.Screen.Auth
+import pt.android.instacv.ui.util.Screen.Dashboard
 import pt.android.instacv.ui.util.Screen.Home
-import pt.android.instacv.ui.util.Screen.HomeScreen
-import pt.android.instacv.ui.util.Screen.IntroScreen
-import pt.android.instacv.ui.util.Screen.LoginScreen
-import pt.android.instacv.ui.util.Screen.RegisterScreen
-import pt.android.instacv.ui.util.Screen.SplashScreen
+import pt.android.instacv.ui.util.Screen.Intro
+import pt.android.instacv.ui.util.Screen.Login
+import pt.android.instacv.ui.util.Screen.Register
+import pt.android.instacv.ui.util.Screen.Splash
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -54,34 +55,33 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = SplashScreen.route
+                        startDestination = Splash.route
                     ) {
-                        composable(route = SplashScreen.route) {
-                            //TODO Splash lottie
+                        composable(route = Splash.route) {
                             val authViewModel: AuthViewModel = hiltViewModel()
                             val startingRoute =
                                 if (authViewModel.state.value.isLoggedIn) { Home.route }
                                 else { Auth.route }
-                            LaunchedEffect(true) { navigateTo(navController, startingRoute, SplashScreen.route) }
+                            SplashScreen { navigateTo(navController, startingRoute, Splash.route) }
                         }
-                        composable(route = AboutScreen.route) { /* TODO About */ }
+                        composable(route = About.route) { /* TODO About */ }
                         navigation(
                             route = Auth.route,
-                            startDestination = IntroScreen.route
+                            startDestination = Intro.route
                         ) {
                             composable(
-                                route = IntroScreen.route
+                                route = Intro.route
                             ) {
                                 val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
                                 if (authViewModel.state.value.isLoggedIn) {
                                     LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
                                 }
                                 IntroScreen(
-                                    { authViewModel.cleanFields(); navigateTo(navController, RegisterScreen.route) },
-                                    { authViewModel.cleanFields(); navigateTo(navController, LoginScreen.route)  }
+                                    { authViewModel.cleanFields(); navigateTo(navController, Register.route) },
+                                    { authViewModel.cleanFields(); navigateTo(navController, Login.route)  }
                                 )
                             }
-                            composable(route = RegisterScreen.route) {
+                            composable(route = Register.route) {
                                 val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
                                 if (authViewModel.state.value.isLoggedIn) {
                                     LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
@@ -96,7 +96,7 @@ class MainActivity : ComponentActivity() {
                                     createUserListener = { email, pwd -> authViewModel.createUser(email, pwd) },
                                 )
                             }
-                            composable(route = LoginScreen.route) {
+                            composable(route = Login.route) {
                                 val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
                                 if (authViewModel.state.value.isLoggedIn) {
                                     LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
@@ -114,9 +114,9 @@ class MainActivity : ComponentActivity() {
                         }
                         navigation(
                             route = Home.route,
-                            startDestination = HomeScreen.route
+                            startDestination = Dashboard.route
                         ) {
-                            composable(route = HomeScreen.route) {
+                            composable(route = Dashboard.route) {
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
                                 HomeScreen(
                                     state = homeViewModel.state.value,
@@ -136,13 +136,13 @@ class MainActivity : ComponentActivity() {
         route: String,
         popUpTo: String = ""
     ) {
-            navController.navigate(route = route) {
-                if (popUpTo.isNotEmpty()) {
-                    popUpTo(popUpTo) {
-                        inclusive = true
-                    }
+        navController.navigate(route = route) {
+            if (popUpTo.isNotEmpty()) {
+                popUpTo(popUpTo) {
+                    inclusive = true
                 }
             }
+        }
     }
 }
 

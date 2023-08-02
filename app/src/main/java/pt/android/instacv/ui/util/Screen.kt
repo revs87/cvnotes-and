@@ -1,14 +1,24 @@
 package pt.android.instacv.ui.util
 
-sealed class Screen(val route: String) {
-    object SplashScreen: Screen("splash_screen")
-    object AboutScreen: Screen("about_screen")
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DisabledByDefault
+import androidx.compose.ui.graphics.vector.ImageVector
+
+sealed class Screen(
+    val route: String,
+    val title: String = "",
+    val icon: ImageVector = Icons.Default.DisabledByDefault,
+    ) {
+    object Default: Screen("default", "title", Icons.Default.DisabledByDefault)
+
+    object Splash: Screen("splash_screen")
+    object About: Screen("about_screen", "About")
 
     object Auth: Screen("auth")
-    object IntroScreen: Screen("intro_screen")
-    object RegisterScreen: Screen("register_screen")
-    object LoginScreen: Screen("login_screen")
+    object Intro: Screen("intro_screen")
+    object Register: Screen("register_screen")
+    object Login: Screen("login_screen")
 
     object Home: Screen("home")
-    object HomeScreen: Screen("home_screen")
+    object Dashboard: Screen("dash_screen")
 }
