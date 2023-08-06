@@ -10,6 +10,10 @@ val Teal200 = Color(0xFF03DAC5)
 val White = Color(red = 255, green = 255, blue = 255)
 val Black = Color(red = 0, green = 0, blue = 0)
 
+val Gray700 = Color(0xFF2B2B2B)
+val Gray500 = Color(0xFF313335)
+val Gray300 = Color(0xFF3C3F41)
+
 val Blue700 = Color(0xFF0F5B9C)
 val Blue500 = Color(0xFF0B9BDF)
 val Blue300 = Color(0xFF74B2E8)

@@ -5,22 +5,24 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
 private val DarkColorSchemePalette = darkColorScheme(
-    primary = Purple200,
-    primaryContainer = Purple700,
-    secondary = Teal200,
-    background = Black,
-    surface = Black,
+    primary = Blue200,
+    primaryContainer = Blue700,
+    secondary = Green300,
+    background = Gray500,
+    surface = Gray500,
+    surfaceVariant = Gray300,
     onSecondary = White,
     onBackground = White,
     onSurface = White,
 )
 
 private val LightColorSchemePalette = lightColorScheme(
-    primary = Purple500,
-    primaryContainer = Purple700,
-    secondary = Teal200,
+    primary = Blue500,
+    primaryContainer = Blue700,
+    secondary = Green300,
     background = White,
     surface = White,
+    surfaceVariant = Gray300,
     onPrimary = White,
     onSecondary = Black,
     onBackground = Black,
