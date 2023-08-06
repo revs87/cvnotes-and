@@ -28,7 +28,7 @@ class HomeViewModel @Inject constructor(
     private var getLogoutJob: Job? = null
 
     init {
-        getUserInfo()
+        getProfile()
     }
 
     fun logout() {
@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun getUserInfo() {
+    private fun getProfile() {
         _profileState.value = HomeProfileState(
             email = spRepository.getString(SPKey.EMAIL.key),
         )
