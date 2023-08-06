@@ -25,9 +25,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesAuthenticationRepository(spRepository: SharedPreferencesRepository): AuthRepository {
+    fun providesAuthRepository(spRepository: SharedPreferencesRepository): AuthRepository {
         return FirebaseAuthRepositoryImpl(spRepository)
     }
 
-    
 }
