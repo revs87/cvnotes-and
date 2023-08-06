@@ -16,9 +16,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import pt.android.instacv.theme.MyTheme
-import pt.android.instacv.ui._component.AuthFields
-import pt.android.instacv.ui._component.AuthFieldsState
-import pt.android.instacv.ui._component.LoadingIndicator
+import pt.android.instacv.ui.util.component.AuthFields
+import pt.android.instacv.ui.util.component.AuthFieldsState
+import pt.android.instacv.ui.util.component.LoadingIndicator
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)

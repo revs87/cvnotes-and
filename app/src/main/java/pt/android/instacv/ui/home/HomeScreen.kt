@@ -1,6 +1,8 @@
 package pt.android.instacv.ui.home
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -12,12 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import pt.android.instacv.theme.MyTheme
 import pt.android.instacv.theme.button.PrimaryButton
-import pt.android.instacv.ui._component.LoadingIndicator
+import pt.android.instacv.ui.util.component.LoadingIndicator
 
 
 @Composable
 fun HomeScreen(
     state: HomeState = HomeState(),
+    profileState: HomeProfileState = HomeProfileState(),
     logoutListener: () -> Unit = {},
     navigateAuthListener: () -> Unit = {}
 ) {
@@ -34,8 +37,13 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
         LoadingIndicator(state.isLoading)
-        PrimaryButton(onClick = { logoutListener.invoke() }) {
-            Text(text = "Log out".uppercase())
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Logged as: ${profileState.email}")
+            PrimaryButton(onClick = { logoutListener.invoke() }) {
+                Text(text = "Log out".uppercase())
+            }
         }
         if (state.errorMessage.isNotBlank()) {
             LaunchedEffect(System.currentTimeMillis()) {

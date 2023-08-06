@@ -1,4 +1,4 @@
-package pt.android.instacv.ui._component
+package pt.android.instacv.ui.util.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

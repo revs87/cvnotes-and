@@ -120,6 +120,7 @@ class MainActivity : ComponentActivity() {
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
                                 HomeScreen(
                                     state = homeViewModel.state.value,
+                                    profileState = homeViewModel.profileState.value,
                                     logoutListener = { homeViewModel.logout() },
                                     navigateAuthListener = { navigateTo(navController, Auth.route, Home.route) }
                                 )

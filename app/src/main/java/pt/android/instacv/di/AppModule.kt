@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import pt.android.instacv.data.AuthenticationRepository
+import pt.android.instacv.domain.repository.AuthRepository
 import pt.android.instacv.data.local.SharedPreferencesRepository
 import pt.android.instacv.data.local.SharedPreferencesRepositoryImpl
 import pt.android.instacv.data.remote.firebase.FirebaseAuthRepositoryImpl
@@ -25,7 +25,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesAuthenticationRepository(spRepository: SharedPreferencesRepository): AuthenticationRepository {
+    fun providesAuthenticationRepository(spRepository: SharedPreferencesRepository): AuthRepository {
         return FirebaseAuthRepositoryImpl(spRepository)
     }
+
+    
 }

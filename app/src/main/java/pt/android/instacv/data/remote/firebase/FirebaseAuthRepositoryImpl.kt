@@ -5,15 +5,17 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import pt.android.instacv.data.AuthenticationRepository
+import pt.android.instacv.domain.repository.AuthRepository
 import pt.android.instacv.data.Result
+import pt.android.instacv.data.Result.Error
+import pt.android.instacv.data.Result.Success
 import pt.android.instacv.data.dto.UserDTO
 import pt.android.instacv.data.local.SPKey
 import pt.android.instacv.data.local.SharedPreferencesRepository
 
 internal class FirebaseAuthRepositoryImpl(
     private val spRepository: SharedPreferencesRepository
-) : AuthenticationRepository {
+) : AuthRepository {
     private val mAuth = FirebaseAuth.getInstance()
 
     override fun register(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
@@ -21,11 +23,11 @@ internal class FirebaseAuthRepositoryImpl(
             val res = mAuth.createUserWithEmailAndPassword(email, pwd).await()
             if (res.isValid()) {
                 cacheUser(res)
-                emit(Result.Success(res.toUserDTO()))
+                emit(Success(res.toUserDTO()))
             }
-            else { emit(Result.Error("Registered user is not valid")) }
+            else { emit(Error("Registered user is not valid")) }
         }
-        catch (e: Exception) { emit(Result.Error("Creating user failed")) }
+        catch (e: Exception) { emit(Error("Creating user failed")) }
     }
 
     override fun login(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
@@ -33,20 +35,20 @@ internal class FirebaseAuthRepositoryImpl(
             val res = mAuth.signInWithEmailAndPassword(email, pwd).await()
             if (res.isValid()) {
                 cacheUser(res)
-                emit(Result.Success(res.toUserDTO()))
+                emit(Success(res.toUserDTO()))
             }
-            else { emit(Result.Error("User is not valid")) }
+            else { emit(Error("User is not valid")) }
         }
-        catch (e: Exception) { emit(Result.Error("Signing in failed")) }
+        catch (e: Exception) { emit(Error("Signing in failed")) }
     }
 
     override fun logout() = flow {
         try {
             mAuth.signOut()
             spRepository.purgeAll()
-            emit(Result.Success(Unit))
+            emit(Success(Unit))
         }
-        catch (e: Exception) { emit(Result.Error("Signing out failed")) }
+        catch (e: Exception) { emit(Error("Signing out failed")) }
     }
 
     private fun cacheUser(res: AuthResult) {

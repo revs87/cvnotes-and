@@ -6,16 +6,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import pt.android.instacv.data.AuthenticationRepository
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.local.SPKey
 import pt.android.instacv.data.local.SharedPreferencesRepository
-import pt.android.instacv.ui._component.AuthFieldsState
+import pt.android.instacv.domain.repository.AuthRepository
+import pt.android.instacv.ui.util.component.AuthFieldsState
 import pt.android.instacv.ui.auth.AuthError.LoginError
 import pt.android.instacv.ui.auth.AuthError.RegisterError
 import pt.android.instacv.ui.util.L
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val dataRepository: AuthenticationRepository,
+    private val authRepository: AuthRepository,
     private val spRepository: SharedPreferencesRepository,
 ) : ViewModel() {
 
@@ -34,10 +35,13 @@ class AuthViewModel @Inject constructor(
     private val _errors = Channel<String>()
     val errors = _errors.receiveAsFlow()
 
+    private var getRegisterJob: Job? = null
+    private var getLoginJob: Job? = null
 
     fun createUser(email: String, pwd: String) {
         _state.value = asLoadingActive()
-        dataRepository.register(email, pwd)
+        getRegisterJob?.cancel()
+        getRegisterJob = authRepository.register(email, pwd)
             .onEach { res ->
                 when (res) {
                     is Result.Error -> _state.value = asError(RegisterError(res.message))
@@ -49,7 +53,8 @@ class AuthViewModel @Inject constructor(
 
     fun logUser(email: String, pwd: String) {
         _state.value = asLoadingActive()
-        dataRepository.login(email, pwd)
+        getLoginJob?.cancel()
+        getLoginJob = authRepository.login(email, pwd)
             .onEach { res ->
                 when (res) {
                     is Result.Error -> _state.value = asError(LoginError(res.message))

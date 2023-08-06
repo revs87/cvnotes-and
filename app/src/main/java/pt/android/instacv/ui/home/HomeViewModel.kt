@@ -5,23 +5,36 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import pt.android.instacv.data.AuthenticationRepository
 import pt.android.instacv.data.Result
+import pt.android.instacv.data.local.SPKey
+import pt.android.instacv.data.local.SharedPreferencesRepository
+import pt.android.instacv.domain.repository.AuthRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val dataRepository: AuthenticationRepository,
+    private val dataRepository: AuthRepository,
+    private val spRepository: SharedPreferencesRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(HomeState())
     val state: State<HomeState> = _state
+    private val _profileState = mutableStateOf(HomeProfileState())
+    val profileState: State<HomeProfileState> = _profileState
+
+    private var getLogoutJob: Job? = null
+
+    init {
+        getUserInfo()
+    }
 
     fun logout() {
         _state.value = asLoadingActive()
-        dataRepository.logout()
+        getLogoutJob?.cancel()
+        getLogoutJob = dataRepository.logout()
             .onEach { res ->
                 when (res) {
                     is Result.Error -> _state.value = asError(res)
@@ -29,6 +42,12 @@ class HomeViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun getUserInfo() {
+        _profileState.value = HomeProfileState(
+            email = spRepository.getString(SPKey.EMAIL.key),
+        )
     }
 
     private fun asSuccess() =

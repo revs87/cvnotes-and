@@ -15,7 +15,7 @@ interface SharedPreferencesRepository {
 class SharedPreferencesRepositoryImpl @Inject constructor(
     context: Context
 ) : SharedPreferencesRepository {
-    var sp: SharedPreferences = context.getSharedPreferences(context.packageName + ".sp", Context.MODE_PRIVATE)
+    private var sp: SharedPreferences = context.getSharedPreferences(context.packageName + ".sp", Context.MODE_PRIVATE)
 
     override fun putString(key: String, value: String) { sp.edit().putString(key, value).apply() }
     override fun getString(key: String): String = sp.getString(key, "") ?: ""
