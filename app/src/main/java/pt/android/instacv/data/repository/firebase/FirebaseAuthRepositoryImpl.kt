@@ -1,4 +1,4 @@
-package pt.android.instacv.data.remote.firebase
+package pt.android.instacv.data.repository.firebase
 
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -10,7 +10,7 @@ import pt.android.instacv.data.Result
 import pt.android.instacv.data.Result.Error
 import pt.android.instacv.data.Result.Success
 import pt.android.instacv.data.dto.UserDTO
-import pt.android.instacv.data.local.SPKey
+import pt.android.instacv.data.SPKey
 import pt.android.instacv.data.local.SharedPreferencesRepository
 
 internal class FirebaseAuthRepositoryImpl(

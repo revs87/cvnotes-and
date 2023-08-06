@@ -1,4 +1,4 @@
-package pt.android.instacv.data.local
+package pt.android.instacv.data
 
 enum class SPKey(val key: String) {
     UID("sp_uid"),

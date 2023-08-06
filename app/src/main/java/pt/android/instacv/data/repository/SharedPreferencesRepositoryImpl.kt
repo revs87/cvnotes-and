@@ -1,15 +1,12 @@
-package pt.android.instacv.data.local
+package pt.android.instacv.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import pt.android.instacv.data.SPKey
+import pt.android.instacv.domain.repository.SharedPreferencesRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface SharedPreferencesRepository {
-    fun putString(key: String, value: String)
-    fun getString(key: String): String
-    fun purgeAll()
-}
 
 @Singleton
 class SharedPreferencesRepositoryImpl @Inject constructor(
