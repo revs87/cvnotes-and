@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.SPKey
-import pt.android.instacv.data.local.SharedPreferencesRepository
 import pt.android.instacv.domain.repository.AuthRepository
+import pt.android.instacv.domain.repository.SharedPreferencesRepository
 import javax.inject.Inject
 
 @HiltViewModel

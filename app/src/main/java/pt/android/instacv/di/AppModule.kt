@@ -6,10 +6,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import pt.android.instacv.domain.repository.AuthRepository
-import pt.android.instacv.data.local.SharedPreferencesRepository
 import pt.android.instacv.data.repository.SharedPreferencesRepositoryImpl
 import pt.android.instacv.data.repository.firebase.FirebaseAuthRepositoryImpl
+import pt.android.instacv.domain.repository.AuthRepository
+import pt.android.instacv.domain.repository.SharedPreferencesRepository
 import javax.inject.Singleton
 
 

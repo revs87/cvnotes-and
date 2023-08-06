@@ -5,13 +5,13 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import pt.android.instacv.domain.repository.AuthRepository
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.Result.Error
 import pt.android.instacv.data.Result.Success
-import pt.android.instacv.data.dto.UserDTO
 import pt.android.instacv.data.SPKey
-import pt.android.instacv.data.local.SharedPreferencesRepository
+import pt.android.instacv.data.dto.UserDTO
+import pt.android.instacv.domain.repository.AuthRepository
+import pt.android.instacv.domain.repository.SharedPreferencesRepository
 
 internal class FirebaseAuthRepositoryImpl(
     private val spRepository: SharedPreferencesRepository

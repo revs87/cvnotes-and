@@ -14,12 +14,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import pt.android.instacv.data.Result
 import pt.android.instacv.data.SPKey
-import pt.android.instacv.data.local.SharedPreferencesRepository
 import pt.android.instacv.domain.repository.AuthRepository
-import pt.android.instacv.ui.util.component.AuthFieldsState
+import pt.android.instacv.domain.repository.SharedPreferencesRepository
 import pt.android.instacv.ui.auth.AuthError.LoginError
 import pt.android.instacv.ui.auth.AuthError.RegisterError
 import pt.android.instacv.ui.util.L
+import pt.android.instacv.ui.util.component.AuthFieldsState
 import javax.inject.Inject
 
 @HiltViewModel
