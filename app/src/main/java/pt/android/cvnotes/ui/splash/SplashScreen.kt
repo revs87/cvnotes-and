@@ -38,7 +38,7 @@ fun SplashScreen(
     ) {
         SplashAnimation { continueListener.invoke() }
         Text(
-            text = "InstaCV",
+            text = "CVNotes",
             fontSize = 24.sp,
             letterSpacing = 6.sp,
             fontFamily = FontFamily.Monospace,
