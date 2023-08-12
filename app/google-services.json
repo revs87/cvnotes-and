@@ -36,9 +36,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:634060105298:android:1f94e138f4111d6564a18b",
+        "mobilesdk_app_id": "1:634060105298:android:bd9eb967721e5dbd64a18b",
         "android_client_info": {
-          "package_name": "pt.android.instacv"
+          "package_name": "pt.android.cvnotes"
         }
       },
       "oauth_client": [

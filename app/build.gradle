@@ -7,17 +7,17 @@ plugins {
 }
 
 android {
-    namespace 'pt.android.instacv'
+    namespace 'pt.android.cvnotes'
     compileSdk 33
 
     defaultConfig {
-        applicationId "pt.android.instacv"
+        applicationId "pt.android.cvnotes"
         minSdk 28
         targetSdk 33
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "pt.android.instacv.HiltTestRunner"
+        testInstrumentationRunner "pt.android.cvnotes.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
