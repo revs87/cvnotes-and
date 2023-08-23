@@ -23,13 +23,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.inditex.itxmoviand.ui.component.BottomBarWithFab
 import dagger.hilt.android.AndroidEntryPoint
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.ui.about.AboutScreen
+import pt.android.cvnotes.ui.about.AboutViewModel
 import pt.android.cvnotes.ui.auth.AuthViewModel
 import pt.android.cvnotes.ui.auth.IntroScreen
 import pt.android.cvnotes.ui.auth.LoginScreen
 import pt.android.cvnotes.ui.auth.RegistrationScreen
-import pt.android.cvnotes.ui.home.HomeScreen
+import pt.android.cvnotes.ui.dashboard.DashboardScreen
+import pt.android.cvnotes.ui.dashboard.DashboardViewModel
 import pt.android.cvnotes.ui.home.HomeViewModel
 import pt.android.cvnotes.ui.splash.SplashScreen
 import pt.android.cvnotes.ui.util.Screen.About
@@ -64,7 +68,6 @@ class MainActivity : ComponentActivity() {
                                 else { Auth.route }
                             SplashScreen { navigateTo(navController, startingRoute, Splash.route) }
                         }
-                        composable(route = About.route) { /* TODO About */ }
                         navigation(
                             route = Auth.route,
                             startDestination = Intro.route
@@ -118,11 +121,31 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable(route = Dashboard.route) {
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
-                                HomeScreen(
-                                    state = homeViewModel.state.value,
-                                    profileState = homeViewModel.profileState.value,
-                                    logoutListener = { homeViewModel.logout() },
-                                    navigateAuthListener = { navigateTo(navController, Auth.route, Home.route) }
+                                BottomBarWithFab(
+                                    bottomNavItems = listOf(
+                                        Dashboard.apply {
+                                            content = {
+                                                val viewModel: DashboardViewModel = hiltViewModel()
+                                                DashboardScreen(
+                                                    state = viewModel.state.value,
+                                                )
+                                            }
+                                        },
+                                        About.apply {
+                                            content = {
+                                                val viewModel: AboutViewModel = hiltViewModel()
+                                                AboutScreen(
+                                                    state = viewModel.state.value,
+                                                    profileState = viewModel.profileState.value,
+                                                    logoutListener = viewModel::logout,
+                                                    navigateAuthListener = { navigateTo(navController, Auth.route, Home.route) }
+                                                )
+                                            }
+                                        },
+                                    ),
+                                    bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
+                                    pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
+                                    fabListener = { }
                                 )
                             }
                         }
