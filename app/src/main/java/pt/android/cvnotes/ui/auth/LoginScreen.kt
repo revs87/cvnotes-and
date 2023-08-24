@@ -1,7 +1,9 @@
 package pt.android.cvnotes.ui.auth
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -10,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -19,6 +22,7 @@ import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.AuthFields
 import pt.android.cvnotes.ui.util.component.AuthFieldsState
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
+import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
@@ -43,21 +47,28 @@ fun LoginScreen(
             Scaffold(
                 snackbarHost = { SnackbarHost(snackbarHostState) }
             ) {
-                LoadingIndicator(state.isLoading)
-                AuthFields(
-                    title = "Log into your account.",
-                    emailTitle = "Email",
-                    pwdTitle = "Password",
-                    btnText = "Log in",
-                    emailValue = fieldsState.emailValue,
-                    pwdValue = fieldsState.pwdValue,
-                    submitBtnEnabled = fieldsState.submitBtnEnabled,
-                    updateEmail = updateEmailListener,
-                    updatePwd = updatePwdListener,
-                    logUser =  { email, pwd -> logUserListener(email, pwd) },
-                    keyboardController = keyboardController,
-                    focusManager = focusManager
-                )
+                Box {
+                    AuthFields(
+                        title = "Log into your account.",
+                        emailTitle = "Email",
+                        pwdTitle = "Password",
+                        btnText = "Log in",
+                        emailValue = fieldsState.emailValue,
+                        pwdValue = fieldsState.pwdValue,
+                        submitBtnEnabled = fieldsState.submitBtnEnabled,
+                        updateEmail = updateEmailListener,
+                        updatePwd = updatePwdListener,
+                        logUser =  { email, pwd -> logUserListener(email, pwd) },
+                        keyboardController = keyboardController,
+                        focusManager = focusManager
+                    )
+                    LoadingIndicator(
+                        modifier = Modifier
+                            .size(LoadingIndicatorSize)
+                            .align(Alignment.BottomEnd),
+                        state.isLoading
+                    )
+                }
                 if (errorMessage.isNotBlank()) {
                     LaunchedEffect(true) {
                         snackbarHostState.showSnackbar(errorMessage)

@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,10 +21,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.inditex.itxmoviand.ui.component.BottomBarWithFab
 import dagger.hilt.android.AndroidEntryPoint
 import pt.android.cvnotes.theme.MyTheme
@@ -34,14 +38,18 @@ import pt.android.cvnotes.ui.auth.LoginScreen
 import pt.android.cvnotes.ui.auth.RegistrationScreen
 import pt.android.cvnotes.ui.dashboard.DashboardScreen
 import pt.android.cvnotes.ui.dashboard.DashboardViewModel
+import pt.android.cvnotes.ui.editnote.EditNoteScreen
+import pt.android.cvnotes.ui.editnote.EditNoteViewModel
 import pt.android.cvnotes.ui.home.HomeViewModel
 import pt.android.cvnotes.ui.splash.SplashScreen
 import pt.android.cvnotes.ui.util.Screen.About
 import pt.android.cvnotes.ui.util.Screen.Auth
 import pt.android.cvnotes.ui.util.Screen.Dashboard
+import pt.android.cvnotes.ui.util.Screen.EditNote
 import pt.android.cvnotes.ui.util.Screen.Home
 import pt.android.cvnotes.ui.util.Screen.Intro
 import pt.android.cvnotes.ui.util.Screen.Login
+import pt.android.cvnotes.ui.util.Screen.NewNote
 import pt.android.cvnotes.ui.util.Screen.Register
 import pt.android.cvnotes.ui.util.Screen.Splash
 
@@ -121,23 +129,23 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable(route = Dashboard.route) {
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
+                                val dashboardViewModel: DashboardViewModel = hiltViewModel()
+                                val aboutViewModel: AboutViewModel = hiltViewModel()
                                 BottomBarWithFab(
                                     bottomNavItems = listOf(
                                         Dashboard.apply {
                                             content = {
-                                                val viewModel: DashboardViewModel = hiltViewModel()
                                                 DashboardScreen(
-                                                    state = viewModel.state.value,
+                                                    state = dashboardViewModel.state.value,
                                                 )
                                             }
                                         },
                                         About.apply {
                                             content = {
-                                                val viewModel: AboutViewModel = hiltViewModel()
                                                 AboutScreen(
-                                                    state = viewModel.state.value,
-                                                    profileState = viewModel.profileState.value,
-                                                    logoutListener = viewModel::logout,
+                                                    state = aboutViewModel.state.value,
+                                                    profileState = aboutViewModel.profileState.value,
+                                                    logoutListener = aboutViewModel::logout,
                                                     navigateAuthListener = { navigateTo(navController, Auth.route, Home.route) }
                                                 )
                                             }
@@ -145,7 +153,28 @@ class MainActivity : ComponentActivity() {
                                     ),
                                     bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                     pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
-                                    fabListener = { }
+                                    fabListener = { navigateTo(navController, NewNote.route) },
+                                    fabIcon = Icons.Filled.NoteAdd
+                                )
+                            }
+                            composable(route = NewNote.route) {
+                                val viewModel: EditNoteViewModel = hiltViewModel()
+                                EditNoteScreen(
+                                    state = viewModel.state.value,
+                                    title = NewNote.title,
+                                    saveNoteListener = {}
+                                )
+                            }
+                            composable(
+                                route = "${EditNote.route}/{noteId}",
+                                arguments = listOf(navArgument("noteId") { type = NavType.LongType })
+                            ) {
+                                val viewModel: EditNoteViewModel = hiltViewModel()
+                                viewModel.getNote(it.arguments?.getLong("noteId") ?: 0L)
+                                EditNoteScreen(
+                                    state = viewModel.state.value,
+                                    title = EditNote.title,
+                                    saveNoteListener = {}
                                 )
                             }
                         }

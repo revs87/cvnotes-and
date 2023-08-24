@@ -1,4 +1,4 @@
-package pt.android.cvnotes.ui.about
+package pt.android.cvnotes.ui.editnote
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -18,31 +17,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.inditex.itxmoviand.ui.component.ITXTopAppBar
 import pt.android.cvnotes.theme.MyTheme
-import pt.android.cvnotes.theme.button.TertiaryButton
-import pt.android.cvnotes.ui.util.Screen.About
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 
 
 @Composable
-fun AboutScreen(
-    state: AboutState = AboutState(),
-    profileState: AboutProfileState = AboutProfileState(),
-    logoutListener: () -> Unit = {},
-    navigateAuthListener: () -> Unit = {}
+fun EditNoteScreen(
+    state: EditNoteState = EditNoteState(),
+    title: String = "",
+    saveNoteListener: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-
-    if (state.section == HomeSection.AUTH) {
-        LaunchedEffect(Unit) {
-            navigateAuthListener.invoke()
-        }
-    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier.fillMaxSize(),
-        topBar = { ITXTopAppBar(About.title) }
+        topBar = { ITXTopAppBar(title) }
     ) { padding ->
         Box {
             Column(
@@ -52,10 +42,7 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Logged as: ${profileState.email}")
-                TertiaryButton(onClick = { logoutListener.invoke() }) {
-                    Text(text = "Log out".uppercase())
-                }
+                //TODO
             }
             LoadingIndicator(
                 modifier = Modifier
@@ -76,6 +63,6 @@ fun AboutScreen(
 @Composable
 fun Preview() {
     MyTheme {
-        AboutScreen()
+        EditNoteScreen()
     }
 }

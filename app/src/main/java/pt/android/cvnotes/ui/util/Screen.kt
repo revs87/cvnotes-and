@@ -12,11 +12,11 @@ sealed class Screen(
     val icon: ImageVector = Icons.Default.DisabledByDefault,
     var content: @Composable () -> Unit = {}
     ) {
-    data object Default: Screen("default", "title", Icons.Default.DisabledByDefault)
+    data object Default: Screen("default")
 
     data object Splash: Screen("splash_screen")
-    data object Auth: Screen("auth")
 
+    data object Auth: Screen("auth")
     data object Intro: Screen("intro_screen")
     data object Register: Screen("register_screen")
     data object Login: Screen("login_screen")
@@ -24,6 +24,8 @@ sealed class Screen(
     data object Home: Screen("home")
     data object Dashboard: Screen("dash_screen", "Dashboard")
     data object About: Screen("about_screen", "About")
+    data object NewNote: Screen("new_note_screen", "New Note")
+    data object EditNote: Screen("edit_note_screen", "Edit Note")
 
     companion object {
         val Defaults = listOf(

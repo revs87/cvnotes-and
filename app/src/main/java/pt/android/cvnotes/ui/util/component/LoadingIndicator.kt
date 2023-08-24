@@ -1,7 +1,6 @@
 package pt.android.cvnotes.ui.util.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,15 +24,21 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import pt.android.cvnotes.theme.MyTheme
 
 @Composable
-fun LoadingIndicator(isLoading: Boolean = false) {
-    Box(modifier = Modifier.fillMaxSize()) {
+fun LoadingIndicator(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.BottomEnd
+    ) {
         if (isLoading) {
             CircularProgressIndicator(
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
                 strokeWidth = 2.dp,
                 modifier = Modifier
-                    .size(45.dp)
+                    .size(LoadingIndicatorSize)
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
             )
@@ -41,11 +46,20 @@ fun LoadingIndicator(isLoading: Boolean = false) {
     }
 }
 
+val LoadingIndicatorSize = 45.dp
+
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun PreviewLoading() {
     MyTheme {
-        LoadingIndicator(true)
+        LoadingIndicator(isLoading = true)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewAnimation() {
+    MyTheme {
         val playing by remember { mutableStateOf(true) }
         LoadingAnimation(playing)
     }

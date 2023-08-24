@@ -12,7 +12,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Nfc
+import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -22,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.theme.MyTheme
@@ -34,7 +38,8 @@ fun BottomBarWithFab(
     bottomNavItems: List<Screen> = Screen.Defaults,
     bottomNavSelected: Int = 0,
     pageListener: (Int) -> Unit = {},
-    fabListener: () -> Unit = {}
+    fabListener: () -> Unit = {},
+    fabIcon: ImageVector = Icons.Filled.Edit
 ) {
 
     MyTheme {
@@ -52,7 +57,7 @@ fun BottomBarWithFab(
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = { fabListener.invoke() }
                 ) {
-                    Icon(imageVector = Icons.Filled.Nfc, contentDescription = "Add icon")
+                    Icon(imageVector = fabIcon, contentDescription = "Add icon")
                 }
             },
             bottomBar = {
