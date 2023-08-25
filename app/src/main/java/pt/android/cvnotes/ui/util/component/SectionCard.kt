@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -23,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.util.SectionType
+import pt.android.cvnotes.theme.Gray500
+import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.MyTheme
 import java.util.Date
 
@@ -56,6 +59,7 @@ fun SectionCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .defaultMinSize(minHeight = 100.dp)
                 .padding(2.dp)
         ) {
             Column {
@@ -77,7 +81,10 @@ fun SectionCard(
                         false -> Icons.Filled.CheckBoxOutlineBlank
                     },
                     contentDescription = "",
-                    colorFilter = ColorFilter.tint(color = Color.Green)
+                    colorFilter = when (isSelected) {
+                        true -> ColorFilter.tint(color = Green500)
+                        false -> ColorFilter.tint(color = Gray500)
+                    },
                 )
             }
         }
