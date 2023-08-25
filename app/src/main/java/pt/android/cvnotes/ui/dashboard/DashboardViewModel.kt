@@ -11,6 +11,7 @@ import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.use_case.SectionUseCases
 import pt.android.cvnotes.domain.util.SectionType
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
@@ -38,7 +39,11 @@ class DashboardViewModel @Inject constructor(
             _state.value = _state.value.copy(isLoading = true)
             viewModelScope.launch(Dispatchers.Default) {
                 sectionUseCases.insertSection(
-                    Section(sectionType.id, sectionType.sectionName, sectionType.color)
+                    Section(
+                        typeId = sectionType.id,
+                        description = sectionType.sectionName,
+                        colorId = Random.nextInt(from = 0, until = Section.Colors.size)
+                    )
                 )
             }
             _state.value = _state.value.copy(

@@ -17,12 +17,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
+import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.Gray500
 import pt.android.cvnotes.theme.Green500
@@ -37,7 +37,7 @@ fun SectionCard(
     description: String = type.sectionName,
     hasSelected: Boolean = false,
     isSelected: Boolean = false,
-    color: Int = 0,
+    colorId: Int = 0,
     notes: List<Note> = listOf(
         Note(1, 1, "Hello my friends!", "", Date().time),
         Note(1, 1, "Hello again!", "", Date().time),
@@ -48,7 +48,6 @@ fun SectionCard(
 ) {
     Card(
         modifier = modifier
-            .background(color = Color(color))
             .fillMaxWidth()
             .padding(4.dp)
             .combinedClickable(
@@ -58,6 +57,7 @@ fun SectionCard(
     ) {
         Box(
             modifier = Modifier
+                .background(color = Section.Colors[colorId])
                 .fillMaxWidth()
                 .defaultMinSize(minHeight = 100.dp)
                 .padding(2.dp)

@@ -73,7 +73,7 @@ fun DashboardScreen(
                                 description = sectionWithNotes.section.typeId.toSectionType().sectionName,
                                 hasSelected = hasSelectedSections,
                                 isSelected = sectionWithNotes.section.isSelected,
-                                color = sectionWithNotes.section.color,
+                                colorId = sectionWithNotes.section.colorId,
                                 notes = sectionWithNotes.notes,
                                 onClick = { onSectionClick.invoke(sectionWithNotes.section.id ?: 0) },
                                 onLongClick = { onSectionLongClick.invoke(sectionWithNotes.section.id ?: 0) }

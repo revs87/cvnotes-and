@@ -45,7 +45,7 @@ fun AddSectionBottomSheet(
                 Column {
                     Text(text = "Add a Section:", fontSize = 22.sp)
                     LazyColumn {
-                        items(Section.sections) { sectionType ->
+                        items(Section.Sections) { sectionType ->
                             TextButton(
                                 onClick = { onDismiss.invoke(sectionType) },
                                 modifier = Modifier

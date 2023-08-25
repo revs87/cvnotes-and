@@ -13,6 +13,7 @@ val Black = Color(red = 0, green = 0, blue = 0)
 val Gray700 = Color(0xFF2B2B2B)
 val Gray500 = Color(0xFF313335)
 val Gray300 = Color(0xFF3C3F41)
+val Gray100 = Color(0xFFE2EDF4)
 
 val Blue700 = Color(0xFF0F5B9C)
 val Blue500 = Color(0xFF0B9BDF)
