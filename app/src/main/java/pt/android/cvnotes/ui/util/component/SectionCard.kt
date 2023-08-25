@@ -81,10 +81,7 @@ fun SectionCard(
                         false -> Icons.Filled.CheckBoxOutlineBlank
                     },
                     contentDescription = "",
-                    colorFilter = when (isSelected) {
-                        true -> ColorFilter.tint(color = Green500)
-                        false -> ColorFilter.tint(color = Gray500)
-                    },
+                    colorFilter = ColorFilter.tint(color = Gray500)
                 )
             }
         }

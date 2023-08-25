@@ -51,7 +51,8 @@ fun DashboardScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center),
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = if (sectionsState.isEmpty()) { Arrangement.Center }
+                                      else { Arrangement.Top }
             ) {
                 // TODO: Add StatsBoard
                 if (sectionsState.isEmpty()) {
