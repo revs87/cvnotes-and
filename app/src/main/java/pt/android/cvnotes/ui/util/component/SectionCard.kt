@@ -9,7 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ fun SectionCard(
     modifier: Modifier = Modifier,
     type: SectionType = SectionType.EDUCATION,
     description: String = type.sectionName,
+    hasSelected: Boolean = false,
     isSelected: Boolean = false,
     color: Int = 0,
     notes: List<Note> = listOf(
@@ -67,10 +69,13 @@ fun SectionCard(
                     }
                 }
             }
-            if (isSelected) {
+            if (hasSelected) {
                 Image(
                     modifier = Modifier.align(Alignment.TopEnd),
-                    imageVector = Icons.Filled.Check,
+                    imageVector = when (isSelected) {
+                        true -> Icons.Filled.CheckBox
+                        false -> Icons.Filled.CheckBoxOutlineBlank
+                    },
                     contentDescription = "",
                     colorFilter = ColorFilter.tint(color = Color.Green)
                 )

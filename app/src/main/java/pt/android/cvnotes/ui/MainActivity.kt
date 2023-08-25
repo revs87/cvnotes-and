@@ -147,7 +147,10 @@ class MainActivity : ComponentActivity() {
                                             content = {
                                                 DashboardScreen(
                                                     state = dashboardViewModel.state.value,
-                                                    onSectionClick = {},
+                                                    onSectionClick = { id ->
+                                                        if (hasSelectedSections) { dashboardViewModel.selectSection(id) }
+                                                        else { /* TODO goTo/expand SectionDetails */ }
+                                                    },
                                                     onSectionLongClick = { id -> dashboardViewModel.selectSection(id) }
                                                 )
                                             }

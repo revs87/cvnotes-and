@@ -71,6 +71,7 @@ fun DashboardScreen(
                                 modifier = Modifier.animateItemPlacement(),
                                 type = sectionWithNotes.section.typeId.toSectionType(),
                                 description = sectionWithNotes.section.typeId.toSectionType().sectionName,
+                                hasSelected = hasSelectedSections,
                                 isSelected = sectionWithNotes.section.isSelected,
                                 color = sectionWithNotes.section.color,
                                 notes = sectionWithNotes.notes,
