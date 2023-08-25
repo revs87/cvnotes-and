@@ -5,6 +5,7 @@ package pt.android.cvnotes.ui.util.component
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,13 +23,18 @@ import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.MyTheme
+import java.util.Date
 
 @Composable
 fun SectionCard(
     type: SectionType = SectionType.EDUCATION,
     description: String = type.sectionName,
     color: Int = 0,
-    notes: List<Note> = emptyList(),
+    notes: List<Note> = listOf(
+        Note(1, 1, "Hello my friends!", "", Date().time),
+        Note(1, 1, "Hello again!", "", Date().time),
+        Note(1, 1, "Hello goddammit!", "", Date().time),
+    ),
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
 ) {
@@ -36,17 +42,21 @@ fun SectionCard(
         modifier = Modifier
             .background(color = Color(color))
             .fillMaxWidth()
-            .padding(6.dp)
+            .padding(4.dp)
             .combinedClickable(
                 onClick = { onClick.invoke() },
                 onLongClick = { onLongClick.invoke() },
             )
     ) {
-        Column {
-            Text(text = description, fontSize = 28.sp)
-            LazyColumn {
-                items(notes) { note ->
-                    Text(text = note.content1, fontSize = 8.sp)
+        Box(
+            modifier = Modifier.padding(2.dp)
+        ) {
+            Column {
+                Text(text = description, fontSize = 38.sp)
+                LazyColumn {
+                    items(notes) { note ->
+                        Text(text = note.content1, fontSize = 11.sp)
+                    }
                 }
             }
         }
