@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.use_case.SectionUseCases
@@ -39,8 +38,20 @@ class DashboardViewModel @Inject constructor(
             sectionUseCases.insertSection(
                 Section(sectionType.id, sectionType.sectionName, sectionType.color)
             )
-            val list = sectionUseCases.getSectionsWithNotes().toList()
-            println(list)
+        }
+        _state.value = _state.value.copy(
+            sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
+            isLoading = false
+        )
+    }
+
+    private val selectedSections: MutableList<Int> = mutableListOf()
+    fun selectSection(id: Int) {
+        _state.value = _state.value.copy(isLoading = true)
+        if (selectedSections.contains(id)) { selectedSections.remove(id) }
+        else { selectedSections.add(id)  }
+        viewModelScope.launch(Dispatchers.Default) {
+            sectionUseCases.selectSection(id)
         }
         _state.value = _state.value.copy(
             sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),

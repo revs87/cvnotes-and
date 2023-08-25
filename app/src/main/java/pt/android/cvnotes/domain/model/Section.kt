@@ -15,6 +15,7 @@ data class Section(
     val typeId: Int,
     val description: String = "",
     val color: Int = 0,
+    val isSelected: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int? = null
 ) {
     companion object {

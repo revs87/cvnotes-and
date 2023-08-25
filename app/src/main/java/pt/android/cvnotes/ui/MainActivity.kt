@@ -142,8 +142,8 @@ class MainActivity : ComponentActivity() {
                                         Dashboard.apply {
                                             content = {
                                                 DashboardScreen(
-                                                    state = dashboardViewModel.state.value,
-                                                )
+                                                    state = dashboardViewModel.state.value
+                                                ) { id -> dashboardViewModel.selectSection(id) }
                                             }
                                         },
                                         About.apply {

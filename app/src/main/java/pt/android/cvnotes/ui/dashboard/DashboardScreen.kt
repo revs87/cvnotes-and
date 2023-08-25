@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalFoundationApi::class)
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
 
 package pt.android.cvnotes.ui.dashboard
 
@@ -29,9 +29,11 @@ import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.SectionCard
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
     state: DashboardState = DashboardState(),
+    onSectionLongClick: (Int) -> Unit = {}
 ) {
     val sectionsState by state.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
 
@@ -60,15 +62,17 @@ fun DashboardScreen(
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         itemsIndexed(sectionsState) { index, sectionWithNotes ->
                             SectionCard(
                                 modifier = Modifier.animateItemPlacement(),
                                 type = sectionWithNotes.section.typeId.toSectionType(),
                                 description = sectionWithNotes.section.typeId.toSectionType().sectionName,
+                                isSelected = sectionWithNotes.section.isSelected,
                                 color = sectionWithNotes.section.color,
-                                notes = sectionWithNotes.notes
+                                notes = sectionWithNotes.notes,
+                                onLongClick = { onSectionLongClick.invoke(sectionWithNotes.section.id ?: 0) }
                             )
                         }
                     }

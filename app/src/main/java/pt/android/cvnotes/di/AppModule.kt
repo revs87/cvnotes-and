@@ -29,6 +29,7 @@ import pt.android.cvnotes.domain.use_case.section.GetSectionById
 import pt.android.cvnotes.domain.use_case.section.GetSections
 import pt.android.cvnotes.domain.use_case.section.GetSectionsWithNotes
 import pt.android.cvnotes.domain.use_case.section.InsertSection
+import pt.android.cvnotes.domain.use_case.section.SelectSection
 import pt.android.cvnotes.ui.dashboard.DashboardViewModel
 import javax.inject.Singleton
 
@@ -103,6 +104,7 @@ object AppModule {
             getSections = GetSections(sectionRepository),
             getSectionById = GetSectionById(sectionRepository),
             insertSection = InsertSection(sectionRepository),
+            selectSection = SelectSection(sectionRepository),
             deleteSection = DeleteSection(sectionRepository),
         )
     }
