@@ -27,6 +27,7 @@ import java.util.Date
 
 @Composable
 fun SectionCard(
+    modifier: Modifier = Modifier,
     type: SectionType = SectionType.EDUCATION,
     description: String = type.sectionName,
     color: Int = 0,
@@ -39,7 +40,7 @@ fun SectionCard(
     onLongClick: () -> Unit = {},
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .background(color = Color(color))
             .fillMaxWidth()
             .padding(4.dp)
@@ -55,7 +56,11 @@ fun SectionCard(
                 Text(text = description, fontSize = 38.sp)
                 LazyColumn {
                     items(notes) { note ->
-                        Text(text = note.content1, fontSize = 11.sp)
+                        Text(
+                            modifier = Modifier.animateItemPlacement(),
+                            text = note.content1,
+                            fontSize = 11.sp
+                        )
                     }
                 }
             }

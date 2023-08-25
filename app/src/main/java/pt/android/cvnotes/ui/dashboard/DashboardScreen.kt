@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package pt.android.cvnotes.ui.dashboard
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,6 +65,7 @@ fun DashboardScreen(
                     ) {
                         itemsIndexed(sectionsWithNotes) { index, sectionWithNotes ->
                             SectionCard(
+                                modifier = Modifier.animateItemPlacement(),
                                 type = sectionWithNotes.section.typeId.toSectionType(),
                                 description = sectionWithNotes.section.typeId.toSectionType().sectionName,
                                 color = sectionWithNotes.section.color,
