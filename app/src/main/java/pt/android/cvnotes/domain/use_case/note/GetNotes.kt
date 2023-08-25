@@ -4,18 +4,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.repository.NoteRepository
-import pt.android.cvnotes.domain.util.NoteSection
+import pt.android.cvnotes.domain.util.SectionType
 
 class GetNotes(
     private val noteRepository: NoteRepository
 ) {
     operator fun invoke(
-        section: NoteSection = NoteSection.ALL
+        section: SectionType = SectionType.ALL
     ): Flow<List<Note>> {
         return noteRepository.getNotes().map { notes ->
             when (section) {
-                NoteSection.ALL -> notes
-                else -> notes.filter { section.id == it.section }
+                SectionType.ALL -> notes
+                else -> notes.filter { section.id == it.sectionId }
             }
         }
     }

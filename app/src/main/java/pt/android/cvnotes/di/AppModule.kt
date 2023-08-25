@@ -9,17 +9,25 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import pt.android.cvnotes.data.repository.NoteRepositoryImpl
+import pt.android.cvnotes.data.repository.SectionRepositoryImpl
 import pt.android.cvnotes.data.repository.SharedPreferencesRepositoryImpl
 import pt.android.cvnotes.data.repository.firebase.FirebaseAuthRepositoryImpl
 import pt.android.cvnotes.data.source.NoteDatabase
+import pt.android.cvnotes.data.source.SectionDatabase
 import pt.android.cvnotes.domain.repository.AuthRepository
 import pt.android.cvnotes.domain.repository.NoteRepository
+import pt.android.cvnotes.domain.repository.SectionRepository
 import pt.android.cvnotes.domain.repository.SharedPreferencesRepository
+import pt.android.cvnotes.domain.use_case.NoteUseCases
+import pt.android.cvnotes.domain.use_case.SectionUseCases
 import pt.android.cvnotes.domain.use_case.note.DeleteNote
+import pt.android.cvnotes.domain.use_case.note.DeleteSection
 import pt.android.cvnotes.domain.use_case.note.GetNoteById
 import pt.android.cvnotes.domain.use_case.note.GetNotes
+import pt.android.cvnotes.domain.use_case.note.GetSectionById
+import pt.android.cvnotes.domain.use_case.note.GetSections
 import pt.android.cvnotes.domain.use_case.note.InsertNote
-import pt.android.cvnotes.domain.use_case.NoteUseCases
+import pt.android.cvnotes.domain.use_case.note.InsertSection
 import javax.inject.Singleton
 
 
@@ -66,4 +74,30 @@ object AppModule {
         )
     }
 
+    @Provides
+    @Singleton
+    fun providesSectionDatabase(app: Application): SectionDatabase {
+        return Room.databaseBuilder(
+            app,
+            SectionDatabase::class.java,
+            SectionDatabase.DATABASE_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun providesSectionRepository(db: SectionDatabase): SectionRepository {
+        return SectionRepositoryImpl(db.sectionDao)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSectionUseCases(sectionRepository: SectionRepository): SectionUseCases {
+        return SectionUseCases(
+            getSections = GetSections(sectionRepository),
+            getSectionById = GetSectionById(sectionRepository),
+            insertSection = InsertSection(sectionRepository),
+            deleteSection = DeleteSection(sectionRepository),
+        )
+    }
 }
