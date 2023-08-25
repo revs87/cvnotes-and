@@ -10,4 +10,5 @@ interface SectionRepository {
     suspend fun deleteSection(section: Section)
     suspend fun deleteSelectedSections()
     fun hasSelectedSections(): Flow<Boolean>
+    suspend fun unselectAllSections()
 }

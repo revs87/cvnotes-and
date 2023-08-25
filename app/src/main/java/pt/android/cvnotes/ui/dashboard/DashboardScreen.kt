@@ -37,6 +37,7 @@ fun DashboardScreen(
     onSectionLongClick: (Int) -> Unit = {},
 ) {
     val sectionsState by state.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
+    val hasSelectedSections by state.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -73,6 +74,7 @@ fun DashboardScreen(
                                 isSelected = sectionWithNotes.section.isSelected,
                                 color = sectionWithNotes.section.color,
                                 notes = sectionWithNotes.notes,
+                                onClick = { onSectionClick.invoke(sectionWithNotes.section.id ?: 0) },
                                 onLongClick = { onSectionLongClick.invoke(sectionWithNotes.section.id ?: 0) }
                             )
                         }

@@ -8,6 +8,7 @@ import pt.android.cvnotes.domain.use_case.section.GetSectionsWithNotes
 import pt.android.cvnotes.domain.use_case.section.HasSelectedSections
 import pt.android.cvnotes.domain.use_case.section.InsertSection
 import pt.android.cvnotes.domain.use_case.section.SelectSection
+import pt.android.cvnotes.domain.use_case.section.UnselectAllSections
 
 data class SectionUseCases(
     val getSectionsWithNotes: GetSectionsWithNotes,
@@ -18,4 +19,5 @@ data class SectionUseCases(
     val deleteSection: DeleteSection,
     val deleteSelectedSections: DeleteSelectedSections,
     val hasSelectedSections: HasSelectedSections,
+    val unselectAllSections: UnselectAllSections,
 )

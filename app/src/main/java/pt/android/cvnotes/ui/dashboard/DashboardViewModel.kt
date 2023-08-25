@@ -34,11 +34,25 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun addSection(sectionType: SectionType) {
+        if (sectionType != SectionType.NONE && sectionType != SectionType.ALL) {
+            _state.value = _state.value.copy(isLoading = true)
+            viewModelScope.launch(Dispatchers.Default) {
+                sectionUseCases.insertSection(
+                    Section(sectionType.id, sectionType.sectionName, sectionType.color)
+                )
+            }
+            _state.value = _state.value.copy(
+                sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
+                sectionsHasSelected = sectionUseCases.hasSelectedSections(),
+                isLoading = false
+            )
+        }
+    }
+
+    fun selectSection(id: Int) {
         _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch(Dispatchers.Default) {
-            sectionUseCases.insertSection(
-                Section(sectionType.id, sectionType.sectionName, sectionType.color)
-            )
+            sectionUseCases.selectSection(id)
         }
         _state.value = _state.value.copy(
             sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
@@ -47,10 +61,10 @@ class DashboardViewModel @Inject constructor(
         )
     }
 
-    fun selectSection(id: Int) {
+    fun unselectAllSelectedSections() {
         _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch(Dispatchers.Default) {
-            sectionUseCases.selectSection(id)
+            sectionUseCases.unselectAllSections()
         }
         _state.value = _state.value.copy(
             sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),

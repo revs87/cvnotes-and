@@ -34,7 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.inditex.itxmoviand.ui.component.BottomBarWithFab
 import dagger.hilt.android.AndroidEntryPoint
-import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.about.AboutScreen
 import pt.android.cvnotes.ui.about.AboutViewModel
@@ -59,6 +58,7 @@ import pt.android.cvnotes.ui.util.Screen.NewNote
 import pt.android.cvnotes.ui.util.Screen.Register
 import pt.android.cvnotes.ui.util.Screen.Splash
 import pt.android.cvnotes.ui.util.component.AddSectionBottomSheet
+import pt.android.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -138,7 +138,8 @@ class MainActivity : ComponentActivity() {
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
                                 val dashboardViewModel: DashboardViewModel = hiltViewModel()
                                 val aboutViewModel: AboutViewModel = hiltViewModel()
-                                var bottomSheetVisible by remember { mutableStateOf(false) }
+                                var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
+                                var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
                                 val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
                                 BottomBarWithFab(
                                     bottomNavItems = listOf(
@@ -165,17 +166,28 @@ class MainActivity : ComponentActivity() {
                                     bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                     pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
                                     fabListener = {
-                                        if (hasSelectedSections) { dashboardViewModel.deleteSelectedSections() }
-                                        else { bottomSheetVisible = true }
+                                        when {
+                                            hasSelectedSections -> withSelectedSectionsBottomSheetVisible = true
+                                            else -> newSectionBottomSheetVisible = true
+                                        }
+
+//                                        dashboardViewModel.deleteSelectedSections()
 //                                        navigateTo(navController, NewNote.route)
                                     },
                                     fabIcon = if (hasSelectedSections) { Icons.Filled.DeleteSweep } else { Icons.Filled.NoteAdd }
                                 )
-                                AddSectionBottomSheet(bottomSheetVisible) { sectionType ->
-                                    bottomSheetVisible = false
-                                    if (sectionType != SectionType.NONE && sectionType != SectionType.ALL) {
-                                        dashboardViewModel.addSection(sectionType)
-                                    }
+                                AddSectionBottomSheet(
+                                    bottomSheetVisible = newSectionBottomSheetVisible
+                                ) { sectionType ->
+                                    newSectionBottomSheetVisible = false
+                                    dashboardViewModel.addSection(sectionType)
+                                }
+                                UnselectDeleteSectionsBottomSheet(
+                                    bottomSheetVisible = withSelectedSectionsBottomSheetVisible,
+                                    unselectAllSelected = dashboardViewModel::unselectAllSelectedSections,
+                                    deleteAllSelected = dashboardViewModel::deleteSelectedSections,
+                                ) {
+                                    withSelectedSectionsBottomSheetVisible = false
                                 }
                             }
                             composable(route = NewNote.route) {

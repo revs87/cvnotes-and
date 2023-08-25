@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package pt.android.cvnotes.ui.util.component
 
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -19,18 +17,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pt.android.cvnotes.domain.model.Section
-import pt.android.cvnotes.domain.util.SectionType
 
+data class SelectedSectionsOption(
+    val title: String = "",
+    var onAction: () -> Unit = {}
+) {
+    companion object {
+        val Options = listOf(
+            SelectedSectionsOption("Delete selected Sections"),
+            SelectedSectionsOption("Unselect all selected Sections"),
+        )
+    }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddSectionBottomSheet(
+fun UnselectDeleteSectionsBottomSheet(
     bottomSheetVisible: Boolean = false,
-    onDismiss: (SectionType) -> Unit = {}
+    unselectAllSelected: () -> Unit = {},
+    deleteAllSelected: () -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
     if (bottomSheetVisible) {
         ModalBottomSheet(
-            onDismissRequest = { onDismiss.invoke(SectionType.NONE) }
+            onDismissRequest = { onDismiss.invoke() }
         ) {
             Box(
                 modifier = Modifier
@@ -43,11 +53,18 @@ fun AddSectionBottomSheet(
                     )
             ) {
                 Column {
-                    Text(text = "Add a Section:", fontSize = 22.sp)
+                    Text(text = "Selected Sections:", fontSize = 22.sp)
                     LazyColumn {
-                        items(Section.sections) { sectionType ->
+                        itemsIndexed(SelectedSectionsOption.Options) { index, option ->
+                            when (index) {
+                                0 -> option.onAction = deleteAllSelected
+                                else -> option.onAction = unselectAllSelected
+                            }
                             TextButton(
-                                onClick = { onDismiss.invoke(sectionType) },
+                                onClick = {
+                                    option.onAction.invoke()
+                                    onDismiss.invoke()
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(50.dp)
@@ -56,7 +73,7 @@ fun AddSectionBottomSheet(
                                     verticalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        text = sectionType.sectionName,
+                                        text = option.title,
                                         fontSize = 22.sp,
                                         textAlign = TextAlign.Center
                                     )

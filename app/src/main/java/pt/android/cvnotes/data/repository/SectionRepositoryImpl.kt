@@ -31,4 +31,8 @@ class SectionRepositoryImpl(
     override fun hasSelectedSections(): Flow<Boolean> {
         return dao.hasSelectedSections()
     }
+
+    override suspend fun unselectAllSections() {
+        dao.unselectAllSections()
+    }
 }

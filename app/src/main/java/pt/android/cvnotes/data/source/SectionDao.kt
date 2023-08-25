@@ -28,4 +28,7 @@ interface SectionDao {
 
     @Query("SELECT EXISTS (SELECT * FROM section WHERE isSelected = :isSelected)")
     fun hasSelectedSections(isSelected: Boolean = true): Flow<Boolean>
+
+    @Query("UPDATE section SET isSelected = :isNotSelected WHERE isSelected = :isSelected")
+    fun unselectAllSections(isSelected: Boolean = true, isNotSelected: Boolean = false)
 }
