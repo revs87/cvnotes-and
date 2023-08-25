@@ -141,6 +141,8 @@ class MainActivity : ComponentActivity() {
                                 var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
                                 var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
                                 val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
+                                val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
+                                val initialScrollPosition = prefs.getInt("scroll_position", 0)
                                 BottomBarWithFab(
                                     bottomNavItems = listOf(
                                         Dashboard.apply {
@@ -149,9 +151,11 @@ class MainActivity : ComponentActivity() {
                                                     state = dashboardViewModel.state.value,
                                                     onSectionClick = { id ->
                                                         if (hasSelectedSections) { dashboardViewModel.selectSection(id) }
-                                                        else { /* TODO goTo/expand SectionDetails */ }
+                                                        //else { /* TODO goTo/expand SectionDetails */ }
                                                     },
-                                                    onSectionLongClick = { id -> dashboardViewModel.selectSection(id) }
+                                                    onSectionLongClick = { id -> dashboardViewModel.selectSection(id) },
+                                                    saveToPrefs = { index -> prefs.edit().putInt("scroll_position", index).apply() },
+                                                    initialScrollPosition = initialScrollPosition
                                                 )
                                             }
                                         },
@@ -173,8 +177,6 @@ class MainActivity : ComponentActivity() {
                                             hasSelectedSections -> withSelectedSectionsBottomSheetVisible = true
                                             else -> newSectionBottomSheetVisible = true
                                         }
-
-//                                        dashboardViewModel.deleteSelectedSections()
 //                                        navigateTo(navController, NewNote.route)
                                     },
                                     fabIcon = if (hasSelectedSections) { Icons.Filled.DeleteSweep } else { Icons.Filled.NoteAdd }

@@ -26,7 +26,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun getAllNotes() {
-        _state.value = _state.value.copy(isLoading = true)
+        _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
         _state.value = _state.value.copy(
             sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
             sectionsHasSelected = sectionUseCases.hasSelectedSections(),
@@ -35,8 +35,8 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun addSection(sectionType: SectionType) {
-        if (sectionType != SectionType.NONE && sectionType != SectionType.ALL) {
-            _state.value = _state.value.copy(isLoading = true)
+        if (sectionType != SectionType.NONE) {
+            _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
             viewModelScope.launch(Dispatchers.Default) {
                 sectionUseCases.insertSection(
                     Section(
@@ -49,13 +49,14 @@ class DashboardViewModel @Inject constructor(
             _state.value = _state.value.copy(
                 sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
                 sectionsHasSelected = sectionUseCases.hasSelectedSections(),
+                scrollToBottom = true,
                 isLoading = false
             )
         }
     }
 
     fun selectSection(id: Int) {
-        _state.value = _state.value.copy(isLoading = true)
+        _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
         viewModelScope.launch(Dispatchers.Default) {
             sectionUseCases.selectSection(id)
         }
@@ -67,7 +68,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun unselectAllSelectedSections() {
-        _state.value = _state.value.copy(isLoading = true)
+        _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
         viewModelScope.launch(Dispatchers.Default) {
             sectionUseCases.unselectAllSections()
         }
@@ -79,7 +80,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun deleteSelectedSections() {
-        _state.value = _state.value.copy(isLoading = true)
+        _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
         viewModelScope.launch(Dispatchers.Default) {
             sectionUseCases.deleteSelectedSections()
         }

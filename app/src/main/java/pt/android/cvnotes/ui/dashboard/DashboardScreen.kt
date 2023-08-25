@@ -12,16 +12,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
@@ -29,16 +35,17 @@ import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.SectionCard
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, FlowPreview::class)
 @Composable
 fun DashboardScreen(
     state: DashboardState = DashboardState(),
     onSectionClick: (Int) -> Unit = {},
     onSectionLongClick: (Int) -> Unit = {},
+    saveToPrefs: (Int) -> Unit = {},
+    initialScrollPosition: Int = 0,
 ) {
     val sectionsState by state.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
     val hasSelectedSections by state.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
-
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
@@ -63,8 +70,24 @@ fun DashboardScreen(
                         textAlign = TextAlign.Center
                     )
                 } else {
+                    val lazyListState = rememberLazyListState(
+                        initialFirstVisibleItemIndex = initialScrollPosition
+                    )
+                    LaunchedEffect(lazyListState) {
+                        snapshotFlow {
+                            lazyListState.firstVisibleItemIndex
+                        }
+                            .debounce(500L)
+                            .collectLatest { index -> saveToPrefs.invoke(index) }
+                    }
+                    LaunchedEffect(sectionsState) {
+                        if (state.scrollToBottom) {
+                            lazyListState.animateScrollToItem(sectionsState.size - 1)
+                        }
+                    }
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
+                        state = lazyListState,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         itemsIndexed(sectionsState) { index, sectionWithNotes ->
