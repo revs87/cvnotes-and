@@ -25,9 +25,11 @@ import pt.android.cvnotes.domain.use_case.note.GetNoteById
 import pt.android.cvnotes.domain.use_case.note.GetNotes
 import pt.android.cvnotes.domain.use_case.note.InsertNote
 import pt.android.cvnotes.domain.use_case.section.DeleteSection
+import pt.android.cvnotes.domain.use_case.section.DeleteSelectedSections
 import pt.android.cvnotes.domain.use_case.section.GetSectionById
 import pt.android.cvnotes.domain.use_case.section.GetSections
 import pt.android.cvnotes.domain.use_case.section.GetSectionsWithNotes
+import pt.android.cvnotes.domain.use_case.section.HasSelectedSections
 import pt.android.cvnotes.domain.use_case.section.InsertSection
 import pt.android.cvnotes.domain.use_case.section.SelectSection
 import pt.android.cvnotes.ui.dashboard.DashboardViewModel
@@ -106,6 +108,8 @@ object AppModule {
             insertSection = InsertSection(sectionRepository),
             selectSection = SelectSection(sectionRepository),
             deleteSection = DeleteSection(sectionRepository),
+            deleteSelectedSections = DeleteSelectedSections(sectionRepository),
+            hasSelectedSections = HasSelectedSections(sectionRepository),
         )
     }
 

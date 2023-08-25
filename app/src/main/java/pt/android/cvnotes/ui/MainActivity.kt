@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.inditex.itxmoviand.ui.component.BottomBarWithFab
 import dagger.hilt.android.AndroidEntryPoint
+import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.about.AboutScreen
 import pt.android.cvnotes.ui.about.AboutViewModel
@@ -137,13 +139,16 @@ class MainActivity : ComponentActivity() {
                                 val dashboardViewModel: DashboardViewModel = hiltViewModel()
                                 val aboutViewModel: AboutViewModel = hiltViewModel()
                                 var bottomSheetVisible by remember { mutableStateOf(false) }
+                                val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
                                 BottomBarWithFab(
                                     bottomNavItems = listOf(
                                         Dashboard.apply {
                                             content = {
                                                 DashboardScreen(
-                                                    state = dashboardViewModel.state.value
-                                                ) { id -> dashboardViewModel.selectSection(id) }
+                                                    state = dashboardViewModel.state.value,
+                                                    onSectionClick = {},
+                                                    onSectionLongClick = { id -> dashboardViewModel.selectSection(id) }
+                                                )
                                             }
                                         },
                                         About.apply {
@@ -160,14 +165,17 @@ class MainActivity : ComponentActivity() {
                                     bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                     pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
                                     fabListener = {
-                                        bottomSheetVisible = true
+                                        if (hasSelectedSections) { dashboardViewModel.deleteSelectedSections() }
+                                        else { bottomSheetVisible = true }
 //                                        navigateTo(navController, NewNote.route)
                                     },
-                                    fabIcon = Icons.Filled.NoteAdd
+                                    fabIcon = if (hasSelectedSections) { Icons.Filled.DeleteSweep } else { Icons.Filled.NoteAdd }
                                 )
                                 AddSectionBottomSheet(bottomSheetVisible) { sectionType ->
                                     bottomSheetVisible = false
-                                    dashboardViewModel.addSection(sectionType)
+                                    if (sectionType != SectionType.NONE && sectionType != SectionType.ALL) {
+                                        dashboardViewModel.addSection(sectionType)
+                                    }
                                 }
                             }
                             composable(route = NewNote.route) {

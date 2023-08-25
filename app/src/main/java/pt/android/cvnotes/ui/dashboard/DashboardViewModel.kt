@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val sectionUseCases: SectionUseCases
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = mutableStateOf(DashboardState())
     val state: State<DashboardState> = _state
@@ -28,6 +28,7 @@ class DashboardViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         _state.value = _state.value.copy(
             sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
+            sectionsHasSelected = sectionUseCases.hasSelectedSections(),
             isLoading = false
         )
     }
@@ -41,20 +42,31 @@ class DashboardViewModel @Inject constructor(
         }
         _state.value = _state.value.copy(
             sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
+            sectionsHasSelected = sectionUseCases.hasSelectedSections(),
             isLoading = false
         )
     }
 
-    private val selectedSections: MutableList<Int> = mutableListOf()
     fun selectSection(id: Int) {
         _state.value = _state.value.copy(isLoading = true)
-        if (selectedSections.contains(id)) { selectedSections.remove(id) }
-        else { selectedSections.add(id)  }
         viewModelScope.launch(Dispatchers.Default) {
             sectionUseCases.selectSection(id)
         }
         _state.value = _state.value.copy(
             sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
+            sectionsHasSelected = sectionUseCases.hasSelectedSections(),
+            isLoading = false
+        )
+    }
+
+    fun deleteSelectedSections() {
+        _state.value = _state.value.copy(isLoading = true)
+        viewModelScope.launch(Dispatchers.Default) {
+            sectionUseCases.deleteSelectedSections()
+        }
+        _state.value = _state.value.copy(
+            sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
+            sectionsHasSelected = sectionUseCases.hasSelectedSections(),
             isLoading = false
         )
     }

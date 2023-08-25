@@ -22,4 +22,10 @@ interface SectionDao {
 
     @Delete
     fun deleteSection(section: Section)
+
+    @Query("DELETE FROM section WHERE isSelected = :isSelected")
+    fun deleteSelectedSections(isSelected: Boolean = true)
+
+    @Query("SELECT EXISTS (SELECT * FROM section WHERE isSelected = :isSelected)")
+    fun hasSelectedSections(isSelected: Boolean = true): Flow<Boolean>
 }

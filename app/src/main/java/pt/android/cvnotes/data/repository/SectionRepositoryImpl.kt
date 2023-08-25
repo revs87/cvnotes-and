@@ -23,4 +23,12 @@ class SectionRepositoryImpl(
     override suspend fun deleteSection(section: Section) {
         dao.deleteSection(section)
     }
+
+    override suspend fun deleteSelectedSections() {
+        dao.deleteSelectedSections()
+    }
+
+    override fun hasSelectedSections(): Flow<Boolean> {
+        return dao.hasSelectedSections()
+    }
 }

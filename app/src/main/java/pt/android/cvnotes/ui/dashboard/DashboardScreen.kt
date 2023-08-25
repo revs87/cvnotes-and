@@ -33,7 +33,8 @@ import pt.android.cvnotes.ui.util.component.SectionCard
 @Composable
 fun DashboardScreen(
     state: DashboardState = DashboardState(),
-    onSectionLongClick: (Int) -> Unit = {}
+    onSectionClick: (Int) -> Unit = {},
+    onSectionLongClick: (Int) -> Unit = {},
 ) {
     val sectionsState by state.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
 

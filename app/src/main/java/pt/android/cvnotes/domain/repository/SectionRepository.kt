@@ -8,4 +8,6 @@ interface SectionRepository {
     suspend fun getSectionById(id: Int): Section?
     suspend fun insertSection(section: Section)
     suspend fun deleteSection(section: Section)
+    suspend fun deleteSelectedSections()
+    fun hasSelectedSections(): Flow<Boolean>
 }
