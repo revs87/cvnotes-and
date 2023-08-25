@@ -1,7 +1,8 @@
 package pt.android.cvnotes.domain.util
 
 
-enum class SectionType(val id: Int, val sectionName: String) {
+enum class SectionType(val id: Int, val sectionName: String, val color: Int = 0) {
+    NONE(-1, ""),
     ALL(0, ""),
     PROFILE(1, "Profile"),
     SUMMARY(2, "Professional Summary"),

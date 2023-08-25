@@ -15,11 +15,11 @@ data class Section(
     val typeId: Int,
     val description: String = "",
     val color: Int = 0,
-    @PrimaryKey val id: Int? = null
+    @PrimaryKey(autoGenerate = true) val id: Int? = null
 ) {
     companion object {
         val default by lazy { Section(typeId = SectionType.ALL.id) }
-        val sections by lazy { SectionType.values().toList().filter { it != SectionType.ALL } }
+        val sections by lazy { SectionType.values().toList().filter { it != SectionType.ALL && it != SectionType.NONE} }
         val colors by lazy { listOf(Blue200, Blue300, Blue500, Green300, Green500, Gray300) }
     }
 }

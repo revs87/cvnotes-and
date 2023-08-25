@@ -6,7 +6,7 @@ import pt.android.cvnotes.domain.model.Note
 
 
 data class EditNoteState(
-    val note: Flow<Note> = flow { Note.default },
+    val note: Flow<Note?> = flow { emit(Note.default) },
     val isLoading: Boolean = false,
     val errorMessage: String = "",
 )

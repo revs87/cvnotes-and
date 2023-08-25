@@ -5,7 +5,7 @@ import pt.android.cvnotes.domain.model.Section
 
 interface SectionRepository {
     fun getSections(): Flow<List<Section>>
-    suspend fun getSectionById(id: Long): Section?
+    suspend fun getSectionById(id: Int): Section?
     suspend fun insertSection(section: Section)
     suspend fun deleteSection(section: Section)
 }

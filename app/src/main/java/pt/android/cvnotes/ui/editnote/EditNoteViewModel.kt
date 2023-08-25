@@ -20,7 +20,7 @@ class EditNoteViewModel @Inject constructor(
     fun getNote(noteId: Long) {
         _state.value = _state.value.copy(isLoading = true)
         _state.value = _state.value.copy(
-            note = flow { noteUseCases.getNoteById(noteId) },
+            note = flow { emit(noteUseCases.getNoteById(noteId)) },
             isLoading = false
         )
     }

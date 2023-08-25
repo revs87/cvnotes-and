@@ -12,7 +12,7 @@ class SectionRepositoryImpl(
         return dao.getSections()
     }
 
-    override suspend fun getSectionById(id: Long): Section? {
+    override suspend fun getSectionById(id: Int): Section? {
         return dao.getSectionById(id)
     }
 

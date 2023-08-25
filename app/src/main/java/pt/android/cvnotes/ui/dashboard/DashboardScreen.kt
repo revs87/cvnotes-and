@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -33,8 +33,7 @@ import pt.android.cvnotes.ui.util.component.SectionCard
 fun DashboardScreen(
     state: DashboardState = DashboardState(),
 ) {
-    val sectionsState = state.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
-    val sectionsWithNotes = remember { sectionsState.value }
+    val sectionsState by state.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -51,7 +50,7 @@ fun DashboardScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 // TODO: Add StatsBoard
-                if (sectionsWithNotes.isEmpty()) {
+                if (sectionsState.isEmpty()) {
                     Text(
                         text = "There are no Sections available.\nPlease create a Section and then add Notes to it.",
                         modifier = Modifier.fillMaxWidth(),
@@ -63,7 +62,7 @@ fun DashboardScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        itemsIndexed(sectionsWithNotes) { index, sectionWithNotes ->
+                        itemsIndexed(sectionsState) { index, sectionWithNotes ->
                             SectionCard(
                                 modifier = Modifier.animateItemPlacement(),
                                 type = sectionWithNotes.section.typeId.toSectionType(),

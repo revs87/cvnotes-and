@@ -54,15 +54,15 @@ fun SectionCard(
         ) {
             Column {
                 Text(text = description, fontSize = 38.sp)
-                LazyColumn {
-                    items(notes) { note ->
-                        Text(
-                            modifier = Modifier.animateItemPlacement(),
-                            text = note.content1,
-                            fontSize = 11.sp
-                        )
-                    }
-                }
+//                LazyColumn {
+//                    items(notes) { note ->
+//                        Text(
+//                            modifier = Modifier.animateItemPlacement(),
+//                            text = note.content1,
+//                            fontSize = 11.sp
+//                        )
+//                    }
+//                }
             }
         }
     }

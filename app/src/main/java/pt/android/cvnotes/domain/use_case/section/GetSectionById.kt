@@ -6,7 +6,7 @@ import pt.android.cvnotes.domain.repository.SectionRepository
 class GetSectionById(
     private val sectionRepository: SectionRepository
 ) {
-    suspend operator fun invoke(id: Long): Section? {
+    suspend operator fun invoke(id: Int): Section? {
         return sectionRepository.getSectionById(id)
     }
 }

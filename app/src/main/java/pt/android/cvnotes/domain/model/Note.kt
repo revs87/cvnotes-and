@@ -11,7 +11,7 @@ data class Note(
     val content1: String = "",
     val content2: String = "",
     val timestamp: Long = 0L,
-    @PrimaryKey val id: Long? = null
+    @PrimaryKey(autoGenerate = true) val id: Long? = null
 ) {
     companion object {
         val default by lazy { Note(sectionId = 0, type = NoteType.ALL.id) }

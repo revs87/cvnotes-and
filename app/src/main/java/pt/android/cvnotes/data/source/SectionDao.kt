@@ -15,7 +15,7 @@ interface SectionDao {
     fun getSections(): Flow<List<Section>>
 
     @Query("SELECT * FROM section WHERE id = :id")
-    fun getSectionById(id: Long): Section?
+    fun getSectionById(id: Int): Section?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSection(section: Section)
