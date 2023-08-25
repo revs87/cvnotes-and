@@ -1,3 +1,4 @@
+
 package pt.android.cvnotes.ui
 
 import android.os.Bundle
@@ -11,7 +12,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,6 +56,7 @@ import pt.android.cvnotes.ui.util.Screen.Login
 import pt.android.cvnotes.ui.util.Screen.NewNote
 import pt.android.cvnotes.ui.util.Screen.Register
 import pt.android.cvnotes.ui.util.Screen.Splash
+import pt.android.cvnotes.ui.util.component.AddSectionBottomSheet
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -131,6 +136,7 @@ class MainActivity : ComponentActivity() {
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
                                 val dashboardViewModel: DashboardViewModel = hiltViewModel()
                                 val aboutViewModel: AboutViewModel = hiltViewModel()
+                                var bottomSheetVisible by remember { mutableStateOf(false) }
                                 BottomBarWithFab(
                                     bottomNavItems = listOf(
                                         Dashboard.apply {
@@ -153,9 +159,16 @@ class MainActivity : ComponentActivity() {
                                     ),
                                     bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                     pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
-                                    fabListener = { navigateTo(navController, NewNote.route) },
+                                    fabListener = {
+                                        bottomSheetVisible = true
+//                                        navigateTo(navController, NewNote.route)
+                                    },
                                     fabIcon = Icons.Filled.NoteAdd
                                 )
+                                AddSectionBottomSheet(bottomSheetVisible) { sectionType ->
+                                    bottomSheetVisible = false
+                                    dashboardViewModel.addSection(sectionType)
+                                }
                             }
                             composable(route = NewNote.route) {
                                 val viewModel: EditNoteViewModel = hiltViewModel()
