@@ -71,6 +71,7 @@ fun DashboardScreen(
                             SectionCard(
                                 modifier = Modifier.animateItemPlacement(),
                                 type = sectionWithNotes.section.typeId.toSectionType(),
+                                index = index,
                                 description = sectionWithNotes.section.typeId.toSectionType().sectionName,
                                 hasSelected = hasSelectedSections,
                                 isSelected = sectionWithNotes.section.isSelected,

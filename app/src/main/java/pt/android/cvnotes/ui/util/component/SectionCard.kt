@@ -25,7 +25,6 @@ import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.Gray500
-import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.MyTheme
 import java.util.Date
 
@@ -34,6 +33,7 @@ import java.util.Date
 fun SectionCard(
     modifier: Modifier = Modifier,
     type: SectionType = SectionType.EDUCATION,
+    index: Int = 1,
     description: String = type.sectionName,
     hasSelected: Boolean = false,
     isSelected: Boolean = false,
@@ -49,7 +49,7 @@ fun SectionCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(start = 4.dp, end = 4.dp, bottom = 2.dp, top = if (index == 0) 4.dp else 2.dp)
             .combinedClickable(
                 onClick = { onClick.invoke() },
                 onLongClick = { onLongClick.invoke() },
