@@ -1,4 +1,4 @@
-package pt.android.cvnotes.domain.use_case.note
+package pt.android.cvnotes.domain.use_case.section
 
 import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.repository.SectionRepository

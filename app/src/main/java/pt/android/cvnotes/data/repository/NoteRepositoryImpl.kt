@@ -8,8 +8,8 @@ import pt.android.cvnotes.domain.repository.NoteRepository
 class NoteRepositoryImpl(
     private val dao: NoteDao
 ) : NoteRepository {
-    override fun getNotes(): Flow<List<Note>> {
-        return dao.getNotes()
+    override fun getNotes(sectionId: Int): Flow<List<Note>> {
+        return dao.getNotes(sectionId)
     }
 
     override suspend fun getNoteById(id: Long): Note? {

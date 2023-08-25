@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import pt.android.cvnotes.domain.model.Note
 
 interface NoteRepository {
-    fun getNotes(): Flow<List<Note>>
+    fun getNotes(sectionId: Int): Flow<List<Note>>
     suspend fun getNoteById(id: Long): Note?
     suspend fun insertNote(note: Note)
     suspend fun deleteNote(note: Note)

@@ -15,22 +15,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import pt.android.cvnotes.domain.util.toNoteType
+import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
-import pt.android.cvnotes.ui.util.component.NoteCard
-import java.util.Date
+import pt.android.cvnotes.ui.util.component.SectionCard
 
 
 @Composable
 fun DashboardScreen(
     state: DashboardState = DashboardState(),
 ) {
-    val notesState = state.notes.collectAsStateWithLifecycle(initialValue = emptyList())
-    val notes = remember { notesState.value }
+    val sectionsState = state.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
+    val sectionsWithNotes = remember { sectionsState.value }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -49,11 +47,12 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    itemsIndexed(notes) { index, note ->
-                        NoteCard(
-                            type = note.type.toNoteType(),
-                            text = note.content1 + note.content2,
-                            editTimestamp = Date(note.timestamp).toString()
+                    itemsIndexed(sectionsWithNotes) { index, sectionWithNotes ->
+                        SectionCard(
+                            type = sectionWithNotes.section.typeId.toSectionType(),
+                            description = sectionWithNotes.section.typeId.toSectionType().sectionName,
+                            color = sectionWithNotes.section.color,
+                            notes = sectionWithNotes.notes
                         )
                     }
                 }

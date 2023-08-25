@@ -12,7 +12,7 @@ class GetNotes(
     operator fun invoke(
         section: SectionType = SectionType.ALL
     ): Flow<List<Note>> {
-        return noteRepository.getNotes().map { notes ->
+        return noteRepository.getNotes(section.id).map { notes ->
             when (section) {
                 SectionType.ALL -> notes
                 else -> notes.filter { section.id == it.sectionId }

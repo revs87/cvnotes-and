@@ -21,13 +21,14 @@ import pt.android.cvnotes.domain.repository.SharedPreferencesRepository
 import pt.android.cvnotes.domain.use_case.NoteUseCases
 import pt.android.cvnotes.domain.use_case.SectionUseCases
 import pt.android.cvnotes.domain.use_case.note.DeleteNote
-import pt.android.cvnotes.domain.use_case.note.DeleteSection
 import pt.android.cvnotes.domain.use_case.note.GetNoteById
 import pt.android.cvnotes.domain.use_case.note.GetNotes
-import pt.android.cvnotes.domain.use_case.note.GetSectionById
-import pt.android.cvnotes.domain.use_case.note.GetSections
 import pt.android.cvnotes.domain.use_case.note.InsertNote
-import pt.android.cvnotes.domain.use_case.note.InsertSection
+import pt.android.cvnotes.domain.use_case.section.DeleteSection
+import pt.android.cvnotes.domain.use_case.section.GetSectionById
+import pt.android.cvnotes.domain.use_case.section.GetSections
+import pt.android.cvnotes.domain.use_case.section.GetSectionsWithNotes
+import pt.android.cvnotes.domain.use_case.section.InsertSection
 import javax.inject.Singleton
 
 
@@ -92,8 +93,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesSectionUseCases(sectionRepository: SectionRepository): SectionUseCases {
+    fun providesSectionUseCases(
+        sectionRepository: SectionRepository,
+        noteRepository: NoteRepository
+    ): SectionUseCases {
         return SectionUseCases(
+            getSectionsWithNotes = GetSectionsWithNotes(sectionRepository, noteRepository),
             getSections = GetSections(sectionRepository),
             getSectionById = GetSectionById(sectionRepository),
             insertSection = InsertSection(sectionRepository),

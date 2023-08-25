@@ -12,13 +12,13 @@ import pt.android.cvnotes.theme.Green500
 
 @Entity
 data class Section(
-    val type: Int,
+    val typeId: Int,
     val description: String = "",
     val color: Int = 0,
     @PrimaryKey val id: Int? = null
 ) {
     companion object {
-        val default by lazy { Section(type = SectionType.ALL.id) }
+        val default by lazy { Section(typeId = SectionType.ALL.id) }
         val sections by lazy { SectionType.values().toList().filter { it != SectionType.ALL } }
         val colors by lazy { listOf(Blue200, Blue300, Blue500, Green300, Green500, Gray300) }
     }

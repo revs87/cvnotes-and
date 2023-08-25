@@ -4,12 +4,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import pt.android.cvnotes.domain.use_case.NoteUseCases
+import pt.android.cvnotes.domain.use_case.SectionUseCases
 import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val noteUseCases: NoteUseCases
+    private val sectionUseCases: SectionUseCases
 ): ViewModel() {
 
     private val _state = mutableStateOf(DashboardState())
@@ -22,7 +22,7 @@ class DashboardViewModel @Inject constructor(
     private fun getAllNotes() {
         _state.value = _state.value.copy(isLoading = true)
         _state.value = _state.value.copy(
-            notes = noteUseCases.getNotes(),
+            sectionsWithNotes = sectionUseCases.getSectionsWithNotes(),
             isLoading = false
         )
     }
