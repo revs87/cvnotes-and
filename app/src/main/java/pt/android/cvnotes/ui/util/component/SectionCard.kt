@@ -8,6 +8,8 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -23,8 +25,8 @@ import pt.android.cvnotes.theme.MyTheme
 
 @Composable
 fun SectionCard(
-    type: SectionType = SectionType.ALL,
-    description: String = "",
+    type: SectionType = SectionType.EDUCATION,
+    description: String = type.sectionName,
     color: Int = 0,
     notes: List<Note> = emptyList(),
     onClick: () -> Unit = {},
@@ -41,8 +43,12 @@ fun SectionCard(
             )
     ) {
         Column {
-            Text(text = description, fontSize = 8.sp)
-            Text(text = description, fontSize = 8.sp)
+            Text(text = description, fontSize = 28.sp)
+            LazyColumn {
+                items(notes) { note ->
+                    Text(text = note.content1, fontSize = 8.sp)
+                }
+            }
         }
     }
 }
