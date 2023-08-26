@@ -15,7 +15,7 @@ class GetSectionsWithNotes(
 ) {
     operator fun invoke(): Flow<List<SectionWithNotes>> = flow {
         sectionRepository.getSections().map { sections ->
-            sections.map { section -> SectionWithNotes(section, getNotes(section.typeId)) }
+            sections.map { section -> SectionWithNotes(section, getNotes(section.id ?: 0)) }
         }.collect { emit(it) }
     }
 

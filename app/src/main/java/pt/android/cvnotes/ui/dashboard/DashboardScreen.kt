@@ -32,7 +32,7 @@ import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
-import pt.android.cvnotes.ui.util.component.SectionCard
+import pt.android.cvnotes.ui.util.component.SectionListCard
 
 
 @OptIn(ExperimentalFoundationApi::class, FlowPreview::class)
@@ -91,7 +91,7 @@ fun DashboardScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         itemsIndexed(sectionsState) { index, sectionWithNotes ->
-                            SectionCard(
+                            SectionListCard(
                                 modifier = Modifier.animateItemPlacement(),
                                 type = sectionWithNotes.section.typeId.toSectionType(),
                                 index = index,

@@ -30,7 +30,7 @@ import java.util.Date
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SectionCard(
+fun SectionListCard(
     modifier: Modifier = Modifier,
     type: SectionType = SectionType.EDUCATION,
     index: Int = 1,
@@ -92,6 +92,6 @@ fun SectionCard(
 @Composable
 private fun Preview() {
     MyTheme {
-        SectionCard()
+        SectionListCard()
     }
 }

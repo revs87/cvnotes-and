@@ -1,7 +1,7 @@
 package pt.android.cvnotes.domain.util
 
 
-enum class SectionType(val id: Int, val sectionName: String, val color: Int = 0) {
+enum class SectionType(val typeId: Int, val sectionName: String, val color: Int = 0) {
     NONE(-1, ""),
     ALL(0, ""),
     PROFILE(1, "Profile"),
@@ -13,11 +13,11 @@ enum class SectionType(val id: Int, val sectionName: String, val color: Int = 0)
 }
 
 fun Int.toSectionType(): SectionType = when (this) {
-    SectionType.PROFILE.id -> SectionType.PROFILE
-    SectionType.SUMMARY.id -> SectionType.SUMMARY
-    SectionType.EXPERIENCE.id -> SectionType.EXPERIENCE
-    SectionType.SKILLS.id -> SectionType.SKILLS
-    SectionType.HISTORY.id -> SectionType.HISTORY
-    SectionType.EDUCATION.id -> SectionType.EDUCATION
+    SectionType.PROFILE.typeId -> SectionType.PROFILE
+    SectionType.SUMMARY.typeId -> SectionType.SUMMARY
+    SectionType.EXPERIENCE.typeId -> SectionType.EXPERIENCE
+    SectionType.SKILLS.typeId -> SectionType.SKILLS
+    SectionType.HISTORY.typeId -> SectionType.HISTORY
+    SectionType.EDUCATION.typeId -> SectionType.EDUCATION
     else -> SectionType.ALL
 }

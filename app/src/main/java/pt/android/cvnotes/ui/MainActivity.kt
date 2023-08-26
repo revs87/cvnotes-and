@@ -13,7 +13,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.asIntState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,6 +48,8 @@ import pt.android.cvnotes.ui.dashboard.DashboardViewModel
 import pt.android.cvnotes.ui.editnote.EditNoteScreen
 import pt.android.cvnotes.ui.editnote.EditNoteViewModel
 import pt.android.cvnotes.ui.home.HomeViewModel
+import pt.android.cvnotes.ui.section_details.SectionDetailsScreen
+import pt.android.cvnotes.ui.section_details.SectionDetailsViewModel
 import pt.android.cvnotes.ui.splash.SplashScreen
 import pt.android.cvnotes.ui.util.Screen.About
 import pt.android.cvnotes.ui.util.Screen.Auth
@@ -56,6 +60,7 @@ import pt.android.cvnotes.ui.util.Screen.Intro
 import pt.android.cvnotes.ui.util.Screen.Login
 import pt.android.cvnotes.ui.util.Screen.NewNote
 import pt.android.cvnotes.ui.util.Screen.Register
+import pt.android.cvnotes.ui.util.Screen.SectionDetails
 import pt.android.cvnotes.ui.util.Screen.Splash
 import pt.android.cvnotes.ui.util.component.AddSectionBottomSheet
 import pt.android.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
@@ -151,7 +156,7 @@ class MainActivity : ComponentActivity() {
                                                     state = dashboardViewModel.state.value,
                                                     onSectionClick = { id ->
                                                         if (hasSelectedSections) { dashboardViewModel.selectSection(id) }
-                                                        //else { /* TODO goTo/expand SectionDetails */ }
+                                                        else { navigateTo(navController, "${SectionDetails.route}/$id") }
                                                     },
                                                     onSectionLongClick = { id -> dashboardViewModel.selectSection(id) },
                                                     saveToPrefs = { index -> prefs.edit().putInt("scroll_position", index).apply() },
@@ -177,7 +182,6 @@ class MainActivity : ComponentActivity() {
                                             hasSelectedSections -> withSelectedSectionsBottomSheetVisible = true
                                             else -> newSectionBottomSheetVisible = true
                                         }
-//                                        navigateTo(navController, NewNote.route)
                                     },
                                     fabIcon = if (hasSelectedSections) { Icons.Filled.DeleteSweep } else { Icons.Filled.NoteAdd }
                                 )
@@ -194,6 +198,21 @@ class MainActivity : ComponentActivity() {
                                 ) {
                                     withSelectedSectionsBottomSheetVisible = false
                                 }
+                            }
+                            composable(
+                                route = "${SectionDetails.route}/{sectionId}",
+                                arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
+                            ) {
+                                val viewModel: SectionDetailsViewModel = hiltViewModel()
+                                val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
+                                LaunchedEffect(sectionIdState) {
+                                    viewModel.getSection(sectionIdState.intValue)
+                                }
+                                SectionDetailsScreen(
+                                    state = viewModel.state.value,
+                                    addNoteListener = { navigateTo(navController, NewNote.route) },
+                                    editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/$noteId") }
+                                )
                             }
                             composable(route = NewNote.route) {
                                 val viewModel: EditNoteViewModel = hiltViewModel()

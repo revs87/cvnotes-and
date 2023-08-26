@@ -23,6 +23,7 @@ import pt.android.cvnotes.domain.use_case.SectionUseCases
 import pt.android.cvnotes.domain.use_case.note.DeleteNote
 import pt.android.cvnotes.domain.use_case.note.GetNoteById
 import pt.android.cvnotes.domain.use_case.note.GetNotes
+import pt.android.cvnotes.domain.use_case.note.GetNotesBySectionId
 import pt.android.cvnotes.domain.use_case.note.InsertNote
 import pt.android.cvnotes.domain.use_case.section.DeleteSection
 import pt.android.cvnotes.domain.use_case.section.DeleteSelectedSections
@@ -34,6 +35,7 @@ import pt.android.cvnotes.domain.use_case.section.InsertSection
 import pt.android.cvnotes.domain.use_case.section.SelectSection
 import pt.android.cvnotes.domain.use_case.section.UnselectAllSections
 import pt.android.cvnotes.ui.dashboard.DashboardViewModel
+import pt.android.cvnotes.ui.section_details.SectionDetailsViewModel
 import javax.inject.Singleton
 
 
@@ -74,6 +76,7 @@ object AppModule {
     fun providesNoteUseCases(noteRepository: NoteRepository): NoteUseCases {
         return NoteUseCases(
             getNotes = GetNotes(noteRepository),
+            getNotesBySectionId = GetNotesBySectionId(noteRepository),
             getNoteById = GetNoteById(noteRepository),
             insertNote = InsertNote(noteRepository),
             deleteNote = DeleteNote(noteRepository),
@@ -121,5 +124,14 @@ object AppModule {
         sectionUseCases: SectionUseCases
     ): DashboardViewModel {
         return DashboardViewModel(sectionUseCases)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSectionDetailsViewModel(
+        sectionUseCases: SectionUseCases,
+        noteUseCases: NoteUseCases,
+    ): SectionDetailsViewModel {
+        return SectionDetailsViewModel(sectionUseCases, noteUseCases)
     }
 }

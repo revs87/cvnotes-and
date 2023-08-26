@@ -9,7 +9,6 @@ import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Gray300
 import pt.android.cvnotes.theme.Green300
 import pt.android.cvnotes.theme.Green500
-import kotlin.random.Random
 
 @Entity
 data class Section(
@@ -20,7 +19,7 @@ data class Section(
     @PrimaryKey(autoGenerate = true) val id: Int? = null
 ) {
     companion object {
-        val default by lazy { Section(typeId = SectionType.ALL.id) }
+        val Default by lazy { Section(typeId = SectionType.ALL.typeId) }
         val Sections by lazy { SectionType.values().toList().filter { it != SectionType.ALL && it != SectionType.NONE} }
         val Colors by lazy { listOf(Blue200, Blue300, Blue500, Green300, Green500, Gray300) }
     }

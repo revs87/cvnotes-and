@@ -40,7 +40,7 @@ class DashboardViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.Default) {
                 sectionUseCases.insertSection(
                     Section(
-                        typeId = sectionType.id,
+                        typeId = sectionType.typeId,
                         description = sectionType.sectionName,
                         colorId = Random.nextInt(from = 0, until = Section.Colors.size)
                     )

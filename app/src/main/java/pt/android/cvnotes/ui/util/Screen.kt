@@ -24,6 +24,7 @@ sealed class Screen(
     data object Home: Screen("home")
     data object Dashboard: Screen("dash_screen", "Dashboard")
     data object About: Screen("about_screen", "About")
+    data object SectionDetails: Screen("section_details_screen", "Section Details")
     data object NewNote: Screen("new_note_screen", "New Note")
     data object EditNote: Screen("edit_note_screen", "Edit Note")
 

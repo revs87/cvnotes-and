@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.inditex.itxmoviand.ui.component.ITXTopAppBar
+import com.inditex.itxmoviand.ui.component.TitleTopAppBar
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.button.TertiaryButton
 import pt.android.cvnotes.ui.util.Screen.About
@@ -42,7 +42,7 @@ fun AboutScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier.fillMaxSize(),
-        topBar = { ITXTopAppBar(About.title) }
+        topBar = { TitleTopAppBar(About.title) }
     ) { padding ->
         Box {
             Column(
