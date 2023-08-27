@@ -206,7 +206,7 @@ class MainActivity : ComponentActivity() {
                                 val viewModel: SectionDetailsViewModel = hiltViewModel()
                                 val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
                                 LaunchedEffect(sectionIdState) {
-                                    viewModel.getSection(sectionIdState.intValue)
+                                    viewModel.getSection(sectionIdState.intValue, this)
                                 }
                                 SectionDetailsScreen(
                                     state = viewModel.state.value,
