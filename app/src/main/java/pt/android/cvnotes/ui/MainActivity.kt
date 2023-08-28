@@ -34,7 +34,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.inditex.itxmoviand.ui.component.BottomBarWithFab
 import dagger.hilt.android.AndroidEntryPoint
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.about.AboutScreen
@@ -63,6 +62,7 @@ import pt.android.cvnotes.ui.util.Screen.Register
 import pt.android.cvnotes.ui.util.Screen.SectionDetails
 import pt.android.cvnotes.ui.util.Screen.Splash
 import pt.android.cvnotes.ui.util.component.AddSectionBottomSheet
+import pt.android.cvnotes.ui.util.component.BottomBarWithFab
 import pt.android.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
 
 @AndroidEntryPoint

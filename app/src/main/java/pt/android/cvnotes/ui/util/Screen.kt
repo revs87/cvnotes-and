@@ -2,6 +2,8 @@ package pt.android.cvnotes.ui.util
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DisabledByDefault
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Notes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -22,8 +24,8 @@ sealed class Screen(
     data object Login: Screen("login_screen")
 
     data object Home: Screen("home")
-    data object Dashboard: Screen("dash_screen", "Dashboard")
-    data object About: Screen("about_screen", "About")
+    data object Dashboard: Screen("dash_screen", "Dashboard", Icons.Filled.Notes)
+    data object About: Screen("about_screen", "About", Icons.Filled.Info)
     data object SectionDetails: Screen("section_details_screen", "Section Details")
     data object NewNote: Screen("new_note_screen", "New Note")
     data object EditNote: Screen("edit_note_screen", "Edit Note")

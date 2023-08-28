@@ -11,6 +11,7 @@ private val DarkColorSchemePalette = darkColorScheme(
     background = Gray500,
     surface = Gray500,
     surfaceVariant = Gray300,
+    onPrimary = Green500,
     onSecondary = White,
     onBackground = White,
     onSurface = White,

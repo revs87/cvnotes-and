@@ -49,7 +49,7 @@ fun SectionListCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 4.dp, end = 4.dp, bottom = 2.dp, top = if (index == 0) 4.dp else 2.dp)
+            .padding(start = 8.dp, end = 8.dp, bottom = 2.dp, top = if (index == 0) 4.dp else 2.dp)
             .combinedClickable(
                 onClick = { onClick.invoke() },
                 onLongClick = { onLongClick.invoke() },

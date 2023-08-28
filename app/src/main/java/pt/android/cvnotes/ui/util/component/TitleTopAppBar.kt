@@ -1,4 +1,4 @@
-package com.inditex.itxmoviand.ui.component
+package pt.android.cvnotes.ui.util.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

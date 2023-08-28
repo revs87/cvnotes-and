@@ -1,4 +1,4 @@
-package com.inditex.itxmoviand.ui.component
+package pt.android.cvnotes.ui.util.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -13,9 +13,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.Nfc
-import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -41,13 +38,13 @@ fun BottomBarWithFab(
     fabListener: () -> Unit = {},
     fabIcon: ImageVector = Icons.Filled.Edit
 ) {
-
     MyTheme {
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(
                     modifier = Modifier
-                        .offset(x = 0.dp, y = 84.dp)
+                        .size(75.dp)
+                        .offset(x = 0.dp, y = 80.dp)
                         .border(
                             border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary),
                             shape = RoundedCornerShape(15.dp)
