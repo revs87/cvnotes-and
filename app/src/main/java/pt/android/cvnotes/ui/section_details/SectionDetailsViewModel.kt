@@ -3,11 +3,9 @@ package pt.android.cvnotes.ui.section_details
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -29,12 +27,13 @@ class SectionDetailsViewModel @Inject constructor(
     private val _state = mutableStateOf(SectionDetailsState())
     val state: State<SectionDetailsState> = _state
 
-    private var job: Job? = null
+    private var getSectionJob: Job? = null
+    private var addNoteJob: Job? = null
 
-    fun getSection(sectionId: Int, composeCoroutineScope: CoroutineScope) {
-        Log.i("SectionDetailsViewModel", "Entered sectionId: $sectionId, ${viewModelScope.isActive}, ${composeCoroutineScope.isActive}")
-        job?.let { if (it.isActive) { it.cancel() } }
-        job = composeCoroutineScope.launch(Dispatchers.Default) {
+    fun getSection(sectionId: Int) {
+        Log.i("SectionDetailsViewModel", "Entered sectionId: $sectionId, ${viewModelScope.isActive}")
+        getSectionJob?.let { if (it.isActive) { it.cancel() } }
+        getSectionJob = viewModelScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {
                 _state.value = _state.value.copy(isLoading = true)
             }
@@ -51,10 +50,10 @@ class SectionDetailsViewModel @Inject constructor(
         }
     }
 
-    fun addNote(note: Note, lifecycleScope: LifecycleCoroutineScope) {
-        Log.i("SectionDetailsViewModel", "Adding new Note to sectionId: ${note.sectionId}, ${viewModelScope.isActive}, ${lifecycleScope.isActive}")
-        job?.let { if (it.isActive) { it.cancel() } }
-        job = lifecycleScope.launch(Dispatchers.Default) {
+    fun addNote(note: Note) {
+        Log.i("SectionDetailsViewModel", "Adding new Note to sectionId: ${note.sectionId}, ${viewModelScope.isActive}")
+        addNoteJob?.let { if (it.isActive) { it.cancel() } }
+        addNoteJob = viewModelScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {
                 _state.value = _state.value.copy(isLoading = true)
             }
