@@ -2,6 +2,7 @@
 
 package pt.android.cvnotes.ui.dashboard
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -86,11 +87,14 @@ fun DashboardScreen(
                         }
                     }
                     LazyColumn(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().animateContentSize(),
                         state = lazyListState,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        itemsIndexed(sectionsState) { index, sectionWithNotes ->
+                        itemsIndexed(
+                            items = sectionsState,
+                            key = { _, sectionWithNotes -> sectionWithNotes.section.id ?: 0 }
+                        ) { index, sectionWithNotes ->
                             SectionListCard(
                                 modifier = Modifier.animateItemPlacement(),
                                 type = sectionWithNotes.section.typeId.toSectionType(),
