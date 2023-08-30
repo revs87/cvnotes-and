@@ -12,6 +12,10 @@ class NoteRepositoryImpl(
         return dao.getNotes(sectionId)
     }
 
+    override fun getNotesList(sectionId: Int): List<Note> {
+        return dao.getNotesList(sectionId)
+    }
+
     override suspend fun getNoteById(id: Long): Note? {
         return dao.getNoteById(id)
     }

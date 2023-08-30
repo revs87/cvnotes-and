@@ -14,6 +14,9 @@ interface SectionDao {
     @Query("SELECT * FROM section")
     fun getSections(): Flow<List<Section>>
 
+    @Query("SELECT * FROM section")
+    fun getSectionsList(): List<Section>
+
     @Query("SELECT * FROM section WHERE id = :id")
     fun getSectionById(id: Int): Section?
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -35,6 +36,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.about.AboutScreen
 import pt.android.cvnotes.ui.about.AboutViewModel
@@ -142,6 +144,7 @@ class MainActivity : ComponentActivity() {
                             composable(route = Dashboard.route) {
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
                                 val dashboardViewModel: DashboardViewModel = hiltViewModel()
+                                LaunchedEffect(dashboardViewModel.state) { dashboardViewModel.getAllNotes() }
                                 val aboutViewModel: AboutViewModel = hiltViewModel()
                                 var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
                                 var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
@@ -210,7 +213,10 @@ class MainActivity : ComponentActivity() {
                                 }
                                 SectionDetailsScreen(
                                     state = viewModel.state.value,
-                                    addNoteListener = { navigateTo(navController, NewNote.route) },
+                                    addNoteListener = {
+//                                        viewModel.addNote(Note(19, 0, "Hello!"), lifecycleScope)
+                                        navigateTo(navController, NewNote.route)
+                                                      },
                                     editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/$noteId") }
                                 )
                             }

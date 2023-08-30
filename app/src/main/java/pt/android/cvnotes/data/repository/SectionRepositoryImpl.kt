@@ -12,6 +12,10 @@ class SectionRepositoryImpl(
         return dao.getSections()
     }
 
+    override fun getSectionsList(): List<Section> {
+        return dao.getSectionsList()
+    }
+
     override suspend fun getSectionById(id: Int): Section? {
         return dao.getSectionById(id)
     }

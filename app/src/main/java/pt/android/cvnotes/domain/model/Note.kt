@@ -3,6 +3,7 @@ package pt.android.cvnotes.domain.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pt.android.cvnotes.domain.util.NoteType
+import java.util.Date
 
 @Entity
 data class Note(
@@ -10,7 +11,7 @@ data class Note(
     val type: Int,
     val content1: String = "",
     val content2: String = "",
-    val timestamp: Long = 0L,
+    val timestamp: Long = Date().time,
     @PrimaryKey(autoGenerate = true) val id: Long? = null
 ) {
     companion object {
