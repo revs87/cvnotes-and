@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.ui.util.component.TitleTopAppBar
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
@@ -25,7 +26,7 @@ import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 fun EditNoteScreen(
     state: EditNoteState = EditNoteState(),
     title: String = "",
-    saveNoteListener: () -> Unit = {},
+    saveNoteListener: (Note) -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 

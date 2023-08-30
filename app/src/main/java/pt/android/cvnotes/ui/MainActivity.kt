@@ -199,9 +199,7 @@ class MainActivity : ComponentActivity() {
                                     bottomSheetVisible = withSelectedSectionsBottomSheetVisible,
                                     unselectAllSelected = dashboardViewModel::unselectAllSelectedSections,
                                     deleteAllSelected = dashboardViewModel::deleteSelectedSections,
-                                ) {
-                                    withSelectedSectionsBottomSheetVisible = false
-                                }
+                                ) { withSelectedSectionsBottomSheetVisible = false }
                             }
                             composable(
                                 route = "${SectionDetails.route}/{sectionId}",
@@ -209,15 +207,10 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 val viewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                 val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
-                                LaunchedEffect(sectionIdState) {
-                                    viewModel.getSection(sectionIdState.intValue)
-                                }
+                                LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
                                 SectionDetailsScreen(
                                     state = viewModel.state.value,
-                                    addNoteListener = {
-//                                        viewModel.addNote(Note(19, 0, "Hello!"))
-                                        navigateTo(navController, NewNote.route)
-                                    },
+                                    addNoteListener = { navigateTo(navController, NewNote.route) },
                                     editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/$noteId") }
                                 )
                             }
@@ -226,7 +219,7 @@ class MainActivity : ComponentActivity() {
                                 EditNoteScreen(
                                     state = viewModel.state.value,
                                     title = NewNote.title,
-                                    saveNoteListener = {}
+                                    saveNoteListener = { note -> viewModel.addNote(note) }
                                 )
                             }
                             composable(
@@ -238,7 +231,7 @@ class MainActivity : ComponentActivity() {
                                 EditNoteScreen(
                                     state = viewModel.state.value,
                                     title = EditNote.title,
-                                    saveNoteListener = {}
+                                    saveNoteListener = { note -> viewModel.addNote(note) }
                                 )
                             }
                         }
