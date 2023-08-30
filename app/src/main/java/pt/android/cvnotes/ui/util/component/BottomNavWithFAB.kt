@@ -54,7 +54,7 @@ fun BottomBarWithFab(
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = { fabListener.invoke() }
                 ) {
-                    Icon(imageVector = fabIcon, contentDescription = "Add icon")
+                    Icon(imageVector = fabIcon, contentDescription = fabIcon.name)
                 }
             },
             bottomBar = {

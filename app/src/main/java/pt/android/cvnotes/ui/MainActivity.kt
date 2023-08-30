@@ -146,8 +146,7 @@ class MainActivity : ComponentActivity() {
                                 val aboutViewModel: AboutViewModel = hiltViewModel()
                                 var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
                                 var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
-                                val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
-                                println("hasSelectedSections: $hasSelectedSections")
+                                val hasSelectedSections = dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false).value
                                 val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
                                 val initialScrollPosition = prefs.getInt("scroll_position", 0)
                                 BottomBarWithFab(
@@ -185,7 +184,10 @@ class MainActivity : ComponentActivity() {
                                             else -> newSectionBottomSheetVisible = true
                                         }
                                     },
-                                    fabIcon = if (hasSelectedSections) { Icons.Filled.DeleteSweep } else { Icons.Filled.NoteAdd }
+                                    fabIcon = when {
+                                        hasSelectedSections -> Icons.Filled.DeleteSweep
+                                        else -> Icons.Filled.NoteAdd
+                                    }
                                 )
                                 AddSectionBottomSheet(
                                     bottomSheetVisible = newSectionBottomSheetVisible
