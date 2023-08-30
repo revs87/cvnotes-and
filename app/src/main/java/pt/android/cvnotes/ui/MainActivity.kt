@@ -147,6 +147,7 @@ class MainActivity : ComponentActivity() {
                                 var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
                                 var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
                                 val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
+                                println("hasSelectedSections: $hasSelectedSections")
                                 val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
                                 val initialScrollPosition = prefs.getInt("scroll_position", 0)
                                 BottomBarWithFab(

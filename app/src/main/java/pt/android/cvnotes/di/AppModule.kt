@@ -122,9 +122,8 @@ object AppModule {
     @Singleton
     fun providesDashboardViewModel(
         sectionUseCases: SectionUseCases,
-        noteUseCases: NoteUseCases,
     ): DashboardViewModel {
-        return DashboardViewModel(sectionUseCases, noteUseCases)
+        return DashboardViewModel(sectionUseCases)
     }
 
     @Provides
