@@ -13,27 +13,32 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import pt.android.cvnotes.theme.Blue500_Background1
-import pt.android.cvnotes.ui.util.component.TitleTopAppBar
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.button.TertiaryButton
 import pt.android.cvnotes.ui.util.Screen.About
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
+import pt.android.cvnotes.ui.util.component.TitleTopAppBar
 
 
 @Composable
 fun AboutScreen(
-    state: AboutState = AboutState(),
-    profileState: AboutProfileState = AboutProfileState(),
+    state: State<AboutState> = mutableStateOf(AboutState()),
+    profileState: State<AboutProfileState> = mutableStateOf(AboutProfileState()),
     logoutListener: () -> Unit = {},
     navigateAuthListener: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    if (state.value.section == HomeSection.AUTH) {
+        LaunchedEffect(state) { navigateAuthListener.invoke() }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -48,7 +53,8 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Logged as: ${profileState.email}")
+                Text(text = "Version: ${state.value.version}")
+                Text(text = "Logged as: ${profileState.value.email}")
                 TertiaryButton(onClick = { logoutListener.invoke() }) {
                     Text(text = "Log out".uppercase())
                 }
@@ -57,12 +63,12 @@ fun AboutScreen(
                 modifier = Modifier
                     .size(LoadingIndicatorSize)
                     .align(Alignment.BottomEnd),
-                state.isLoading
+                state.value.isLoading
             )
         }
-        LaunchedEffect(System.currentTimeMillis()) {
-            if (state.errorMessage.isNotBlank()) {
-                snackbarHostState.showSnackbar(state.errorMessage)
+        LaunchedEffect(true) {
+            if (state.value.errorMessage.isNotBlank()) {
+                snackbarHostState.showSnackbar(state.value.errorMessage)
             }
         }
     }

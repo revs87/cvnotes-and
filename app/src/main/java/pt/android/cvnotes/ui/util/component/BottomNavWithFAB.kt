@@ -47,25 +47,26 @@ fun BottomBarWithFab(
     bottomNavSelected: Int = 0,
     pageListener: (Int) -> Unit = {},
     fabListener: () -> Unit = {},
-    fabIcon: ImageVector = Icons.Filled.Edit
+    fabIcon: ImageVector = Icons.Filled.Edit,
+    fabVisible: Boolean = true
 ) {
     MyTheme {
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    modifier = Modifier
-                        .size(75.dp)
-                        .offset(x = 0.dp, y = 80.dp)
-                        .border(
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary),
-                            shape = RoundedCornerShape(15.dp)
-                        ),
-                    shape = RoundedCornerShape(15.dp),
-                    contentColor = Blue500_Background3,
-                    containerColor = Blue500,
-                    onClick = { fabListener.invoke() }
-                ) {
-                    Icon(imageVector = fabIcon, contentDescription = fabIcon.name)
+                if (fabVisible) {
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .size(75.dp)
+                            .offset(x = 0.dp, y = 80.dp)
+                            .border(
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary),
+                                shape = RoundedCornerShape(15.dp)
+                            ),
+                        shape = RoundedCornerShape(15.dp),
+                        contentColor = Blue500_Background3,
+                        containerColor = Blue500,
+                        onClick = { fabListener.invoke() }
+                    ) { Icon(imageVector = fabIcon, contentDescription = fabIcon.name) }
                 }
             },
             bottomBar = {

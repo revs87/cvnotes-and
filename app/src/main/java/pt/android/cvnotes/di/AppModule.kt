@@ -2,6 +2,7 @@ package pt.android.cvnotes.di
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.PackageInfo
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -34,6 +35,7 @@ import pt.android.cvnotes.domain.use_case.section.HasSelectedSections
 import pt.android.cvnotes.domain.use_case.section.InsertSection
 import pt.android.cvnotes.domain.use_case.section.SelectSection
 import pt.android.cvnotes.domain.use_case.section.UnselectAllSections
+import pt.android.cvnotes.ui.about.AboutViewModel
 import pt.android.cvnotes.ui.dashboard.DashboardViewModel
 import pt.android.cvnotes.ui.section_details.SectionDetailsViewModel
 import javax.inject.Singleton
@@ -42,6 +44,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun providePackageInfo(@ApplicationContext context: Context): PackageInfo {
+        return context.packageManager.getPackageInfo(context.packageName, 0)
+    }
 
     @Provides
     @Singleton
@@ -124,6 +132,16 @@ object AppModule {
         sectionUseCases: SectionUseCases,
     ): DashboardViewModel {
         return DashboardViewModel(sectionUseCases)
+    }
+
+    @Provides
+    @Singleton
+    fun providesAboutViewModel(
+        authRepository: AuthRepository,
+        spRepository: SharedPreferencesRepository,
+        packageInfo: PackageInfo,
+    ): AboutViewModel {
+        return AboutViewModel(authRepository, spRepository, packageInfo)
     }
 
     @Provides

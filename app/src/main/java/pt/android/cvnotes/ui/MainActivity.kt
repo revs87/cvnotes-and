@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.asIntState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -153,12 +154,13 @@ class MainActivity : ComponentActivity() {
                             composable(route = Dashboard.route) {
                                 systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
+                                val isFabVisible by remember { derivedStateOf { homeViewModel.state.value.selectedBottomItem == 0 } }
                                 val dashboardViewModel: DashboardViewModel = hiltViewModel()
                                 LaunchedEffect(dashboardViewModel.state) { dashboardViewModel.getAllNotes() }
                                 val aboutViewModel: AboutViewModel = hiltViewModel()
                                 var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
                                 var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
-                                val hasSelectedSections = dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false).value
+                                val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
                                 val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
                                 val initialScrollPosition = prefs.getInt("scroll_position", 0)
                                 BottomBarWithFab(
@@ -180,11 +182,10 @@ class MainActivity : ComponentActivity() {
                                         About.apply {
                                             content = {
                                                 AboutScreen(
-                                                    state = aboutViewModel.state.value,
-                                                    profileState = aboutViewModel.profileState.value,
-                                                    logoutListener = aboutViewModel::logout,
-                                                    navigateAuthListener = { navigateTo(navController, Auth.route, Home.route) }
-                                                )
+                                                    state = aboutViewModel.state,
+                                                    profileState = aboutViewModel.profileState,
+                                                    logoutListener = aboutViewModel::logout
+                                                ) { navigateTo(navController, Auth.route, Home.route) }
                                             }
                                         },
                                     ),
@@ -199,7 +200,8 @@ class MainActivity : ComponentActivity() {
                                     fabIcon = when {
                                         hasSelectedSections -> Icons.Filled.DeleteSweep
                                         else -> Icons.Filled.NoteAdd
-                                    }
+                                    },
+                                    fabVisible = isFabVisible
                                 )
                                 AddSectionBottomSheet(
                                     bottomSheetVisible = newSectionBottomSheetVisible
