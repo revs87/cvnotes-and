@@ -4,6 +4,7 @@ package pt.android.cvnotes.ui.dashboard
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import pt.android.cvnotes.domain.util.toSectionType
+import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
@@ -52,6 +54,7 @@ fun DashboardScreen(
     ) { padding ->
         Box(
             modifier = Modifier
+                .background(BackgroundColor)
                 .fillMaxWidth()
                 .padding(padding)
         ) {
@@ -67,7 +70,7 @@ fun DashboardScreen(
                     Text(
                         text = "There are no Sections available.\nPlease create a Section and then add Notes to it.",
                         modifier = Modifier.fillMaxWidth(),
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
                 } else {

@@ -25,6 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import pt.android.cvnotes.theme.BackgroundColor
+import pt.android.cvnotes.theme.Blue500
+import pt.android.cvnotes.theme.Gray200
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.Screen
 
@@ -60,7 +63,7 @@ fun BottomBarWithFab(
             bottomBar = {
                 BottomAppBar(
                     modifier = Modifier.height(80.dp),
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = BackgroundColor
                 ) {
                     LazyRow(
                         verticalAlignment = Alignment.CenterVertically
@@ -101,11 +104,7 @@ private fun MenuButton(
             Icon(
                 imageVector = item.icon,
                 contentDescription = item.title,
-                tint = if (index == bottomNavSelected) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.secondary
-                }
+                tint = if (index == bottomNavSelected) { Blue500 } else { Gray200 }
             )
         }
     }

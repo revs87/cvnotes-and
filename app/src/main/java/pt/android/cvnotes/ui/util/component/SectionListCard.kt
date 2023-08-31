@@ -22,10 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
-import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.util.SectionType
-import pt.android.cvnotes.theme.Gray500
+import pt.android.cvnotes.theme.BackgroundCardColor
+import pt.android.cvnotes.theme.Gray300
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.TextColor
 import java.util.Date
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -57,20 +58,23 @@ fun SectionListCard(
     ) {
         Box(
             modifier = Modifier
-                .background(color = Section.Colors[colorId])
+                .background(BackgroundCardColor)
                 .fillMaxWidth()
                 .defaultMinSize(minHeight = 100.dp)
                 .padding(2.dp)
         ) {
             Column {
-                Text(text = description, fontSize = 38.sp)
-                Column {
-                    notes.forEach { note ->
-                        Text(
-                            text = note.content1,
-                            fontSize = 11.sp
-                        )
-                    }
+                Text(
+                    text = description,
+                    fontSize = 38.sp,
+                    color = TextColor
+                )
+                notes.forEach { note ->
+                    Text(
+                        text = note.content1,
+                        fontSize = 14.sp,
+                        color = TextColor
+                    )
                 }
             }
             if (hasSelected) {
@@ -81,7 +85,7 @@ fun SectionListCard(
                         false -> Icons.Filled.CheckBoxOutlineBlank
                     },
                     contentDescription = "",
-                    colorFilter = ColorFilter.tint(color = Gray500)
+                    colorFilter = ColorFilter.tint(color = Gray300)
                 )
             }
         }

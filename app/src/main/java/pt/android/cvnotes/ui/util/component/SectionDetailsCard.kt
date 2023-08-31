@@ -2,8 +2,8 @@ package pt.android.cvnotes.ui.util.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,9 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
-import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.util.SectionType
+import pt.android.cvnotes.theme.BackgroundSecondaryCardColor
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.TextColor
 import java.util.Date
 
 @Composable
@@ -38,19 +39,22 @@ fun SectionDetailsCard(
     ) {
         Box(
             modifier = Modifier
-                .background(color = Section.Colors[colorId])
-                .fillMaxWidth()
-                .height(300.dp)
+                .background(BackgroundSecondaryCardColor)
+                .fillMaxSize()
                 .padding(2.dp)
         ) {
             LazyColumn {
                 item {
-                    Text(text = type.sectionName, fontSize = 38.sp)
+                    Text(
+                        text = type.sectionName, fontSize = 38.sp,
+                        color = TextColor
+                    )
                 }
                 items(notes) { note ->
                     Text(
                         text = note.content1,
-                        fontSize = 11.sp
+                        fontSize = 16.sp,
+                        color = TextColor
                     )
                 }
             }

@@ -8,9 +8,9 @@ private val DarkColorSchemePalette = darkColorScheme(
     primary = Blue200,
     primaryContainer = Blue700,
     secondary = Green300,
-    background = Gray500,
-    surface = Gray500,
-    surfaceVariant = Gray300,
+    background = Gray300,
+    surface = Gray300,
+    surfaceVariant = Gray200,
     onPrimary = Green500,
     onSecondary = White,
     onBackground = White,
@@ -32,11 +32,13 @@ private val LightColorSchemePalette = lightColorScheme(
 
 @Composable
 fun MyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colorScheme = if (darkTheme) {
-        DarkColorSchemePalette
-    } else {
-        LightColorSchemePalette
-    }
+//    val colorScheme = if (darkTheme) {
+//        DarkColorSchemePalette
+//    } else {
+//        LightColorSchemePalette
+//    }
+
+    val colorScheme = LightColorSchemePalette
 
     MaterialTheme(
         colorScheme = colorScheme,
