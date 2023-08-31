@@ -3,6 +3,7 @@ package pt.android.cvnotes.ui.util.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -14,24 +15,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconToggleButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.theme.BackgroundColor
-import pt.android.cvnotes.theme.Blue200
 import pt.android.cvnotes.theme.Blue400
 import pt.android.cvnotes.theme.Blue500
-import pt.android.cvnotes.theme.Blue500_Background2
 import pt.android.cvnotes.theme.Blue500_Background3
-import pt.android.cvnotes.theme.Gray200
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.Screen
 
@@ -98,18 +102,29 @@ private fun MenuButton(
     bottomNavSelected: Int = 0
 ) {
     Box(
-        modifier = Modifier.size(65.dp),
+        modifier = Modifier.height(65.dp),
         contentAlignment = Alignment.Center
     ) {
-        IconButton(
+        TextButton(
             modifier = Modifier.fillMaxSize(),
             onClick = { pageListener.invoke(index) }
         ) {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = item.title,
-                tint = if (index == bottomNavSelected) { Blue500 } else { Blue400 }
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = item.icon,
+                    contentDescription = item.title,
+                    tint = if (index == bottomNavSelected) { Blue500 } else { Blue400 }
+                )
+                Text(
+                    modifier = Modifier.padding(top = 2.dp),
+                    text = item.title.uppercase(),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (index == bottomNavSelected) { Blue500 } else { Blue400 }
+                )
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ sealed class Screen(
     val icon: ImageVector = Icons.Default.DisabledByDefault,
     var content: @Composable () -> Unit = {}
     ) {
-    data object Default: Screen("default")
+    data object Default: Screen("default", "default")
 
     data object Splash: Screen("splash_screen")
 

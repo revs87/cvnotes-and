@@ -1,5 +1,6 @@
 package pt.android.cvnotes.ui.about
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import pt.android.cvnotes.theme.Blue500_Background1
 import pt.android.cvnotes.ui.util.component.TitleTopAppBar
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.button.TertiaryButton
@@ -33,12 +35,6 @@ fun AboutScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    if (state.section == HomeSection.AUTH) {
-        LaunchedEffect(Unit) {
-            navigateAuthListener.invoke()
-        }
-    }
-
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier.fillMaxSize(),
@@ -46,7 +42,7 @@ fun AboutScreen(
     ) { padding ->
         Box {
             Column(
-                modifier = Modifier
+                modifier = Modifier.background(Blue500_Background1)
                     .fillMaxSize()
                     .padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally,
