@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -34,8 +35,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import pt.android.cvnotes.theme.Black
+import pt.android.cvnotes.theme.Blue500
+import pt.android.cvnotes.theme.Blue500_Background1
+import pt.android.cvnotes.theme.Green500
+import pt.android.cvnotes.theme.Green500_Background1
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.White
 import pt.android.cvnotes.ui.about.AboutScreen
 import pt.android.cvnotes.ui.about.AboutViewModel
 import pt.android.cvnotes.ui.auth.AuthViewModel
@@ -65,13 +74,14 @@ import pt.android.cvnotes.ui.util.component.AddSectionBottomSheet
 import pt.android.cvnotes.ui.util.component.BottomBarWithFab
 import pt.android.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-
+            val systemUiController = rememberSystemUiController()
             MyTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -82,6 +92,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = Splash.route
                     ) {
                         composable(route = Splash.route) {
+                            systemUiController.setSystemBarsColor(Black, White)
                             val authViewModel: AuthViewModel = hiltViewModel()
                             val startingRoute =
                                 if (authViewModel.state.value.isLoggedIn) { Home.route }
@@ -140,6 +151,7 @@ class MainActivity : ComponentActivity() {
                             startDestination = Dashboard.route
                         ) {
                             composable(route = Dashboard.route) {
+                                systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
                                 val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
                                 val dashboardViewModel: DashboardViewModel = hiltViewModel()
                                 LaunchedEffect(dashboardViewModel.state) { dashboardViewModel.getAllNotes() }
@@ -205,6 +217,7 @@ class MainActivity : ComponentActivity() {
                                 route = "${SectionDetails.route}/{sectionId}",
                                 arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
                             ) {
+                                systemUiController.setSystemBarsColor(Green500, Green500_Background1)
                                 val viewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                 val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
                                 LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
@@ -276,4 +289,12 @@ fun DefaultPreview() {
     MyTheme {
         Greeting("Android")
     }
+}
+
+fun SystemUiController.setSystemBarsColor(
+    statusBarColor: Color = Blue500,
+    navigationBarColor: Color = Blue500_Background1
+) {
+    this.setStatusBarColor(color = statusBarColor)
+    this.setNavigationBarColor(color = navigationBarColor)
 }

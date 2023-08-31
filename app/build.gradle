@@ -66,6 +66,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_fallback_libs"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_fallback_libs"
     implementation "com.airbnb.android:lottie-compose:6.0.0"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 
     // Compose + Lifecycle
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'

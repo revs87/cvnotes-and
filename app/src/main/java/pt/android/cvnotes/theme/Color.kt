@@ -34,8 +34,8 @@ val Green500_Background3 = Color(0xFFE6F6F3)
 
 /* UI colors */
 
-val BackgroundColor = Blue500_Background3
-val BackgroundCardColor = Blue500_Background1
-val BackgroundSecondaryColor = Green500_Background3
-val BackgroundSecondaryCardColor = Green500_Background1
+val BackgroundColor = Blue500_Background1
+val BackgroundCardColor = Blue500_Background3
+val BackgroundSecondaryColor = Green500_Background1
+val BackgroundSecondaryCardColor = Green500_Background3
 val TextColor = Gray500

@@ -27,6 +27,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.BackgroundSecondaryColor
+import pt.android.cvnotes.theme.Green500
+import pt.android.cvnotes.theme.Green500_Background1
+import pt.android.cvnotes.theme.Green500_Background3
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
@@ -49,8 +52,8 @@ fun SectionDetailsScreen(
             FloatingActionButton(
                 modifier = Modifier.size(75.dp),
                 shape = RoundedCornerShape(15.dp),
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Green500_Background3,
+                containerColor = Green500,
                 onClick = { addNoteListener.invoke() }
             ) {
                 Icon(

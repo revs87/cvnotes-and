@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500
+import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.Gray200
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.Screen
@@ -53,8 +54,8 @@ fun BottomBarWithFab(
                             shape = RoundedCornerShape(15.dp)
                         ),
                     shape = RoundedCornerShape(15.dp),
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = Blue500_Background3,
+                    containerColor = Blue500,
                     onClick = { fabListener.invoke() }
                 ) {
                     Icon(imageVector = fabIcon, contentDescription = fabIcon.name)
