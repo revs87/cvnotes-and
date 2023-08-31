@@ -26,7 +26,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.theme.BackgroundColor
+import pt.android.cvnotes.theme.Blue200
+import pt.android.cvnotes.theme.Blue400
 import pt.android.cvnotes.theme.Blue500
+import pt.android.cvnotes.theme.Blue500_Background2
 import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.Gray200
 import pt.android.cvnotes.theme.MyTheme
@@ -105,7 +108,7 @@ private fun MenuButton(
             Icon(
                 imageVector = item.icon,
                 contentDescription = item.title,
-                tint = if (index == bottomNavSelected) { Blue500 } else { Gray200 }
+                tint = if (index == bottomNavSelected) { Blue500 } else { Blue400 }
             )
         }
     }
