@@ -12,7 +12,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pt.android.cvnotes.domain.model.Note
+import pt.android.cvnotes.domain.model.shouldHaveContent2
 import pt.android.cvnotes.domain.use_case.NoteUseCases
+import pt.android.cvnotes.domain.util.NoteType
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,8 +61,25 @@ class EditNoteViewModel @Inject constructor(
 
     fun setSectionId(sectionId: Int) {
         _state.value = _state.value.copy(
-            note = Note(sectionId = sectionId)
+            note = Note(sectionId = sectionId),
+            isLoading = false
         )
     }
 
+    fun savePartialNote(note: Note): Note {
+        _state.value = _state.value.copy(
+            note = note,
+            isLoading = false
+        )
+        return note
+    }
+
+    fun isValid(note: Note?): Boolean =
+        when {
+            note == null -> false
+            note.type == NoteType.NONE.id -> false
+//            note.content1.isBlank() -> false
+//            note.content2.isBlank() && note.shouldHaveContent2() -> false
+            else -> true
+        }
 }

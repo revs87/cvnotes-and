@@ -242,6 +242,8 @@ class MainActivity : ComponentActivity() {
                                 EditNoteScreen(
                                     state = viewModel.state.value,
                                     title = NewNote.title,
+                                    isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
+                                    savePartialListener = { note -> viewModel.savePartialNote(note) },
                                     saveNoteListener = { note -> viewModel.addNote(note) }
                                 )
                             }
@@ -256,6 +258,8 @@ class MainActivity : ComponentActivity() {
                                 EditNoteScreen(
                                     state = viewModel.state.value,
                                     title = EditNote.title,
+                                    isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
+                                    savePartialListener = { note -> viewModel.savePartialNote(note) },
                                     saveNoteListener = { note -> viewModel.addNote(note) }
                                 )
                             }
