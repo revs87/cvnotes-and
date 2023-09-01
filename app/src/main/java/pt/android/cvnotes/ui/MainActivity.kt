@@ -207,7 +207,7 @@ class MainActivity : ComponentActivity() {
                                 )
                                 AddSectionBottomSheet(
                                     bottomSheetVisible = newSectionBottomSheetVisible,
-                                    onOtherClicked = { dashboardViewModel.addPersonalDataFromRuiVieira() }
+                                    onRuiVieiraClicked = { dashboardViewModel.addPersonalDataFromRuiVieira() }
                                 ) { sectionType ->
                                     newSectionBottomSheetVisible = false
                                     dashboardViewModel.addSection(sectionType)

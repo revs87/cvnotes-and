@@ -27,6 +27,7 @@ import pt.android.cvnotes.domain.util.SectionType
 @Composable
 fun AddSectionBottomSheet(
     bottomSheetVisible: Boolean = false,
+    onRuiVieiraClicked: () -> Unit = {},
     onOtherClicked: () -> Unit = {},
     onDismiss: (SectionType) -> Unit = {}
 ) {
@@ -51,6 +52,10 @@ fun AddSectionBottomSheet(
                             TextButton(
                                 onClick = {
                                     when (sectionType) {
+                                        SectionType.RUI_VIEIRA_HARDCODED_DATA -> {
+                                            onRuiVieiraClicked.invoke()
+                                            onDismiss.invoke(SectionType.NONE)
+                                        }
                                         SectionType.OTHER -> {
                                             onOtherClicked.invoke()
                                             onDismiss.invoke(SectionType.NONE)
