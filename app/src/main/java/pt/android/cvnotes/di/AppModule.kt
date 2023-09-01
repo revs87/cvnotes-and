@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +27,7 @@ import pt.android.cvnotes.domain.use_case.note.DeleteNote
 import pt.android.cvnotes.domain.use_case.note.GetNoteById
 import pt.android.cvnotes.domain.use_case.note.GetNotes
 import pt.android.cvnotes.domain.use_case.note.GetNotesBySectionId
+import pt.android.cvnotes.domain.use_case.note.HasSelectedNote
 import pt.android.cvnotes.domain.use_case.note.InsertNote
 import pt.android.cvnotes.domain.use_case.section.DeleteSection
 import pt.android.cvnotes.domain.use_case.section.DeleteSelectedSections
@@ -70,7 +73,11 @@ object AppModule {
             app,
             NoteDatabase::class.java,
             NoteDatabase.DATABASE_NAME
-        ).build()
+        )
+            .addMigrations(
+                NoteDatabase.MIGRATION_1_2,
+            )
+            .build()
     }
 
     @Provides
@@ -88,6 +95,7 @@ object AppModule {
             getNoteById = GetNoteById(noteRepository),
             insertNote = InsertNote(noteRepository),
             deleteNote = DeleteNote(noteRepository),
+            hasSelectedNote = HasSelectedNote(noteRepository),
         )
     }
 

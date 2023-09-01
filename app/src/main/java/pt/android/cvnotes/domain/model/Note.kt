@@ -1,6 +1,7 @@
 package pt.android.cvnotes.domain.model
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.domain.util.toNoteType
@@ -12,6 +13,7 @@ data class Note(
     val type: Int = NoteType.NONE.id,
     val content1: String = "",
     val content2: String = "",
+    val isSelected: Boolean = false,
     val timestamp: Long = Date().time,
     @PrimaryKey(autoGenerate = true) val id: Long? = null
 ) {

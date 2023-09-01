@@ -25,4 +25,7 @@ interface NoteDao {
 
     @Delete
     fun deleteNote(note: Note)
+
+    @Query("SELECT EXISTS (SELECT * FROM note WHERE sectionId = :sectionId AND isSelected = :isSelected)")
+    fun hasSelectedNote(sectionId: Int, isSelected: Boolean = true): Flow<Boolean>
 }

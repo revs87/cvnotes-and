@@ -9,4 +9,5 @@ interface NoteRepository {
     suspend fun getNoteById(id: Long): Note?
     suspend fun insertNote(note: Note)
     suspend fun deleteNote(note: Note)
+    fun hasSelectedNote(sectionId: Int): Flow<Boolean>
 }

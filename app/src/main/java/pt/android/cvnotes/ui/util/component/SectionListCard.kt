@@ -41,9 +41,9 @@ fun SectionListCard(
     isSelected: Boolean = false,
     colorId: Int = 0,
     notes: List<Note> = listOf(
-        Note(1, 1, "Hello my friends!", "", Date().time),
-        Note(1, 1, "Hello again!", "", Date().time),
-        Note(1, 1, "Hello goddammit!", "", Date().time),
+        Note(1, 1, "Hello my friends!", "", timestamp = Date().time),
+        Note(1, 1, "Hello again!", "", timestamp = Date().time),
+        Note(1, 1, "Hello goddammit!", "", timestamp = Date().time),
     ),
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},

@@ -39,10 +39,12 @@ class SectionDetailsViewModel @Inject constructor(
             }
             val section = async { sectionUseCases.getSectionById(sectionId) }.await()
             val notes = async { noteUseCases.getNotesBySectionId(sectionId) }.await()
+            val hasSelectedNote = async { noteUseCases.hasSelectedNote(sectionId) }.await()
             withContext(Dispatchers.Main) {
                 _state.value = _state.value.copy(
                     section = section ?: Section.Default,
                     notes = notes,
+                    hasSelectedNote = hasSelectedNote,
                     isLoading = false,
                     errorMessage = section?.let { "" } ?: "Section not found"
                 )
@@ -60,10 +62,12 @@ class SectionDetailsViewModel @Inject constructor(
             noteUseCases.insertNote(note)
             val section = async { sectionUseCases.getSectionById(note.sectionId) }.await()
             val notes = async { noteUseCases.getNotesBySectionId(note.sectionId) }.await()
+            val hasSelectedNote = async { noteUseCases.hasSelectedNote(note.sectionId) }.await()
             withContext(Dispatchers.Main) {
                 _state.value = _state.value.copy(
                     section = section ?: Section.Default,
                     notes = notes,
+                    hasSelectedNote = hasSelectedNote,
                     isLoading = false,
                     errorMessage = section?.let { "" } ?: "Section not found"
                 )

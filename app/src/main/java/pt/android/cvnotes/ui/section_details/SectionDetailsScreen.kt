@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -27,12 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.BackgroundColor
-import pt.android.cvnotes.theme.BackgroundSecondaryColor
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background3
-import pt.android.cvnotes.theme.Green500
-import pt.android.cvnotes.theme.Green500_Background1
-import pt.android.cvnotes.theme.Green500_Background3
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
@@ -47,6 +43,7 @@ fun SectionDetailsScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val notes by state.notes.collectAsStateWithLifecycle(initialValue = emptyList())
+    val hasSelectedNote by state.hasSelectedNote.collectAsStateWithLifecycle(initialValue = false)
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -60,7 +57,10 @@ fun SectionDetailsScreen(
                 onClick = { addNoteListener.invoke(state.section.id ?: 0) }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Add,
+                    imageVector = when {
+                        hasSelectedNote -> Icons.Filled.EditNote
+                        else -> Icons.Filled.NoteAdd
+                    },
                     contentDescription = "Add note"
                 )
             }

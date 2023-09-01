@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.MaterialTheme
@@ -201,7 +202,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     fabIcon = when {
                                         hasSelectedSections -> Icons.Filled.DeleteSweep
-                                        else -> Icons.Filled.NoteAdd
+                                        else -> Icons.Filled.Add
                                     },
                                     fabVisible = isFabVisible
                                 )
