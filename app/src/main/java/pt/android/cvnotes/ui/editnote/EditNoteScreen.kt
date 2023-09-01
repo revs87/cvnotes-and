@@ -95,7 +95,7 @@ fun EditNoteScreen(
                     onOptionSelected = { noteType ->
                         noteTypeState = noteType
                         savePartialListener.invoke(
-                            state.note?.copy(type = noteType.id, content1 = "Wassup?!") ?: Note.default)
+                            state.note?.copy(type = noteType.id, content1 = "Wassup", content2 = "Dog?!") ?: Note.default)
                     }
                 )
                 // TODO

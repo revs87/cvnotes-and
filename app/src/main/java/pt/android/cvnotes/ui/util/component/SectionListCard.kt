@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
+import pt.android.cvnotes.domain.model.asString
 import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.BackgroundCardColor
 import pt.android.cvnotes.theme.Gray300
@@ -71,7 +72,7 @@ fun SectionListCard(
                 )
                 notes.forEach { note ->
                     Text(
-                        text = note.content1,
+                        text = note.asString(),
                         fontSize = 14.sp,
                         color = TextColor
                     )
