@@ -59,7 +59,7 @@ fun EditNoteScreen(
                     initialOption = noteTypeState,
                     onOptionSelected = { noteTypeState = it }
                 )
-
+                
 
 
             }

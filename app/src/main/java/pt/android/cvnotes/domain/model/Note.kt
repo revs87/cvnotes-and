@@ -8,7 +8,7 @@ import java.util.Date
 @Entity
 data class Note(
     val sectionId: Int,
-    val type: Int,
+    val type: Int = NoteType.NONE.id,
     val content1: String = "",
     val content2: String = "",
     val timestamp: Long = Date().time,

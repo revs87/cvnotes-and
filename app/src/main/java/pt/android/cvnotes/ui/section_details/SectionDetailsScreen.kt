@@ -42,7 +42,7 @@ import pt.android.cvnotes.ui.util.component.SectionDetailsCard
 @Composable
 fun SectionDetailsScreen(
     state: SectionDetailsState = SectionDetailsState(),
-    addNoteListener: () -> Unit = {},
+    addNoteListener: (Int) -> Unit = {},
     editNoteListener: (Note) -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -57,7 +57,7 @@ fun SectionDetailsScreen(
                 shape = RoundedCornerShape(15.dp),
                 contentColor = Blue500_Background3,
                 containerColor = Blue500,
-                onClick = { addNoteListener.invoke() }
+                onClick = { addNoteListener.invoke(state.section.id ?: 0) }
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,

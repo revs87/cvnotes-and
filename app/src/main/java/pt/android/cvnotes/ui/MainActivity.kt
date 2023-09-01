@@ -14,9 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.asIntState
+import androidx.compose.runtime.asLongState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,7 +45,7 @@ import pt.android.cvnotes.theme.Black
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background1
 import pt.android.cvnotes.theme.Green500
-import pt.android.cvnotes.theme.Green500_Background1
+import pt.android.cvnotes.theme.Green500_Background3
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.White
 import pt.android.cvnotes.ui.about.AboutScreen
@@ -225,13 +227,18 @@ class MainActivity : ComponentActivity() {
                                 LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
                                 SectionDetailsScreen(
                                     state = viewModel.state.value,
-                                    addNoteListener = { navigateTo(navController, NewNote.route) },
+                                    addNoteListener = { navigateTo(navController, "${NewNote.route}/${sectionIdState.intValue}") },
                                     editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/$noteId") }
                                 )
                             }
-                            composable(route = NewNote.route) {
-                                systemUiController.setSystemBarsColor(Green500, Green500_Background1)
+                            composable(
+                                route = "${NewNote.route}/{sectionId}",
+                                arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
+                            ) {
+                                systemUiController.setSystemBarsColor(Green500, Green500_Background3)
                                 val viewModel: EditNoteViewModel = hiltViewModel()
+                                val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
+                                LaunchedEffect(sectionIdState) { viewModel.setSectionId(sectionIdState.intValue) }
                                 EditNoteScreen(
                                     state = viewModel.state.value,
                                     title = NewNote.title,
@@ -242,9 +249,10 @@ class MainActivity : ComponentActivity() {
                                 route = "${EditNote.route}/{noteId}",
                                 arguments = listOf(navArgument("noteId") { type = NavType.LongType })
                             ) {
-                                systemUiController.setSystemBarsColor(Green500, Green500_Background1)
+                                systemUiController.setSystemBarsColor(Green500, Green500_Background3)
                                 val viewModel: EditNoteViewModel = hiltViewModel()
-                                viewModel.getNote(it.arguments?.getLong("noteId") ?: 0L)
+                                val noteIdState = remember { mutableLongStateOf(it.arguments?.getLong("noteId") ?: 0L) }.asLongState()
+                                LaunchedEffect(noteIdState) { viewModel.getNote(noteIdState.longValue) }
                                 EditNoteScreen(
                                     state = viewModel.state.value,
                                     title = EditNote.title,

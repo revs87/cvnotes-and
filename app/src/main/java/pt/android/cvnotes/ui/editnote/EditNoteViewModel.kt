@@ -57,4 +57,10 @@ class EditNoteViewModel @Inject constructor(
         }
     }
 
+    fun setSectionId(sectionId: Int) {
+        _state.value = _state.value.copy(
+            note = Note(sectionId = sectionId)
+        )
+    }
+
 }
