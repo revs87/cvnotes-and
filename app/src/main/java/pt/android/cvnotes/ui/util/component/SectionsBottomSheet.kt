@@ -5,6 +5,7 @@ package pt.android.cvnotes.ui.util.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,7 +34,7 @@ fun AddSectionBottomSheet(
 ) {
     if (bottomSheetVisible) {
         ModalBottomSheet(
-            onDismissRequest = { onDismiss.invoke(SectionType.NONE) }
+            onDismissRequest = { onDismiss.invoke(SectionType.NONE) },
         ) {
             Box(
                 modifier = Modifier
@@ -65,7 +66,7 @@ fun AddSectionBottomSheet(
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(50.dp)
+                                    .height(45.dp)
                             ) {
                                 Column(
                                     verticalArrangement = Arrangement.Center
