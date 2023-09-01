@@ -33,7 +33,7 @@ fun DropDownNoteType(
     ) {
         items.forEach {
             DropdownMenuItem(
-                text = { Text(text = it.typeName) },
+                text = { Text(text = it.example) },
                 onClick = { onItemClick.invoke(it) }
             )
         }

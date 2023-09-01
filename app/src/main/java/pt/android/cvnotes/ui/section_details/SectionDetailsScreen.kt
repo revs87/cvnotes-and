@@ -32,14 +32,14 @@ import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
-import pt.android.cvnotes.ui.util.component.SectionDetailsCard
+import pt.android.cvnotes.ui.util.component.SectionDetailsNoteCards
 
 
 @Composable
 fun SectionDetailsScreen(
     state: SectionDetailsState = SectionDetailsState(),
     addNoteListener: (Int) -> Unit = {},
-    editNoteListener: (Note) -> Unit = {},
+    editNoteListener: (Long) -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val notes by state.notes.collectAsStateWithLifecycle(initialValue = emptyList())
@@ -70,10 +70,10 @@ fun SectionDetailsScreen(
         Box(
             modifier = Modifier.background(BackgroundColor)
         ) {
-            SectionDetailsCard(
+            SectionDetailsNoteCards(
                 modifier = Modifier.padding(padding),
                 type = state.section.typeId.toSectionType(),
-                colorId = state.section.colorId,
+                onNoteClick = { noteId -> editNoteListener.invoke(noteId) },
                 notes = notes
             )
                 //TODO select note - edit Note button

@@ -1,7 +1,6 @@
 package pt.android.cvnotes.domain.model
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.domain.util.toNoteType
@@ -31,14 +30,16 @@ fun Note.shouldHaveContent2(): Boolean =
 
 
 // • = \u2022,   ● = \u25CF,   ○ = \u25CB,   ▪ = \u25AA,   ■ = \u25A0,   □ = \u25A1,   ► = \u25BA
+const val bullet: String = "\u2022"
+
 fun Note.asString(): String =
     when (this.type.toNoteType()) {
         NoteType.NONE ->                                            ""
         NoteType.TEXT ->                                            this.content1
-        NoteType.BULLET ->                                          "\u2022 ${this.content1}"
-        NoteType.BULLET_2ND_LEVEL ->                                "     \u2022 ${this.content1}"
+        NoteType.BULLET ->                                          "$bullet ${this.content1}"
+        NoteType.BULLET_2ND_LEVEL ->                                "     $bullet ${this.content1}"
         NoteType.KEY_VALUE_COLON_SEPARATED ->                       "${this.content1}: ${this.content2}"
-        NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET ->           "\u2022 ${this.content1}: ${this.content2}"
-        NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL -> "     \u2022 ${this.content1}: ${this.content2}"
+        NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET ->           "$bullet ${this.content1}: ${this.content2}"
+        NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL -> "     $bullet ${this.content1}: ${this.content2}"
         NoteType.TIMEFRAME ->                                       "${this.content1} - ${this.content2}"
     }

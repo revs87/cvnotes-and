@@ -1,14 +1,16 @@
 package pt.android.cvnotes.domain.util
 
+import pt.android.cvnotes.domain.model.bullet
+
 
 enum class NoteType(val id: Int, val typeName: String, val example: String) {
     NONE(0, "-", "-"),
     TEXT(1, "Text", "<TEXT>"),
-    BULLET(2, "Bullet", "<- TEXT>"),
-    BULLET_2ND_LEVEL(3, "2nd level Bullet", "<   - TEXT>"),
+    BULLET(2, "Bullet", "<$bullet TEXT>"),
+    BULLET_2ND_LEVEL(3, "2nd level Bullet", "<   $bullet TEXT>"),
     KEY_VALUE_COLON_SEPARATED(4, "Key-value pair colon separated", "<LABEL: TEXT>"),
-    KEY_VALUE_COLON_SEPARATED_WITH_BULLET(5, "Key-value pair with bullet", "<- LABEL: TEXT>"),
-    KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL(6, "Key-value pair with 2nd level bullet", "<    - LABEL: TEXT>"),
+    KEY_VALUE_COLON_SEPARATED_WITH_BULLET(5, "Key-value pair with bullet", "<$bullet LABEL: TEXT>"),
+    KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL(6, "Key-value pair with 2nd level bullet", "<    $bullet LABEL: TEXT>"),
     TIMEFRAME(7, "Timeframe", "<START_DATE - END_DATE>"),
 }
 
