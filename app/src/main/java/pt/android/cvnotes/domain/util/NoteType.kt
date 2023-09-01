@@ -14,9 +14,11 @@ enum class NoteType(val id: Int, val typeName: String, val example: String) {
 
 fun Int.toNoteType(): NoteType = when (this) {
     NoteType.TEXT.id -> NoteType.TEXT
-    NoteType.KEY_VALUE_COLON_SEPARATED.id -> NoteType.KEY_VALUE_COLON_SEPARATED
     NoteType.BULLET.id -> NoteType.BULLET
     NoteType.BULLET_2ND_LEVEL.id -> NoteType.BULLET_2ND_LEVEL
+    NoteType.KEY_VALUE_COLON_SEPARATED.id -> NoteType.KEY_VALUE_COLON_SEPARATED
+    NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id -> NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET
+    NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL.id -> NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL
     NoteType.TIMEFRAME.id -> NoteType.TIMEFRAME
     else -> NoteType.NONE
 }
