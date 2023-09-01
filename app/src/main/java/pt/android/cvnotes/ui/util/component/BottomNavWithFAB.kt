@@ -15,12 +15,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconToggleButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -46,7 +43,7 @@ fun BottomBarWithFab(
     bottomNavItems: List<Screen> = Screen.Defaults,
     bottomNavSelected: Int = 0,
     pageListener: (Int) -> Unit = {},
-    fabListener: () -> Unit = {},
+    fabClickListener: () -> Unit = {},
     fabIcon: ImageVector = Icons.Filled.Edit,
     fabVisible: Boolean = true
 ) {
@@ -65,7 +62,7 @@ fun BottomBarWithFab(
                         shape = RoundedCornerShape(15.dp),
                         contentColor = Blue500_Background3,
                         containerColor = Blue500,
-                        onClick = { fabListener.invoke() }
+                        onClick = { fabClickListener.invoke() }
                     ) { Icon(imageVector = fabIcon, contentDescription = fabIcon.name) }
                 }
             },

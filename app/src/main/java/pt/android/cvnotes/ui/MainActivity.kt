@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteSweep
-import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -194,7 +193,7 @@ class MainActivity : ComponentActivity() {
                                     ),
                                     bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                     pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
-                                    fabListener = {
+                                    fabClickListener = {
                                         when {
                                             hasSelectedSections -> withSelectedSectionsBottomSheetVisible = true
                                             else -> newSectionBottomSheetVisible = true
@@ -207,7 +206,8 @@ class MainActivity : ComponentActivity() {
                                     fabVisible = isFabVisible
                                 )
                                 AddSectionBottomSheet(
-                                    bottomSheetVisible = newSectionBottomSheetVisible
+                                    bottomSheetVisible = newSectionBottomSheetVisible,
+                                    onOtherClicked = { dashboardViewModel.addPersonalDataFromRuiVieira() }
                                 ) { sectionType ->
                                     newSectionBottomSheetVisible = false
                                     dashboardViewModel.addSection(sectionType)

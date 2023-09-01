@@ -23,9 +23,11 @@ import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.util.SectionType
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddSectionBottomSheet(
     bottomSheetVisible: Boolean = false,
+    onOtherClicked: () -> Unit = {},
     onDismiss: (SectionType) -> Unit = {}
 ) {
     if (bottomSheetVisible) {
@@ -47,7 +49,15 @@ fun AddSectionBottomSheet(
                     LazyColumn {
                         items(Section.Sections) { sectionType ->
                             TextButton(
-                                onClick = { onDismiss.invoke(sectionType) },
+                                onClick = {
+                                    when (sectionType) {
+                                        SectionType.OTHER -> {
+                                            onOtherClicked.invoke()
+                                            onDismiss.invoke(SectionType.NONE)
+                                        }
+                                        else -> onDismiss.invoke(sectionType)
+                                    }
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(50.dp)
