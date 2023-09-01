@@ -219,7 +219,7 @@ class MainActivity : ComponentActivity() {
                                 route = "${SectionDetails.route}/{sectionId}",
                                 arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
                             ) {
-                                systemUiController.setSystemBarsColor(Green500, Green500_Background1)
+                                systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
                                 val viewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                 val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
                                 LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
@@ -230,6 +230,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable(route = NewNote.route) {
+                                systemUiController.setSystemBarsColor(Green500, Green500_Background1)
                                 val viewModel: EditNoteViewModel = hiltViewModel()
                                 EditNoteScreen(
                                     state = viewModel.state.value,
@@ -241,6 +242,7 @@ class MainActivity : ComponentActivity() {
                                 route = "${EditNote.route}/{noteId}",
                                 arguments = listOf(navArgument("noteId") { type = NavType.LongType })
                             ) {
+                                systemUiController.setSystemBarsColor(Green500, Green500_Background1)
                                 val viewModel: EditNoteViewModel = hiltViewModel()
                                 viewModel.getNote(it.arguments?.getLong("noteId") ?: 0L)
                                 EditNoteScreen(

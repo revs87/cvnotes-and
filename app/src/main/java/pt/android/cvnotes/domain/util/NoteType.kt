@@ -1,13 +1,15 @@
 package pt.android.cvnotes.domain.util
 
 
-enum class NoteType(val id: Int, val typeName: String) {
-    ALL(0, ""),
-    TEXT(1, "Text"),
-    KEY_VALUE_COLON_SEPARATED(2, "Key-value pair colon separated"),
-    BULLET(3, "Bullet"),
-    BULLET_2ND_LEVEL(4, "Bullet of 2nd level"),
-    TIMEFRAME(5, "Timeframe"),
+enum class NoteType(val id: Int, val typeName: String, val example: String) {
+    NONE(0, "-", "-"),
+    TEXT(1, "Text", "<TEXT>"),
+    BULLET(2, "Bullet", "<- TEXT>"),
+    BULLET_2ND_LEVEL(3, "2nd level Bullet", "<   - TEXT>"),
+    KEY_VALUE_COLON_SEPARATED(4, "Key-value pair colon separated", "<LABEL: TEXT>"),
+    KEY_VALUE_COLON_SEPARATED_WITH_BULLET(5, "Key-value pair with bullet", "<- LABEL: TEXT>"),
+    KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL(5, "Key-value pair with 2nd level bullet", "<    - LABEL: TEXT>"),
+    TIMEFRAME(6, "Timeframe", "<START_DATE - END_DATE>"),
 }
 
 fun Int.toNoteType(): NoteType = when (this) {
@@ -16,5 +18,5 @@ fun Int.toNoteType(): NoteType = when (this) {
     NoteType.BULLET.id -> NoteType.BULLET
     NoteType.BULLET_2ND_LEVEL.id -> NoteType.BULLET_2ND_LEVEL
     NoteType.TIMEFRAME.id -> NoteType.TIMEFRAME
-    else -> NoteType.ALL
+    else -> NoteType.NONE
 }

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.util.SectionType
-import pt.android.cvnotes.theme.BackgroundSecondaryCardColor
+import pt.android.cvnotes.theme.BackgroundCardColor
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.TextColor
 import java.util.Date
@@ -39,7 +39,7 @@ fun SectionDetailsCard(
     ) {
         Box(
             modifier = Modifier
-                .background(BackgroundSecondaryCardColor)
+                .background(BackgroundCardColor)
                 .fillMaxSize()
                 .padding(2.dp)
         ) {

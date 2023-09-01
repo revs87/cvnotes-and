@@ -26,7 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.util.toSectionType
+import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.BackgroundSecondaryColor
+import pt.android.cvnotes.theme.Blue500
+import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.Green500_Background1
 import pt.android.cvnotes.theme.Green500_Background3
@@ -52,8 +55,8 @@ fun SectionDetailsScreen(
             FloatingActionButton(
                 modifier = Modifier.size(75.dp),
                 shape = RoundedCornerShape(15.dp),
-                contentColor = Green500_Background3,
-                containerColor = Green500,
+                contentColor = Blue500_Background3,
+                containerColor = Blue500,
                 onClick = { addNoteListener.invoke() }
             ) {
                 Icon(
@@ -65,7 +68,7 @@ fun SectionDetailsScreen(
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
         Box(
-            modifier = Modifier.background(BackgroundSecondaryColor)
+            modifier = Modifier.background(BackgroundColor)
         ) {
             SectionDetailsCard(
                 modifier = Modifier.padding(padding),

@@ -1,5 +1,6 @@
 package pt.android.cvnotes.ui.editnote
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,15 +12,22 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import pt.android.cvnotes.domain.model.Note
-import pt.android.cvnotes.ui.util.component.TitleTopAppBar
+import pt.android.cvnotes.domain.util.NoteType
+import pt.android.cvnotes.theme.Green500
+import pt.android.cvnotes.theme.Green500_Background3
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
+import pt.android.cvnotes.ui.util.component.OptionNoteType
+import pt.android.cvnotes.ui.util.component.TitleTopAppBar
 
 
 @Composable
@@ -29,21 +37,31 @@ fun EditNoteScreen(
     saveNoteListener: (Note) -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    var noteTypeState by remember { mutableStateOf(NoteType.NONE) }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier.fillMaxSize(),
-        topBar = { TitleTopAppBar(title) }
+        topBar = { TitleTopAppBar(title, Green500) }
     ) { padding ->
-        Box {
+        Box(
+            modifier = Modifier
+                .background(Green500_Background3)
+                .fillMaxSize()
+                .padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                //TODO
+                OptionNoteType(
+                    initialOption = noteTypeState,
+                    onOptionSelected = { noteTypeState = it }
+                )
+
+
+
             }
             LoadingIndicator(
                 modifier = Modifier
@@ -52,7 +70,7 @@ fun EditNoteScreen(
                 state.isLoading
             )
         }
-        LaunchedEffect(System.currentTimeMillis()) {
+        LaunchedEffect(true) {
             if (state.errorMessage.isNotBlank()) {
                 snackbarHostState.showSnackbar(state.errorMessage)
             }
@@ -62,7 +80,7 @@ fun EditNoteScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun Preview() {
+private fun Preview() {
     MyTheme {
         EditNoteScreen()
     }
