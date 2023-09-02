@@ -3,6 +3,7 @@ package pt.android.cvnotes.ui.section_details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,12 +16,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,6 +32,7 @@ import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.SpNormal
 import pt.android.cvnotes.ui.util.component.BackTopAppBar
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
@@ -73,14 +77,28 @@ fun SectionDetailsScreen(
         Box(
             modifier = Modifier.fillMaxSize().background(BackgroundColor).padding(padding)
         ) {
-            SectionDetailsNoteCards(
-                modifier = Modifier,
-                type = state.section.typeId.toSectionType(),
-                onNoteClick = { noteId -> editNoteListener.invoke(noteId) },
-                notes = notes
-            )
+            if (notes.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "There are no Notes available.\nPlease add a New Note.",
+                        modifier = Modifier.fillMaxWidth(),
+                        fontSize = SpNormal,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else {
+                SectionDetailsNoteCards(
+                    modifier = Modifier,
+                    type = state.section.typeId.toSectionType(),
+                    onNoteClick = { noteId -> editNoteListener.invoke(noteId) },
+                    notes = notes
+                )
                 //TODO select note - edit Note button
                 //TODO add new Note button
+            }
             LoadingIndicator(
                 modifier = Modifier
                     .size(LoadingIndicatorSize)

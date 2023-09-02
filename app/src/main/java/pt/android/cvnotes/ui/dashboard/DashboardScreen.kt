@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -33,6 +32,7 @@ import kotlinx.coroutines.flow.debounce
 import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.SpNormal
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.SectionListCard
@@ -70,7 +70,7 @@ fun DashboardScreen(
                     Text(
                         text = "There are no Sections available.\nPlease create a Section and then add Notes to it.",
                         modifier = Modifier.fillMaxWidth(),
-                        fontSize = 14.sp,
+                        fontSize = SpNormal,
                         textAlign = TextAlign.Center
                     )
                 } else {

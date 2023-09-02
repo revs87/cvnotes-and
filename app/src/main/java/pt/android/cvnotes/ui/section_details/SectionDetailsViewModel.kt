@@ -1,6 +1,5 @@
 package pt.android.cvnotes.ui.section_details
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -16,6 +15,7 @@ import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.use_case.NoteUseCases
 import pt.android.cvnotes.domain.use_case.SectionUseCases
+import pt.android.cvnotes.ui.util.L
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +31,7 @@ class SectionDetailsViewModel @Inject constructor(
     private var addNoteJob: Job? = null
 
     fun getSection(sectionId: Int) {
-        Log.i("SectionDetailsViewModel", "Entered sectionId: $sectionId, ${viewModelScope.isActive}")
+        L.i("SectionDetailsViewModel", "Entered sectionId: $sectionId, ${viewModelScope.isActive}")
         getSectionJob?.let { if (it.isActive) { it.cancel() } }
         getSectionJob = viewModelScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {
@@ -53,7 +53,7 @@ class SectionDetailsViewModel @Inject constructor(
     }
 
     fun addNote(note: Note) {
-        Log.i("SectionDetailsViewModel", "Adding new Note to sectionId: ${note.sectionId}, ${viewModelScope.isActive}")
+        L.i("SectionDetailsViewModel", "Adding new Note to sectionId: ${note.sectionId}, ${viewModelScope.isActive}")
         addNoteJob?.let { if (it.isActive) { it.cancel() } }
         addNoteJob = viewModelScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {

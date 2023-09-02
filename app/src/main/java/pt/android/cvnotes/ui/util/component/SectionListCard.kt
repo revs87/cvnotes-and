@@ -28,6 +28,7 @@ import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.BackgroundCardColor
 import pt.android.cvnotes.theme.Gray300
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.SpNormal
 import pt.android.cvnotes.theme.TextColor
 import java.util.Date
 
@@ -77,8 +78,8 @@ fun SectionListCard(
                     notes.forEach { note ->
                         Text(
                             text = note.asString(),
-                            lineHeight = 14.sp,
-                            fontSize = 14.sp,
+                            lineHeight = SpNormal,
+                            fontSize = SpNormal,
                             textAlign = TextAlign.Justify,
                             color = TextColor
                         )

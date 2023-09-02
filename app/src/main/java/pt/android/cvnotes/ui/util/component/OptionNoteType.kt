@@ -18,10 +18,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.Green500_Background2
+import pt.android.cvnotes.theme.SpXLarge
+import pt.android.cvnotes.theme.SpLarge
 
 @Composable
 fun OptionNoteType(
@@ -34,7 +35,7 @@ fun OptionNoteType(
     OutlinedCard(
         modifier = Modifier
             .animateContentSize()
-            .padding(top = 20.dp, bottom = 10.dp),
+            .padding(start = 12.dp, end = 12.dp, top = 20.dp, bottom = 10.dp),
         colors = CardDefaults.outlinedCardColors(
             containerColor = Green500_Background2
         ),
@@ -53,10 +54,10 @@ fun OptionNoteType(
                     Text(text = "Click HERE to select a Note type.")
                 } else {
                     Text(text = "Note type selected:\n")
-                    Text(text = noteTypeState.typeName.uppercase(), fontSize = 16.sp)
+                    Text(text = noteTypeState.typeName.uppercase(), fontSize = SpLarge)
                     when (noteTypeState) {
                         NoteType.NONE -> { /* do nothing */}
-                        else -> { Text(text = noteTypeState.example, fontSize = 26.sp) }
+                        else -> { Text(text = noteTypeState.example, fontSize = SpXLarge) }
                     }
                 }
             }

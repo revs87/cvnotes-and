@@ -1,6 +1,5 @@
 package pt.android.cvnotes.ui.editnote
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -14,6 +13,7 @@ import kotlinx.coroutines.withContext
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.use_case.NoteUseCases
 import pt.android.cvnotes.domain.util.NoteType
+import pt.android.cvnotes.ui.util.L
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +42,7 @@ class EditNoteViewModel @Inject constructor(
 
     private var addNoteJob: Job? = null
     fun addNote(note: Note) {
-        Log.i("EditNoteViewModel", "Adding new Note to sectionId: ${note.sectionId}, ${viewModelScope.isActive}")
+        L.i("EditNoteViewModel", "Adding new Note to sectionId: ${note.sectionId}, ${viewModelScope.isActive}")
         addNoteJob?.let { if (it.isActive) { it.cancel() } }
         addNoteJob = viewModelScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {

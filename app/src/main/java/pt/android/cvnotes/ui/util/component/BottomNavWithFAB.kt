@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,12 +27,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue400
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.SpSmall
 import pt.android.cvnotes.ui.util.Screen
 
 
@@ -118,7 +117,7 @@ private fun MenuButton(
                 Text(
                     modifier = Modifier.padding(top = 2.dp),
                     text = item.title.uppercase(),
-                    fontSize = 11.sp,
+                    fontSize = SpSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = if (index == bottomNavSelected) { Blue500 } else { Blue400 }
                 )

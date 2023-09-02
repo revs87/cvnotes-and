@@ -26,10 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
@@ -39,7 +40,10 @@ import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.Green500_Background2
 import pt.android.cvnotes.theme.Green500_Background3
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.SpLarge
+import pt.android.cvnotes.theme.SpMedium
 import pt.android.cvnotes.theme.TextColor
+import pt.android.cvnotes.theme.White
 import pt.android.cvnotes.ui.util.component.BackTopAppBar
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
@@ -95,14 +99,19 @@ fun EditNoteScreen(
                 .padding(padding),
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Header(
+                    text = "Preview:",
+                    textColor = Green500_Background3,
+                    bgColor = Green500,
+                )
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Green500)
-                        .padding(top = 10.dp, bottom = 30.dp),
+                        .padding(bottom = 30.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
@@ -121,14 +130,19 @@ fun EditNoteScreen(
                                     state.note.content1.isBlank() -> "New Note!"
                                     else -> state.note.asString().ifEmpty { "New Note!" }
                                 },
-                                lineHeight = 18.sp,
-                                fontSize = 18.sp,
+                                lineHeight = SpMedium,
+                                fontSize = SpMedium,
                                 textAlign = TextAlign.Justify,
                                 color = TextColor
                             )
                         }
                     }
                 }
+                Header(
+                    text = "Note type:",
+                    textColor = TextColor,
+                    bgColor = Green500_Background3,
+                )
                 OptionNoteType(
                     initialOption = noteTypeState,
                     onOptionSelected = { noteType ->
@@ -165,4 +179,23 @@ private fun Preview() {
     MyTheme {
         EditNoteScreen()
     }
+}
+
+
+@Composable
+private fun Header(
+    text: String = "",
+    textColor: Color = TextColor,
+    bgColor: Color = White
+) {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(bgColor)
+            .padding(12.dp),
+        text = text,
+        fontSize = SpMedium,
+        fontWeight = FontWeight.SemiBold,
+        color = textColor
+    )
 }

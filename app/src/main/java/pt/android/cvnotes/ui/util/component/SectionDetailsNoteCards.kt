@@ -23,6 +23,7 @@ import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.SpMedium
 import pt.android.cvnotes.theme.TextColor
 import java.util.Date
 
@@ -74,8 +75,8 @@ fun SectionDetailsNoteCards(
                             modifier = Modifier
                                 .padding(8.dp),
                             text = note.asString(),
-                            lineHeight = 18.sp,
-                            fontSize = 18.sp,
+                            lineHeight = SpMedium,
+                            fontSize = SpMedium,
                             textAlign = TextAlign.Justify,
                             color = TextColor
                         )
