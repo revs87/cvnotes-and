@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NoteAdd
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Card
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -38,6 +39,7 @@ import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.theme.Green500
+import pt.android.cvnotes.theme.Green500_Background2
 import pt.android.cvnotes.theme.Green500_Background3
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.TextColor
@@ -75,12 +77,13 @@ fun EditNoteScreen(
                     onClick = {
                         saveNoteListener.invoke(state.note ?: Note.default)
                         coroutineScope.launch {
-                            state.note?.let { snackbarHostState.showSnackbar("Note added: ${it.asString()}") }
+                            val action = if (title == "New Note") { "added" } else { "saved" }
+                            state.note?.let { snackbarHostState.showSnackbar("Note $action: ${it.asString()}") }
                         }
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.NoteAdd,
+                        imageVector = if (title == "New Note") { Icons.Filled.NoteAdd } else { Icons.Filled.Save },
                         contentDescription = "Add note"
                     )
                 }
@@ -102,7 +105,7 @@ fun EditNoteScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Green500)
-                        .padding(top = 20.dp, bottom = 20.dp),
+                        .padding(top = 10.dp, bottom = 20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
@@ -111,7 +114,7 @@ fun EditNoteScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(Green500_Background3)
+                                .background(Green500_Background2)
                         ) {
                             Text(
                                 modifier = Modifier
