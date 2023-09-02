@@ -24,12 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.ui.util.component.BackTopAppBar
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.SectionDetailsNoteCards
@@ -40,6 +40,7 @@ fun SectionDetailsScreen(
     state: SectionDetailsState = SectionDetailsState(),
     addNoteListener: (Int) -> Unit = {},
     editNoteListener: (Long) -> Unit = {},
+    onBackPressed: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val notes by state.notes.collectAsStateWithLifecycle(initialValue = emptyList())
@@ -47,6 +48,7 @@ fun SectionDetailsScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = { BackTopAppBar("Notes", Blue500, Blue500_Background3) { onBackPressed.invoke() } },
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
@@ -61,6 +63,7 @@ fun SectionDetailsScreen(
                         hasSelectedNote -> Icons.Filled.EditNote
                         else -> Icons.Filled.NoteAdd
                     },
+                    tint = Blue500_Background3,
                     contentDescription = "Add note"
                 )
             }
@@ -68,10 +71,10 @@ fun SectionDetailsScreen(
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
         Box(
-            modifier = Modifier.background(BackgroundColor)
+            modifier = Modifier.fillMaxSize().background(BackgroundColor).padding(padding)
         ) {
             SectionDetailsNoteCards(
-                modifier = Modifier.padding(padding),
+                modifier = Modifier,
                 type = state.section.typeId.toSectionType(),
                 onNoteClick = { noteId -> editNoteListener.invoke(noteId) },
                 notes = notes

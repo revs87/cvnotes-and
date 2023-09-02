@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -38,7 +37,7 @@ import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.OptionNoteType
-import pt.android.cvnotes.ui.util.component.TitleTopAppBar
+import pt.android.cvnotes.ui.util.component.BackTopAppBar
 
 
 @Composable
@@ -48,6 +47,7 @@ fun EditNoteScreen(
     isNoteValid: Boolean = false,
     savePartialListener: (Note) -> Note = { Note.default },
     saveNoteListener: (Note) -> Unit = {},
+    onBackPressed: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var noteTypeState by remember { mutableStateOf(NoteType.NONE) }
@@ -56,7 +56,7 @@ fun EditNoteScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier.fillMaxSize(),
-        topBar = { TitleTopAppBar(title, Green500) },
+        topBar = { BackTopAppBar(title, Green500, Green500_Background3) { onBackPressed.invoke() } },
         floatingActionButton = {
             if (isNoteValid) {
                 FloatingActionButton(

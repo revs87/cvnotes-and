@@ -25,7 +25,8 @@ import pt.android.cvnotes.theme.button.TertiaryButton
 import pt.android.cvnotes.ui.util.Screen.About
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
-import pt.android.cvnotes.ui.util.component.TitleTopAppBar
+import pt.android.cvnotes.ui.util.component.BackTopAppBar
+import pt.android.cvnotes.ui.util.component.CenteredTopAppBar
 
 
 @Composable
@@ -43,7 +44,7 @@ fun AboutScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier.fillMaxSize(),
-        topBar = { TitleTopAppBar(About.title) }
+        topBar = { CenteredTopAppBar(About.title) }
     ) { padding ->
         Box {
             Column(

@@ -229,7 +229,8 @@ class MainActivity : ComponentActivity() {
                                 SectionDetailsScreen(
                                     state = viewModel.state.value,
                                     addNoteListener = { navigateTo(navController, "${NewNote.route}/${sectionIdState.intValue}") },
-                                    editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/$noteId") }
+                                    editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/$noteId") },
+                                    onBackPressed = { navController.navigateUp() }
                                 )
                             }
                             composable(
@@ -245,7 +246,8 @@ class MainActivity : ComponentActivity() {
                                     title = NewNote.title,
                                     isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
                                     savePartialListener = { note -> viewModel.savePartialNote(note) },
-                                    saveNoteListener = { note -> viewModel.addNote(note) }
+                                    saveNoteListener = { note -> viewModel.addNote(note) },
+                                    onBackPressed = { navController.navigateUp() }
                                 )
                             }
                             composable(
@@ -261,7 +263,8 @@ class MainActivity : ComponentActivity() {
                                     title = EditNote.title,
                                     isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
                                     savePartialListener = { note -> viewModel.savePartialNote(note) },
-                                    saveNoteListener = { note -> viewModel.addNote(note) }
+                                    saveNoteListener = { note -> viewModel.addNote(note) },
+                                    onBackPressed = { navController.navigateUp() }
                                 )
                             }
                         }
