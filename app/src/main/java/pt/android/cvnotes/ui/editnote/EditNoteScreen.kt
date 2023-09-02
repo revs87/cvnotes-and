@@ -105,7 +105,7 @@ fun EditNoteScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Green500)
-                        .padding(top = 10.dp, bottom = 20.dp),
+                        .padding(top = 10.dp, bottom = 30.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Card(

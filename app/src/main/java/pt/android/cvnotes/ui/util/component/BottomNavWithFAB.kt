@@ -56,7 +56,7 @@ fun BottomBarWithFab(
                             .size(75.dp)
                             .offset(x = 0.dp, y = 80.dp)
                             .border(
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary),
+                                border = BorderStroke(1.dp, Blue500),
                                 shape = RoundedCornerShape(15.dp)
                             ),
                         shape = RoundedCornerShape(15.dp),
