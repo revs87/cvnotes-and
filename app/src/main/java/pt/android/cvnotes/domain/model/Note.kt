@@ -17,8 +17,8 @@ data class Note(
     @PrimaryKey(autoGenerate = true) val id: Long? = null
 ) {
     companion object {
-        val default by lazy { Note(sectionId = 0, type = NoteType.NONE.id) }
-        val types by lazy { NoteType.values().toList().filter { it != NoteType.NONE } }
+        val Default by lazy { Note(sectionId = 0, type = NoteType.NONE.id) }
+        val Types by lazy { NoteType.values().toList().filter { it != NoteType.NONE } }
     }
 }
 

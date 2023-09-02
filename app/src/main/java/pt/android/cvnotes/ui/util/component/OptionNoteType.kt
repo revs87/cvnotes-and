@@ -29,7 +29,7 @@ fun OptionNoteType(
     onOptionSelected: (NoteType) -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
-    var noteTypeState by remember { mutableStateOf(initialOption) }
+    var noteTypeState = initialOption
 
     OutlinedCard(
         modifier = Modifier

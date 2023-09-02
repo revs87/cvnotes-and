@@ -12,7 +12,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pt.android.cvnotes.domain.model.Note
-import pt.android.cvnotes.domain.model.shouldHaveContent2
 import pt.android.cvnotes.domain.use_case.NoteUseCases
 import pt.android.cvnotes.domain.util.NoteType
 import javax.inject.Inject

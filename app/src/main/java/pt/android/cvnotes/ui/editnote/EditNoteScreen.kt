@@ -1,6 +1,5 @@
 package pt.android.cvnotes.ui.editnote
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,11 +22,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +34,7 @@ import kotlinx.coroutines.launch
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
 import pt.android.cvnotes.domain.util.NoteType
+import pt.android.cvnotes.domain.util.toNoteType
 import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.Green500_Background2
 import pt.android.cvnotes.theme.Green500_Background3
@@ -46,22 +43,22 @@ import pt.android.cvnotes.theme.TextColor
 import pt.android.cvnotes.ui.util.component.BackTopAppBar
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
+import pt.android.cvnotes.ui.util.component.OptionNoteContent
 import pt.android.cvnotes.ui.util.component.OptionNoteType
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditNoteScreen(
     state: EditNoteState = EditNoteState(),
     title: String = "",
     isNoteValid: Boolean = false,
-    savePartialListener: (Note) -> Note = { Note.default },
+    savePartialListener: (Note) -> Note = { Note.Default },
     saveNoteListener: (Note) -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    var noteTypeState by remember { mutableStateOf(NoteType.NONE) }
     val coroutineScope = rememberCoroutineScope()
+    var noteTypeState = state.note?.type?.toNoteType() ?: NoteType.NONE
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -75,7 +72,7 @@ fun EditNoteScreen(
                     contentColor = Green500_Background3,
                     containerColor = Green500,
                     onClick = {
-                        saveNoteListener.invoke(state.note ?: Note.default)
+                        saveNoteListener.invoke(state.note ?: Note.Default)
                         coroutineScope.launch {
                             val action = if (title == "New Note") { "added" } else { "saved" }
                             state.note?.let { snackbarHostState.showSnackbar("Note $action: ${it.asString()}") }
@@ -122,7 +119,7 @@ fun EditNoteScreen(
                                 text = when {
                                     state.note == null -> "New Note!"
                                     state.note.content1.isBlank() -> "New Note!"
-                                    else -> state.note.asString()
+                                    else -> state.note.asString().ifEmpty { "New Note!" }
                                 },
                                 lineHeight = 18.sp,
                                 fontSize = 18.sp,
@@ -137,11 +134,15 @@ fun EditNoteScreen(
                     onOptionSelected = { noteType ->
                         noteTypeState = noteType
                         savePartialListener.invoke(
-                            state.note?.copy(type = noteType.id, content1 = "Wassup", content2 = "Dog?!") ?: Note.default)
+                            state.note?.copy(
+                                type = noteType.id,
+                                content1 = state.note.content1,
+                                content2 = state.note.content2
+                            ) ?: Note.Default)
                     }
                 )
-                // TODO
-
+                OptionNoteContent()
+                OptionNoteContent()
             }
             LoadingIndicator(
                 modifier = Modifier
