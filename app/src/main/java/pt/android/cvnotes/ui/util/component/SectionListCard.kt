@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material3.Card
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +29,7 @@ import pt.android.cvnotes.theme.Gray300
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.SpNormal
 import pt.android.cvnotes.theme.TextColor
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 import java.util.Date
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -67,7 +67,7 @@ fun SectionListCard(
                 .padding(2.dp)
         ) {
             Column {
-                Text(
+                CVNText(
                     text = description,
                     fontSize = 38.sp,
                     color = TextColor
@@ -76,7 +76,7 @@ fun SectionListCard(
                     modifier = Modifier.padding(4.dp)
                 ) {
                     notes.forEach { note ->
-                        Text(
+                        CVNText(
                             text = note.asString(),
                             lineHeight = SpNormal,
                             fontSize = SpNormal,

@@ -10,7 +10,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -21,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background3
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @Preview(showBackground = true)
@@ -62,7 +62,7 @@ private fun TitleBox(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
-        Text(
+        CVNText(
             text = title,
             color = contentColor
         )

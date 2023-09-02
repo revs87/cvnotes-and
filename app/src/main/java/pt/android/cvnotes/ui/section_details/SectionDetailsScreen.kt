@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,6 +36,7 @@ import pt.android.cvnotes.ui.util.component.BackTopAppBar
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.SectionDetailsNoteCards
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @Composable
@@ -82,7 +82,7 @@ fun SectionDetailsScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
+                    CVNText(
                         text = "There are no Notes available.\nPlease add a New Note.",
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = SpNormal,

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +29,7 @@ fun SectionTopAppBar(
                 modifier = Modifier.fillMaxSize().padding(2.dp),
                 contentAlignment = Alignment.TopStart
             ) {
-                Text(text = title, color = MaterialTheme.colorScheme.onPrimary)
+                CVNText(text = title, color = MaterialTheme.colorScheme.onPrimary)
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary)

@@ -9,7 +9,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.R
 import pt.android.cvnotes.theme.button.PrimaryButton
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -63,7 +63,7 @@ fun AuthFields(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = title)
+        CVNText(text = title)
         EmailField(emailTitle, emailValue, { updateEmail.invoke(it) }) {
             focusManager?.moveFocus(FocusDirection.Down)
         }
@@ -81,7 +81,7 @@ fun AuthFields(
                 createUser?.invoke(emailValue, pwdValue)
                 logUser?.invoke(emailValue, pwdValue)
             }) {
-            Text(text = btnText.uppercase())
+            CVNText(text = btnText.uppercase())
         }
     }
 }
@@ -100,7 +100,7 @@ private fun EmailField(
             onFill = { onValueChange.invoke(it) },
         ),
         singleLine = true,
-        placeholder = { Text(text = title.uppercase()) },
+        placeholder = { CVNText(text = title.uppercase()) },
         value = value,
         onValueChange = { onValueChange.invoke(it) },
         keyboardOptions = KeyboardOptions(
@@ -123,7 +123,7 @@ private fun PasswordField(
     var passwordVisible: Boolean by remember { mutableStateOf(false) }
 
     TextField(
-        placeholder = { Text(text = title.uppercase()) },
+        placeholder = { CVNText(text = title.uppercase()) },
         value = value,
         singleLine = true,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),

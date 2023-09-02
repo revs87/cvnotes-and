@@ -5,7 +5,6 @@ package pt.android.cvnotes.ui.util.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Section
 import pt.android.cvnotes.domain.util.SectionType
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +46,7 @@ fun AddSectionBottomSheet(
                     )
             ) {
                 Column {
-                    Text(text = "Add a Section:", fontSize = 22.sp)
+                    CVNText(text = "Add a Section:", fontSize = 22.sp)
                     LazyColumn {
                         items(Section.Sections) { sectionType ->
                             TextButton(
@@ -71,7 +70,7 @@ fun AddSectionBottomSheet(
                                 Column(
                                     verticalArrangement = Arrangement.Center
                                 ) {
-                                    Text(
+                                    CVNText(
                                         text = sectionType.sectionName,
                                         fontSize = 22.sp,
                                         textAlign = TextAlign.Center

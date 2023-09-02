@@ -10,7 +10,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.asIntState
@@ -76,6 +75,7 @@ import pt.android.cvnotes.ui.util.Screen.Splash
 import pt.android.cvnotes.ui.util.component.AddSectionBottomSheet
 import pt.android.cvnotes.ui.util.component.BottomBarWithFab
 import pt.android.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @AndroidEntryPoint
@@ -300,7 +300,7 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navControll
 
 @Composable
 fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+    CVNText(text = "Hello $name!")
 }
 
 @Preview(showBackground = true)

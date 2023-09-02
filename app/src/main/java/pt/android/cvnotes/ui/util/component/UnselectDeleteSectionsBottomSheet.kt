@@ -10,13 +10,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 data class SelectedSectionsOption(
     val title: String = "",
@@ -53,7 +53,7 @@ fun UnselectDeleteSectionsBottomSheet(
                     )
             ) {
                 Column {
-                    Text(text = "Selected Sections:", fontSize = 22.sp)
+                    CVNText(text = "Selected Sections:", fontSize = 22.sp)
                     LazyColumn {
                         itemsIndexed(SelectedSectionsOption.Options) { index, option ->
                             when (index) {
@@ -72,7 +72,7 @@ fun UnselectDeleteSectionsBottomSheet(
                                 Column(
                                     verticalArrangement = Arrangement.Center
                                 ) {
-                                    Text(
+                                    CVNText(
                                         text = option.title,
                                         fontSize = 22.sp,
                                         textAlign = TextAlign.Center

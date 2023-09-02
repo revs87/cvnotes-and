@@ -19,10 +19,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.ui.auth.AuthError.*
 import pt.android.cvnotes.ui.util.component.AuthFields
 import pt.android.cvnotes.ui.util.component.AuthFieldsState
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
-import pt.android.cvnotes.ui.auth.AuthError.*
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

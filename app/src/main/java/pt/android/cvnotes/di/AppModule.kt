@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

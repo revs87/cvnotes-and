@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -23,10 +22,10 @@ import pt.android.cvnotes.theme.Blue500_Background1
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.button.TertiaryButton
 import pt.android.cvnotes.ui.util.Screen.About
+import pt.android.cvnotes.ui.util.component.CenteredTopAppBar
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
-import pt.android.cvnotes.ui.util.component.BackTopAppBar
-import pt.android.cvnotes.ui.util.component.CenteredTopAppBar
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @Composable
@@ -54,10 +53,10 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Version: ${state.value.version}")
-                Text(text = "Logged as: ${profileState.value.email}")
+                CVNText(text = "Version: ${state.value.version}")
+                CVNText(text = "Logged as: ${profileState.value.email}")
                 TertiaryButton(onClick = { logoutListener.invoke() }) {
-                    Text(text = "Log out".uppercase())
+                    CVNText(text = "Log out".uppercase())
                 }
             }
             LoadingIndicator(

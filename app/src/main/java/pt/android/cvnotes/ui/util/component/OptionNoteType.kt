@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,8 +20,9 @@ import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.Green500_Background2
-import pt.android.cvnotes.theme.SpXLarge
 import pt.android.cvnotes.theme.SpLarge
+import pt.android.cvnotes.theme.SpXLarge
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 @Composable
 fun OptionNoteType(
@@ -51,13 +51,13 @@ fun OptionNoteType(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (noteTypeState.id == 0) {
-                    Text(text = "Click HERE to select a Note type.")
+                    CVNText(text = "Click HERE to select a Note type.")
                 } else {
-                    Text(text = "Note type selected:\n")
-                    Text(text = noteTypeState.typeName.uppercase(), fontSize = SpLarge)
+                    CVNText(text = "Note type selected:\n")
+                    CVNText(text = noteTypeState.typeName.uppercase(), fontSize = SpLarge)
                     when (noteTypeState) {
                         NoteType.NONE -> { /* do nothing */}
-                        else -> { Text(text = noteTypeState.example, fontSize = SpXLarge) }
+                        else -> { CVNText(text = noteTypeState.example, fontSize = SpXLarge) }
                     }
                 }
             }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +24,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import pt.android.cvnotes.theme.Blue500
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 @Preview(showBackground = true)
 @Composable
@@ -37,7 +37,7 @@ fun SplashScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SplashAnimation { continueListener.invoke() }
-        Text(
+        CVNText(
             text = "CVNotes",
             fontSize = 24.sp,
             letterSpacing = 6.sp,

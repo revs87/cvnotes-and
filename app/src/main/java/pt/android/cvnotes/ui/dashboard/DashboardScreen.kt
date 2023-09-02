@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +35,7 @@ import pt.android.cvnotes.theme.SpNormal
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.SectionListCard
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @OptIn(ExperimentalFoundationApi::class, FlowPreview::class)
@@ -67,7 +67,7 @@ fun DashboardScreen(
             ) {
                 // TODO: Add StatsBoard
                 if (sectionsState.isEmpty()) {
-                    Text(
+                    CVNText(
                         text = "There are no Sections available.\nPlease create a Section and then add Notes to it.",
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = SpNormal,

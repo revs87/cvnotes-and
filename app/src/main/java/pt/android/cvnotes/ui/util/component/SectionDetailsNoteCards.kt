@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +24,7 @@ import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.SpMedium
 import pt.android.cvnotes.theme.TextColor
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 import java.util.Date
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -47,7 +47,7 @@ fun SectionDetailsNoteCards(
             verticalArrangement = Arrangement.Top
         ) {
             item(key = -1L) {
-                Text(
+                CVNText(
                     modifier = Modifier
                         .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 10.dp),
                     text = type.sectionName,
@@ -71,7 +71,7 @@ fun SectionDetailsNoteCards(
                                 onLongClick = {},
                             )
                     ) {
-                        Text(
+                        CVNText(
                             modifier = Modifier
                                 .padding(8.dp),
                             text = note.asString(),

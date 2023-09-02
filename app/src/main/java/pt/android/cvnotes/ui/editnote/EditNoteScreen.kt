@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -40,7 +39,6 @@ import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.Green500_Background2
 import pt.android.cvnotes.theme.Green500_Background3
 import pt.android.cvnotes.theme.MyTheme
-import pt.android.cvnotes.theme.SpLarge
 import pt.android.cvnotes.theme.SpMedium
 import pt.android.cvnotes.theme.TextColor
 import pt.android.cvnotes.theme.White
@@ -49,6 +47,7 @@ import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.OptionNoteContent
 import pt.android.cvnotes.ui.util.component.OptionNoteType
+import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
 @Composable
@@ -122,7 +121,7 @@ fun EditNoteScreen(
                             modifier = Modifier
                                 .background(Green500_Background2)
                         ) {
-                            Text(
+                            CVNText(
                                 modifier = Modifier
                                     .padding(8.dp),
                                 text = when {
@@ -188,7 +187,7 @@ private fun Header(
     textColor: Color = TextColor,
     bgColor: Color = White
 ) {
-    Text(
+    CVNText(
         modifier = Modifier
             .fillMaxWidth()
             .background(bgColor)
