@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalAutofill
 import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.R
+import pt.android.cvnotes.theme.FontSourceSansPro
 import pt.android.cvnotes.theme.button.PrimaryButton
 import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
@@ -63,7 +65,7 @@ fun AuthFields(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CVNText(text = title)
+        CVNText(modifier = Modifier.padding(bottom = 8.dp), text = title)
         EmailField(emailTitle, emailValue, { updateEmail.invoke(it) }) {
             focusManager?.moveFocus(FocusDirection.Down)
         }
@@ -74,6 +76,7 @@ fun AuthFields(
             logUser?.invoke(emailValue, pwdValue)
         }
         PrimaryButton(
+            modifier = Modifier.padding(top = 6.dp),
             enabled = submitBtnEnabled,
             onClick = {
                 keyboardController?.hide()
@@ -109,7 +112,8 @@ private fun EmailField(
         ),
         keyboardActions = KeyboardActions(
             onNext = { onKeyboardAction.invoke() }
-        )
+        ),
+        textStyle = TextStyle(fontFamily = FontSourceSansPro)
     )
 }
 
@@ -146,6 +150,7 @@ private fun PasswordField(
                 )
             }
         },
+        textStyle = TextStyle(fontFamily = FontSourceSansPro)
     )
 }
 
