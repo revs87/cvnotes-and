@@ -21,6 +21,7 @@ import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
 import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.BackgroundColor
+import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.TextColor
 import java.util.Date
@@ -63,6 +64,7 @@ fun SectionDetailsNoteCards(
                 ) {
                     Box(
                         modifier = modifier
+                            .background(Blue500_Background3)
                             .combinedClickable(
                                 onClick = { onNoteClick.invoke(note.id ?: 0L) },
                                 onLongClick = {},
