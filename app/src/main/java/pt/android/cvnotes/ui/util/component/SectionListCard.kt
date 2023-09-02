@@ -80,7 +80,7 @@ fun SectionListCard(
                             text = note.asString(),
                             lineHeight = SpNormal,
                             fontSize = SpNormal,
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Start,
                             color = TextColor
                         )
                     }

@@ -77,7 +77,7 @@ fun SectionDetailsNoteCards(
                             text = note.asString(),
                             lineHeight = SpMedium,
                             fontSize = SpMedium,
-                            textAlign = TextAlign.Justify,
+                            textAlign = TextAlign.Start,
                             color = TextColor
                         )
                     }
