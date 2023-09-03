@@ -224,7 +224,7 @@ fun EditNoteScreen(
                             datetime = Date(state.note?.timestamp ?: 0).toString()
                         )
                     }
-                    Spacer(modifier = Modifier.height(150.dp))
+                    Spacer(modifier = Modifier.height(100.dp))
                 }
             }
             LoadingIndicator(
