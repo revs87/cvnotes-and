@@ -53,7 +53,7 @@ import pt.android.cvnotes.ui.util.component.cvn.CVNText
 @Composable
 fun EditNoteScreen(
     state: EditNoteState = EditNoteState(),
-    title: String = "",
+    title: String = "Title",
     isNoteValid: Boolean = false,
     savePartialListener: (Note) -> Note = { Note.Default },
     saveNoteListener: (Note) -> Unit = {},
