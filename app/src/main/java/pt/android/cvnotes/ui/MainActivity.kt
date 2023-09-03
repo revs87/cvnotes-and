@@ -245,7 +245,9 @@ class MainActivity : ComponentActivity() {
                                     state = viewModel.state.value,
                                     title = NewNote.title,
                                     isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
-                                    savePartialListener = { note -> viewModel.savePartialNote(note) },
+                                    updateContent1 = { note, newText -> viewModel.updateStateNode(note, newText, true) },
+                                    updateContent2 = { note, newText -> viewModel.updateStateNode(note, newText, false) },
+                                    savePartialListener = { note -> viewModel.saveStatePartialNote(note) },
                                     saveNoteListener = { note -> viewModel.addNote(note) },
                                     onBackPressed = { navController.navigateUp() }
                                 )
@@ -262,7 +264,9 @@ class MainActivity : ComponentActivity() {
                                     state = viewModel.state.value,
                                     title = EditNote.title,
                                     isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
-                                    savePartialListener = { note -> viewModel.savePartialNote(note) },
+                                    updateContent1 = { note, newText -> viewModel.updateStateNode(note, newText, true) },
+                                    updateContent2 = { note, newText -> viewModel.updateStateNode(note, newText, false) },
+                                    savePartialListener = { note -> viewModel.saveStatePartialNote(note) },
                                     saveNoteListener = { note -> viewModel.addNote(note) },
                                     onBackPressed = { navController.navigateUp() }
                                 )

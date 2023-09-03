@@ -11,9 +11,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pt.android.cvnotes.domain.model.Note
+import pt.android.cvnotes.domain.model.isDoubleContent
 import pt.android.cvnotes.domain.use_case.NoteUseCases
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.ui.util.L
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -65,7 +67,7 @@ class EditNoteViewModel @Inject constructor(
         )
     }
 
-    fun savePartialNote(note: Note): Note {
+    fun saveStatePartialNote(note: Note): Note {
         _state.value = _state.value.copy(
             note = note,
             isLoading = false
@@ -77,8 +79,19 @@ class EditNoteViewModel @Inject constructor(
         when {
             note == null -> false
             note.type == NoteType.NONE.id -> false
-//            note.content1.isBlank() -> false
-//            note.content2.isBlank() && note.shouldHaveContent2() -> false
+            note.content1.isBlank() -> false
+            note.content2.isBlank() && note.isDoubleContent() -> false
             else -> true
         }
+
+    fun updateStateNode(note: Note?, newContent: String, isContent1: Boolean = true) {
+        note ?: return
+        _state.value = _state.value.copy(
+            note = note.copy(
+                content1 = if (isContent1) { newContent } else { note.content1 },
+                content2 = if (!isContent1) { newContent } else { note.content2 },
+                timestamp = Date().time
+            )
+        )
+    }
 }

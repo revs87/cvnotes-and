@@ -24,3 +24,9 @@ fun Int.toNoteType(): NoteType = when (this) {
     NoteType.TIMEFRAME.id -> NoteType.TIMEFRAME
     else -> NoteType.NONE
 }
+
+fun NoteType.isDoubleContent(): Boolean =
+    this.id == NoteType.KEY_VALUE_COLON_SEPARATED.id
+            || this.id == NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id
+            || this.id == NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL.id
+            || this.id == NoteType.TIMEFRAME.id

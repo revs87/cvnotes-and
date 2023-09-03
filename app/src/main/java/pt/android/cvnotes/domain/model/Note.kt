@@ -3,6 +3,7 @@ package pt.android.cvnotes.domain.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pt.android.cvnotes.domain.util.NoteType
+import pt.android.cvnotes.domain.util.isDoubleContent
 import pt.android.cvnotes.domain.util.toNoteType
 import java.util.Date
 
@@ -22,11 +23,8 @@ data class Note(
     }
 }
 
-fun Note.shouldHaveContent2(): Boolean =
-    this.type == NoteType.KEY_VALUE_COLON_SEPARATED.id
-            && this.type == NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id
-            && this.type == NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET_2ND_LEVEL.id
-            && this.type == NoteType.TIMEFRAME.id
+fun Note?.isDoubleContent(): Boolean =
+    this != null && this.type.toNoteType().isDoubleContent()
 
 
 // • = \u2022,   ● = \u25CF,   ○ = \u25CB,   ▪ = \u25AA,   ■ = \u25A0,   □ = \u25A1,   ► = \u25BA

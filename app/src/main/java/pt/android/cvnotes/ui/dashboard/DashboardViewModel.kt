@@ -160,6 +160,7 @@ class DashboardViewModel @Inject constructor(
         noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "Porto, Portugal"))
         noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "LinkedIn", "https://www.linkedin.com/in/revs87"))
         noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "Twitter", "https://twitter.com/revs87"))
+        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "X", "https://x.com/revs87"))
         noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "GitHub",  "https://github.com/revs87"))
     }
     private suspend fun addRuiVieiraSummaryNotes(sectionId: Int) {

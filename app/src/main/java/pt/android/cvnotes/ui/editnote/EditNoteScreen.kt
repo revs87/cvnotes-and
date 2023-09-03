@@ -1,14 +1,20 @@
 package pt.android.cvnotes.ui.editnote
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material.icons.filled.Save
@@ -33,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
+import pt.android.cvnotes.domain.model.isDoubleContent
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.domain.util.toNoteType
 import pt.android.cvnotes.theme.Green500
@@ -45,7 +52,7 @@ import pt.android.cvnotes.theme.White
 import pt.android.cvnotes.ui.util.component.BackTopAppBar
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
-import pt.android.cvnotes.ui.util.component.OptionNoteContent
+import pt.android.cvnotes.ui.util.component.OptionNoteContentTextField
 import pt.android.cvnotes.ui.util.component.OptionNoteType
 import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
@@ -55,13 +62,19 @@ fun EditNoteScreen(
     state: EditNoteState = EditNoteState(),
     title: String = "Title",
     isNoteValid: Boolean = false,
+    updateContent1: (note: Note?, newText: String) -> Unit = { _, _ ->},
+    updateContent2: (note: Note?, newText: String) -> Unit = { _, _ ->},
     savePartialListener: (Note) -> Note = { Note.Default },
     saveNoteListener: (Note) -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    var isDoubleContent = state.note.isDoubleContent()
     var noteTypeState = state.note?.type?.toNoteType() ?: NoteType.NONE
+    val isUnselected = noteTypeState.id == NoteType.NONE.id
+    var noteContent1 = ""
+    var noteContent2 = ""
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -102,6 +115,7 @@ fun EditNoteScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Header(
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Preview:",
                     textColor = Green500_Background3,
                     bgColor = Green500,
@@ -137,25 +151,69 @@ fun EditNoteScreen(
                         }
                     }
                 }
-                Header(
-                    text = "Note type:",
-                    textColor = TextColor,
-                    bgColor = Green500_Background3,
-                )
-                OptionNoteType(
-                    initialOption = noteTypeState,
-                    onOptionSelected = { noteType ->
-                        noteTypeState = noteType
-                        savePartialListener.invoke(
-                            state.note?.copy(
-                                type = noteType.id,
-                                content1 = state.note.content1,
-                                content2 = state.note.content2
-                            ) ?: Note.Default)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .animateContentSize(),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                    ) {
+                        Header(
+                            text = "Note type:",
+                            textColor = TextColor,
+                            bgColor = Green500_Background3,
+                        )
+                        OptionNoteType(
+                            initialOption = noteTypeState,
+                            isUnselected = isUnselected,
+                            onOptionSelected = { noteType ->
+                                noteTypeState = noteType
+                                val newNote = state.note?.copy(
+                                    type = noteType.id,
+                                    content1 = state.note.content1,
+                                    content2 = state.note.content2
+                                ) ?: Note.Default
+                                savePartialListener.invoke(newNote)
+                                isDoubleContent = newNote.isDoubleContent()
+                            }
+                        )
                     }
-                )
-                OptionNoteContent()
-                OptionNoteContent()
+                    if (!isUnselected) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                        ) {
+                            Header(
+                                text = if (isDoubleContent) "Content 1:" else "Content:",
+                                textColor = TextColor,
+                                bgColor = Green500_Background3,
+                            )
+                            OptionNoteContentTextField(
+                                value = state.note?.content1 ?: "",
+                                onContentChange = { updateContent1.invoke(state.note, it) },
+                            )
+                        }
+                    }
+                    if (!isUnselected && isDoubleContent) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                        ) {
+                            Header(
+                                text = "Content 2:",
+                                textColor = TextColor,
+                                bgColor = Green500_Background3,
+                            )
+                            OptionNoteContentTextField(
+                                value = state.note?.content2 ?: "",
+                                onContentChange = { updateContent2.invoke(state.note, it) },
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(150.dp))
+                }
             }
             LoadingIndicator(
                 modifier = Modifier
@@ -183,15 +241,15 @@ private fun Preview() {
 
 @Composable
 private fun Header(
+    modifier: Modifier = Modifier,
     text: String = "",
     textColor: Color = TextColor,
     bgColor: Color = White
 ) {
     CVNText(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .background(bgColor)
-            .padding(12.dp),
+            .padding(start = 12.dp, end = 12.dp),
         text = text,
         fontSize = SpMedium,
         fontWeight = FontWeight.SemiBold,
