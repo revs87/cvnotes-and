@@ -114,18 +114,19 @@ object AppModule {
     @Singleton
     fun providesSectionUseCases(
         sectionRepository: SectionRepository,
-        noteRepository: NoteRepository
+        noteRepository: NoteRepository,
+        spRepository: SharedPreferencesRepository
     ): SectionUseCases {
         return SectionUseCases(
-            getSectionsWithNotes = GetSectionsWithNotes(sectionRepository, noteRepository),
-            getSections = GetSections(sectionRepository),
+            getSectionsWithNotes = GetSectionsWithNotes(spRepository, sectionRepository, noteRepository),
+            getSections = GetSections(spRepository, sectionRepository),
             getSectionById = GetSectionById(sectionRepository),
-            insertSection = InsertSection(sectionRepository),
+            insertSection = InsertSection(spRepository, sectionRepository),
             selectSection = SelectSection(sectionRepository),
             deleteSection = DeleteSection(sectionRepository),
-            deleteSelectedSections = DeleteSelectedSections(sectionRepository),
-            hasSelectedSections = HasSelectedSections(sectionRepository),
-            unselectAllSections = UnselectAllSections(sectionRepository),
+            deleteSelectedSections = DeleteSelectedSections(spRepository, sectionRepository),
+            hasSelectedSections = HasSelectedSections(spRepository, sectionRepository),
+            unselectAllSections = UnselectAllSections(spRepository, sectionRepository),
         )
     }
 }

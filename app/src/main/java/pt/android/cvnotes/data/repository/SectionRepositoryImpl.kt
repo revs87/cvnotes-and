@@ -8,12 +8,12 @@ import pt.android.cvnotes.domain.repository.SectionRepository
 class SectionRepositoryImpl(
     private val dao: SectionDao
 ) : SectionRepository {
-    override fun getSections(): Flow<List<Section>> {
-        return dao.getSections()
+    override fun getSections(uid: String): Flow<List<Section>> {
+        return dao.getSections(uid)
     }
 
-    override fun getSectionsList(): List<Section> {
-        return dao.getSectionsList()
+    override fun getSectionsList(uid: String): List<Section> {
+        return dao.getSectionsList(uid)
     }
 
     override suspend fun getSectionById(id: Int): Section? {
@@ -28,15 +28,15 @@ class SectionRepositoryImpl(
         dao.deleteSection(section)
     }
 
-    override suspend fun deleteSelectedSections() {
-        dao.deleteSelectedSections()
+    override suspend fun deleteSelectedSections(uid: String) {
+        dao.deleteSelectedSections(uid)
     }
 
-    override fun hasSelectedSections(): Flow<Boolean> {
-        return dao.hasSelectedSections()
+    override fun hasSelectedSections(uid: String): Flow<Boolean> {
+        return dao.hasSelectedSections(uid)
     }
 
-    override suspend fun unselectAllSections() {
-        dao.unselectAllSections()
+    override suspend fun unselectAllSections(uid: String) {
+        dao.unselectAllSections(uid)
     }
 }

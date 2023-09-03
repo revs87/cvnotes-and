@@ -4,12 +4,12 @@ import kotlinx.coroutines.flow.Flow
 import pt.android.cvnotes.domain.model.Section
 
 interface SectionRepository {
-    fun getSections(): Flow<List<Section>>
-    fun getSectionsList(): List<Section>
+    fun getSections(uid: String): Flow<List<Section>>
+    fun getSectionsList(uid: String): List<Section>
     suspend fun getSectionById(id: Int): Section?
     suspend fun insertSection(section: Section)
     suspend fun deleteSection(section: Section)
-    suspend fun deleteSelectedSections()
-    fun hasSelectedSections(): Flow<Boolean>
-    suspend fun unselectAllSections()
+    suspend fun deleteSelectedSections(uid: String)
+    fun hasSelectedSections(uid: String): Flow<Boolean>
+    suspend fun unselectAllSections(uid: String)
 }

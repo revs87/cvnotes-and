@@ -11,11 +11,11 @@ import pt.android.cvnotes.domain.model.Section
 
 @Dao
 interface SectionDao {
-    @Query("SELECT * FROM section")
-    fun getSections(): Flow<List<Section>>
+    @Query("SELECT * FROM section WHERE userId = :uid")
+    fun getSections(uid: String): Flow<List<Section>>
 
-    @Query("SELECT * FROM section")
-    fun getSectionsList(): List<Section>
+    @Query("SELECT * FROM section WHERE userId = :uid")
+    fun getSectionsList(uid: String): List<Section>
 
     @Query("SELECT * FROM section WHERE id = :id")
     fun getSectionById(id: Int): Section?
@@ -26,12 +26,12 @@ interface SectionDao {
     @Delete
     fun deleteSection(section: Section)
 
-    @Query("DELETE FROM section WHERE isSelected = :isSelected")
-    fun deleteSelectedSections(isSelected: Boolean = true)
+    @Query("DELETE FROM section WHERE userId = :uid AND isSelected = :isSelected")
+    fun deleteSelectedSections(uid: String, isSelected: Boolean = true)
 
-    @Query("SELECT EXISTS (SELECT * FROM section WHERE isSelected = :isSelected)")
-    fun hasSelectedSections(isSelected: Boolean = true): Flow<Boolean>
+    @Query("SELECT EXISTS (SELECT * FROM section WHERE userId = :uid AND isSelected = :isSelected)")
+    fun hasSelectedSections(uid: String, isSelected: Boolean = true): Flow<Boolean>
 
-    @Query("UPDATE section SET isSelected = :isNotSelected WHERE isSelected = :isSelected")
-    fun unselectAllSections(isSelected: Boolean = true, isNotSelected: Boolean = false)
+    @Query("UPDATE section SET isSelected = :isNotSelected WHERE userId = :uid AND isSelected = :isSelected")
+    fun unselectAllSections(uid: String, isSelected: Boolean = true, isNotSelected: Boolean = false)
 }
