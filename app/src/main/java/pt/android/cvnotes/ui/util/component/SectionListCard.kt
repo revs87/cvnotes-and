@@ -54,16 +54,16 @@ fun SectionListCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 8.dp, end = 8.dp, bottom = 2.dp, top = if (index == 0) 4.dp else 2.dp)
-            .combinedClickable(
-                onClick = { onClick.invoke() },
-                onLongClick = { onLongClick.invoke() },
-            )
     ) {
         Box(
             modifier = Modifier
                 .background(BackgroundCardColor)
                 .fillMaxWidth()
                 .defaultMinSize(minHeight = 100.dp)
+                .combinedClickable(
+                    onClick = { onClick.invoke() },
+                    onLongClick = { onLongClick.invoke() },
+                )
                 .padding(2.dp)
         ) {
             Column {
