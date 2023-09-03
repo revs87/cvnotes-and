@@ -53,8 +53,10 @@ import pt.android.cvnotes.ui.util.component.BackTopAppBar
 import pt.android.cvnotes.ui.util.component.LoadingIndicator
 import pt.android.cvnotes.ui.util.component.LoadingIndicatorSize
 import pt.android.cvnotes.ui.util.component.OptionNoteContentTextField
+import pt.android.cvnotes.ui.util.component.OptionNoteDateTime
 import pt.android.cvnotes.ui.util.component.OptionNoteType
 import pt.android.cvnotes.ui.util.component.cvn.CVNText
+import java.util.Date
 
 
 @Composable
@@ -73,8 +75,6 @@ fun EditNoteScreen(
     var isDoubleContent = state.note.isDoubleContent()
     var noteTypeState = state.note?.type?.toNoteType() ?: NoteType.NONE
     val isUnselected = noteTypeState.id == NoteType.NONE.id
-    var noteContent1 = ""
-    var noteContent2 = ""
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -124,7 +124,7 @@ fun EditNoteScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Green500)
-                        .padding(bottom = 30.dp),
+                        .padding(top = 12.dp, bottom = 30.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
@@ -211,6 +211,18 @@ fun EditNoteScreen(
                                 onContentChange = { updateContent2.invoke(state.note, it) },
                             )
                         }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                    ) {
+                        Header(
+                            text = "Modified:",
+                            textColor = TextColor,
+                            bgColor = Green500_Background3,
+                        )
+                        OptionNoteDateTime(
+                            datetime = Date(state.note?.timestamp ?: 0).toString()
+                        )
                     }
                     Spacer(modifier = Modifier.height(150.dp))
                 }

@@ -94,4 +94,9 @@ class EditNoteViewModel @Inject constructor(
             )
         )
     }
+
+    fun getNoteDateTime(note: Note?) = when (note) {
+        null -> ""
+        else -> note.timestamp.toString()
+    }
 }
