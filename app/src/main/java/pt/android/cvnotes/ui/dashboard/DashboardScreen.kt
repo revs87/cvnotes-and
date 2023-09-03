@@ -18,16 +18,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import pt.android.cvnotes.domain.model.SectionWithNotes
 import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.MyTheme
@@ -42,13 +41,13 @@ import pt.android.cvnotes.ui.util.component.cvn.CVNText
 @Composable
 fun DashboardScreen(
     state: DashboardState = DashboardState(),
+    sectionsWithNotes: List<SectionWithNotes> = emptyList(),
+    hasSelectedSections: Boolean = false,
     onSectionClick: (Int) -> Unit = {},
     onSectionLongClick: (Int) -> Unit = {},
     saveToPrefs: (Int) -> Unit = {},
     initialScrollPosition: Int = 0,
 ) {
-    val sectionsState by state.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
-    val hasSelectedSections by state.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
@@ -62,11 +61,11 @@ fun DashboardScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center),
-                verticalArrangement = if (sectionsState.isEmpty()) { Arrangement.Center }
+                verticalArrangement = if (sectionsWithNotes.isEmpty()) { Arrangement.Center }
                                       else { Arrangement.Top }
             ) {
                 // TODO: Add StatsBoard
-                if (sectionsState.isEmpty()) {
+                if (sectionsWithNotes.isEmpty()) {
                     CVNText(
                         text = "There are no Sections available.\nPlease create a Section and then add Notes to it.",
                         modifier = Modifier.fillMaxWidth(),
@@ -84,9 +83,9 @@ fun DashboardScreen(
                             .debounce(500L)
                             .collectLatest { index -> saveToPrefs.invoke(index) }
                     }
-                    LaunchedEffect(sectionsState) {
+                    LaunchedEffect(sectionsWithNotes) {
                         if (state.scrollToBottom) {
-                            lazyListState.animateScrollToItem(sectionsState.size - 1)
+                            lazyListState.animateScrollToItem(sectionsWithNotes.size - 1)
                         }
                     }
                     LazyColumn(
@@ -95,7 +94,7 @@ fun DashboardScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         itemsIndexed(
-                            items = sectionsState,
+                            items = sectionsWithNotes,
                             key = { _, sectionWithNotes -> sectionWithNotes.section.id ?: 0 }
                         ) { index, sectionWithNotes ->
                             SectionListCard(

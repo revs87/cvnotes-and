@@ -155,14 +155,15 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable(route = Dashboard.route) {
                                 systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
-                                val homeViewModel = it.sharedViewModel<HomeViewModel>(navController = navController)
+                                val homeViewModel: HomeViewModel = hiltViewModel()
                                 val isFabVisible by remember { derivedStateOf { homeViewModel.state.value.selectedBottomItem == 0 } }
                                 val dashboardViewModel: DashboardViewModel = hiltViewModel()
+                                val sectionsWithNotes by dashboardViewModel.state.value.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
+                                val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
                                 LaunchedEffect(dashboardViewModel.state) { dashboardViewModel.getAllNotes() }
                                 val aboutViewModel: AboutViewModel = hiltViewModel()
                                 var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
                                 var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
-                                val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
                                 val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
                                 val initialScrollPosition = prefs.getInt("scroll_position", 0)
                                 BottomBarWithFab(
@@ -171,6 +172,8 @@ class MainActivity : ComponentActivity() {
                                             content = {
                                                 DashboardScreen(
                                                     state = dashboardViewModel.state.value,
+                                                    sectionsWithNotes = sectionsWithNotes,
+                                                    hasSelectedSections = hasSelectedSections,
                                                     onSectionClick = { id ->
                                                         if (hasSelectedSections) { dashboardViewModel.selectSection(id) }
                                                         else { navigateTo(navController, "${SectionDetails.route}/$id") }

@@ -36,9 +36,6 @@ import pt.android.cvnotes.domain.use_case.section.HasSelectedSections
 import pt.android.cvnotes.domain.use_case.section.InsertSection
 import pt.android.cvnotes.domain.use_case.section.SelectSection
 import pt.android.cvnotes.domain.use_case.section.UnselectAllSections
-import pt.android.cvnotes.ui.about.AboutViewModel
-import pt.android.cvnotes.ui.dashboard.DashboardViewModel
-import pt.android.cvnotes.ui.section_details.SectionDetailsViewModel
 import javax.inject.Singleton
 
 
@@ -130,33 +127,5 @@ object AppModule {
             hasSelectedSections = HasSelectedSections(sectionRepository),
             unselectAllSections = UnselectAllSections(sectionRepository),
         )
-    }
-
-    @Provides
-    @Singleton
-    fun providesDashboardViewModel(
-        sectionUseCases: SectionUseCases,
-        noteUseCases: NoteUseCases,
-    ): DashboardViewModel {
-        return DashboardViewModel(sectionUseCases, noteUseCases)
-    }
-
-    @Provides
-    @Singleton
-    fun providesAboutViewModel(
-        authRepository: AuthRepository,
-        spRepository: SharedPreferencesRepository,
-        packageInfo: PackageInfo,
-    ): AboutViewModel {
-        return AboutViewModel(authRepository, spRepository, packageInfo)
-    }
-
-    @Provides
-    @Singleton
-    fun providesSectionDetailsViewModel(
-        sectionUseCases: SectionUseCases,
-        noteUseCases: NoteUseCases,
-    ): SectionDetailsViewModel {
-        return SectionDetailsViewModel(sectionUseCases, noteUseCases)
     }
 }
