@@ -26,6 +26,8 @@ class SectionDetailsViewModel @Inject constructor(
 
     private val _state = mutableStateOf(SectionDetailsState())
     val state: State<SectionDetailsState> = _state
+    private val _sectionNameEditState = mutableStateOf("")
+    val sectionNameEditState: State<String> = _sectionNameEditState
 
     private var getSectionJob: Job? = null
     private var addNoteJob: Job? = null
@@ -41,12 +43,38 @@ class SectionDetailsViewModel @Inject constructor(
             val notes = async { noteUseCases.getNotesBySectionId(sectionId) }.await()
             val hasSelectedNote = async { noteUseCases.hasSelectedNote(sectionId) }.await()
             withContext(Dispatchers.Main) {
+                _sectionNameEditState.value = section?.description ?: ""
                 _state.value = _state.value.copy(
                     section = section ?: Section.Default,
                     notes = notes,
                     hasSelectedNote = hasSelectedNote,
                     isLoading = false,
                     errorMessage = section?.let { "" } ?: "Section not found"
+                )
+            }
+        }
+    }
+
+    fun updateSectionNewNameState(newName: String) {
+        _sectionNameEditState.value = newName
+    }
+
+    fun updateSection(sectionId: Int, newName: String) {
+        viewModelScope.launch(Dispatchers.Default) {
+            val section = sectionUseCases.getSectionById(sectionId)
+            section ?: return@launch
+            sectionUseCases.insertSection(section.apply { description = newName })
+            val newSection = async { sectionUseCases.getSectionById(sectionId) }.await()
+            val notes = async { noteUseCases.getNotesBySectionId(sectionId) }.await()
+            val hasSelectedNote = async { noteUseCases.hasSelectedNote(sectionId) }.await()
+            withContext(Dispatchers.Main) {
+                _sectionNameEditState.value = section.description
+                _state.value = _state.value.copy(
+                    section = newSection ?: Section.Default,
+                    notes = notes,
+                    hasSelectedNote = hasSelectedNote,
+                    isLoading = false,
+                    errorMessage = ""
                 )
             }
         }
@@ -74,5 +102,4 @@ class SectionDetailsViewModel @Inject constructor(
             }
         }
     }
-
 }

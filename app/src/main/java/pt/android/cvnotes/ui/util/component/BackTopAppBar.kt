@@ -1,25 +1,42 @@
 package pt.android.cvnotes.ui.util.component
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background3
+import pt.android.cvnotes.theme.Blue700
+import pt.android.cvnotes.theme.FontSourceSansPro
+import pt.android.cvnotes.theme.SpLarge
+import pt.android.cvnotes.theme.SpXLarge
 import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
 
@@ -27,57 +44,144 @@ import pt.android.cvnotes.ui.util.component.cvn.CVNText
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BackTopAppBar(
-    title: String = "Title",
-    bgColor: Color = Blue500,
+    title1: String = "Title1",
+    title2: String = "Title2",
+    sectionNameEditState: String = "Title1",
+    editSectionNameTextListener: (newChange: String) -> Unit = {},
+    focusColor: Color = Blue700,
+    backgroundColor: Color = Blue500,
     contentColor: Color = Blue500_Background3,
-    expanded: Boolean = false,
     menuIconVisible: Boolean = false,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    onTitleSave: (newName: String) -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
-    if (expanded) {
-        MediumTopAppBar(
-            modifier = Modifier.fillMaxWidth(),
-            title = { TitleBox(title) },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = bgColor),
-            navigationIcon = { TitleNavBack(onBackPressed) },
-            actions = { if (menuIconVisible) { TitleMoreMenu() } }
-        )
-    } else {
-        TopAppBar(
-            modifier = Modifier.fillMaxWidth(),
-            title = { TitleBox(title) },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = bgColor),
-            navigationIcon = { TitleNavBack(onBackPressed) },
-            actions = { if (menuIconVisible) { TitleMoreMenu() } }
-        )
-    }
+    var isEditEnabled by remember { mutableStateOf(false) }
+    var isExpanded = !scrollBehavior.isCollapsed()
+
+    if (!isExpanded) { isEditEnabled = false }
+    val backIcon: ImageVector =
+        if (isExpanded) { Icons.Filled.ArrowUpward }
+        else { Icons.Filled.ArrowBack }
+    val onBack =
+        if (isEditEnabled) { { isEditEnabled = false } }
+        else if (isExpanded) { { scrollBehavior.collapse() } }
+        else { onBackPressed }
+
+    LargeTopAppBar(
+        modifier = Modifier.fillMaxWidth(),
+        title = {
+            TitleBox(
+                title1,
+                title2,
+                sectionNameEditState = sectionNameEditState,
+                editSectionNameTextListener = editSectionNameTextListener,
+                isExpanded,
+                isEditEnabled,
+                focusColor = focusColor,
+                backgroundColor = backgroundColor,
+                contentColor = contentColor,
+                onTitleSave = {
+                    onTitleSave.invoke(it)
+                    isExpanded = true
+                    isEditEnabled = false
+                },
+                onTitleClick = {
+                    if (!isExpanded) { scrollBehavior.expand() }
+                    else { isEditEnabled = true }
+                }
+            )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor),
+        navigationIcon = { TitleNavBack(onBack, icon = backIcon) },
+        scrollBehavior = scrollBehavior,
+        actions = { if (menuIconVisible) { TitleMoreMenu() } }
+    )
 }
 
 @Composable
 private fun TitleBox(
-    title: String = "",
-    contentColor: Color = Blue500_Background3
+    title1: String = "Title1",
+    title2: String = "Title2",
+    sectionNameEditState: String = "Title1",
+    editSectionNameTextListener: (newChange: String) -> Unit = {},
+    isExpanded: Boolean = true,
+    isEdit: Boolean = true,
+    onTitleClick: () -> Unit = {},
+    onTitleSave: (newName: String) -> Unit = {},
+    focusColor: Color = Blue700,
+    backgroundColor: Color = Blue500,
+    contentColor: Color = Blue500_Background3,
 ) {
+
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize()
+            .clickable { onTitleClick.invoke() },
         contentAlignment = Alignment.CenterStart
     ) {
-        CVNText(
-            text = title,
-            color = contentColor
-        )
+        Column {
+            if (isExpanded) {
+                if (isEdit) {
+                    TextField(
+                        modifier = Modifier.padding(bottom = 30.dp),
+                        value = sectionNameEditState,
+                        onValueChange = { editSectionNameTextListener(it) },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = backgroundColor,
+                            unfocusedContainerColor = backgroundColor,
+                            focusedTextColor = contentColor,
+                            unfocusedTextColor = contentColor,
+                            cursorColor = contentColor,
+                            selectionColors = TextSelectionColors(
+                                handleColor = focusColor,
+                                backgroundColor = focusColor
+                            ),
+                        ),
+                        trailingIcon = {
+                            Icon(
+                                modifier = Modifier.clickable { onTitleSave.invoke(sectionNameEditState) },
+                                imageVector = Icons.Filled.Save,
+                                contentDescription = "titleNavEdit_$title1",
+                                tint = contentColor
+                            )
+                        },
+                        textStyle = TextStyle(
+                            fontFamily = FontSourceSansPro,
+                            fontSize = SpXLarge
+                        )
+                    )
+                } else {
+                    CVNText(
+                        text = title1,
+                        color = contentColor
+                    )
+                }
+            }
+            if (!isEdit) {
+                CVNText(
+                    text = if (isExpanded) { title2 }
+                           else { "$title1 $title2" },
+                    color = contentColor,
+                    fontSize = SpLarge,
+                )
+            }
+        }
     }
 }
-
 
 @Composable
 private fun TitleNavBack(
     onBackPressed: () -> Unit = {},
-    contentColor: Color = Blue500_Background3
+    contentColor: Color = Blue500_Background3,
+    icon: ImageVector = Icons.Filled.ArrowBack
 ) {
     Icon(
-        modifier = Modifier.padding(12.dp).clickable { onBackPressed.invoke() },
-        imageVector = Icons.Filled.ArrowBack,
+        modifier = Modifier
+            .padding(12.dp)
+            .clickable { onBackPressed.invoke() },
+        imageVector = icon,
         contentDescription = "TitleNavArrowBack",
         tint = contentColor
     )
@@ -93,4 +197,22 @@ private fun TitleMoreMenu(
         contentDescription = "TitleMoreMenu",
         tint = contentColor
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun TopAppBarScrollBehavior?.collapse() {
+    this ?: return
+    this.state.heightOffset = -Float.MAX_VALUE
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun TopAppBarScrollBehavior?.expand() {
+    this ?: return
+    this.state.heightOffset = 0f
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun TopAppBarScrollBehavior?.isCollapsed(): Boolean {
+    if (this == null || this.state.heightOffset >= 0.0) { return false }
+    return true
 }

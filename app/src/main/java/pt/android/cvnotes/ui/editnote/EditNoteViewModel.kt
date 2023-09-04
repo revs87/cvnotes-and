@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.isDoubleContent
 import pt.android.cvnotes.domain.use_case.NoteUseCases
+import pt.android.cvnotes.domain.use_case.SectionUseCases
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.ui.util.L
 import java.util.Date
@@ -20,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(
+    private val sectionUseCases: SectionUseCases,
     private val noteUseCases: NoteUseCases
 ) : ViewModel() {
 
@@ -27,13 +29,15 @@ class EditNoteViewModel @Inject constructor(
     val state: State<EditNoteState> = _state
 
 
-    fun getNote(noteId: Long) {
+    fun getNote(sectionId: Int, noteId: Long) {
         _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch(Dispatchers.Default) {
+            val section = sectionUseCases.getSectionById(sectionId)
             val note = noteUseCases.getNoteById(noteId)
 
             withContext(Dispatchers.Main) {
                 _state.value = _state.value.copy(
+                    section = section,
                     note = note,
                     isLoading = false
                 )

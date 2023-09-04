@@ -21,7 +21,6 @@ import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
-import pt.android.cvnotes.theme.SpHuge
 import pt.android.cvnotes.theme.SpMedium
 import pt.android.cvnotes.theme.TextColor
 import pt.android.cvnotes.ui.util.component.cvn.CVNText
@@ -46,15 +45,15 @@ fun SectionDetailsNoteCards(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Top
         ) {
-            item(key = -1L) {
-                CVNText(
-                    modifier = Modifier
-                        .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 10.dp),
-                    text = description,
-                    fontSize = SpHuge,
-                    color = TextColor
-                )
-            }
+//            item(key = -1L) {
+//                CVNText(
+//                    modifier = Modifier
+//                        .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 10.dp),
+//                    text = description,
+//                    fontSize = SpHuge,
+//                    color = TextColor
+//                )
+//            }
             items(
                 items = notes,
                 key = { note -> note.id ?: 0L }

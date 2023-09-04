@@ -241,8 +241,11 @@ class MainActivity : ComponentActivity() {
                                 LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
                                 SectionDetailsScreen(
                                     state = viewModel.state.value,
+                                    sectionNameEditState = viewModel.sectionNameEditState.value,
+                                    editSectionNameTextListener = { nameChange -> viewModel.updateSectionNewNameState(nameChange) },
                                     addNoteListener = { navigateTo(navController, "${NewNote.route}/${sectionIdState.intValue}") },
-                                    editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/$noteId") },
+                                    editSectionListener = { sectionId, newName -> viewModel.updateSection(sectionId, newName) },
+                                    editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/${sectionIdState.intValue}/$noteId") },
                                     onBackPressed = { navController.navigateUp() }
                                 )
                             }
@@ -251,12 +254,17 @@ class MainActivity : ComponentActivity() {
                                 arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
                             ) {
                                 systemUiController.setSystemBarsColor(Green500, Green500_Background3)
+                                val sdViewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                 val viewModel: EditNoteViewModel = hiltViewModel()
                                 val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
                                 LaunchedEffect(sectionIdState) { viewModel.setSectionId(sectionIdState.intValue) }
                                 EditNoteScreen(
                                     state = viewModel.state.value,
-                                    title = NewNote.title,
+                                    navBarTitle1 = sdViewModel.sectionNameEditState.value,
+                                    navBarTitle2 = EditNote.title,
+                                    sectionNameEditState = sdViewModel.sectionNameEditState.value,
+                                    editSectionNameTextListener = { nameChange -> sdViewModel.updateSectionNewNameState(nameChange) },
+                                    editSectionListener = { sectionId, newName -> sdViewModel.updateSection(sectionId, newName) },
                                     isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
                                     updateContent1 = { note, newText -> viewModel.updateStateNode(note, newText, true) },
                                     updateContent2 = { note, newText -> viewModel.updateStateNode(note, newText, false) },
@@ -266,16 +274,25 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable(
-                                route = "${EditNote.route}/{noteId}",
-                                arguments = listOf(navArgument("noteId") { type = NavType.LongType })
+                                route = "${EditNote.route}/{sectionId}/{noteId}",
+                                arguments = listOf(
+                                    navArgument("sectionId") { type = NavType.IntType },
+                                    navArgument("noteId") { type = NavType.LongType }
+                                )
                             ) {
                                 systemUiController.setSystemBarsColor(Green500, Green500_Background3)
+                                val sdViewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                 val viewModel: EditNoteViewModel = hiltViewModel()
+                                val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
                                 val noteIdState = remember { mutableLongStateOf(it.arguments?.getLong("noteId") ?: 0L) }.asLongState()
-                                LaunchedEffect(noteIdState) { viewModel.getNote(noteIdState.longValue) }
+                                LaunchedEffect(noteIdState) { viewModel.getNote(sectionIdState.intValue, noteIdState.longValue) }
                                 EditNoteScreen(
                                     state = viewModel.state.value,
-                                    title = EditNote.title,
+                                    navBarTitle1 = sdViewModel.sectionNameEditState.value,
+                                    navBarTitle2 = EditNote.title,
+                                    sectionNameEditState = sdViewModel.sectionNameEditState.value,
+                                    editSectionNameTextListener = { nameChange -> sdViewModel.updateSectionNewNameState(nameChange) },
+                                    editSectionListener = { sectionId, newName -> sdViewModel.updateSection(sectionId, newName) },
                                     isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
                                     updateContent1 = { note, newText -> viewModel.updateStateNode(note, newText, true) },
                                     updateContent2 = { note, newText -> viewModel.updateStateNode(note, newText, false) },

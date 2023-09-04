@@ -13,7 +13,7 @@ import pt.android.cvnotes.theme.Green500
 @Entity
 data class Section(
     val typeId: Int,
-    val description: String = "",
+    var description: String = "",
     val colorId: Int = 0,
     val isSelected: Boolean = false,
     var userId: String = "",

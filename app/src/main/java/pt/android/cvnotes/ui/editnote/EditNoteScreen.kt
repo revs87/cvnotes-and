@@ -20,12 +20,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -33,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,10 +65,15 @@ import pt.android.cvnotes.ui.util.component.cvn.CVNText
 import java.util.Date
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNoteScreen(
     state: EditNoteState = EditNoteState(),
-    title: String = "Title",
+    navBarTitle1: String = "Title1",
+    navBarTitle2: String = "Title2",
+    sectionNameEditState: String = "",
+    editSectionNameTextListener: (newChange: String) -> Unit = {},
+    editSectionListener: (sectionId: Int, newName: String) -> Unit = {_, _ -> },
     isNoteValid: Boolean = false,
     updateContent1: (note: Note?, newText: String) -> Unit = { _, _ ->},
     updateContent2: (note: Note?, newText: String) -> Unit = { _, _ ->},
@@ -78,10 +87,31 @@ fun EditNoteScreen(
     var noteTypeState = state.note?.type?.toNoteType() ?: NoteType.NONE
     val isUnselected = noteTypeState.id == NoteType.NONE.id
 
+    val appBarState = rememberTopAppBarState(initialHeightOffset = 0f)
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(appBarState)
+    LaunchedEffect(state.section?.description) {
+        editSectionNameTextListener(state.section?.description ?: "")
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        modifier = Modifier.fillMaxSize(),
-        topBar = { BackTopAppBar(title, Green500, Green500_Background3) { onBackPressed.invoke() } },
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .fillMaxSize(),
+        topBar = {
+            BackTopAppBar(
+                navBarTitle1,
+                navBarTitle2,
+                sectionNameEditState = sectionNameEditState,
+                editSectionNameTextListener = editSectionNameTextListener,
+                focusColor = Green500,
+                backgroundColor =Green500,
+                contentColor = Green500_Background3,
+                scrollBehavior = scrollBehavior,
+                onTitleSave = { newName -> editSectionListener.invoke(state.section?.id ?: 0, newName) },
+                onBackPressed = { onBackPressed.invoke() }
+            )
+        },
         floatingActionButton = {
             if (isNoteValid) {
                 FloatingActionButton(
@@ -92,13 +122,13 @@ fun EditNoteScreen(
                     onClick = {
                         saveNoteListener.invoke(state.note ?: Note.Default)
                         coroutineScope.launch {
-                            val action = if (title == "New Note") { "added" } else { "saved" }
+                            val action = if (navBarTitle2 == "New Note") { "added" } else { "saved" }
                             state.note?.let { snackbarHostState.showSnackbar("Note $action: ${it.asString()}") }
                         }
                     }
                 ) {
                     Icon(
-                        imageVector = if (title == "New Note") { Icons.Filled.NoteAdd } else { Icons.Filled.Save },
+                        imageVector = if (navBarTitle2 == "New Note") { Icons.Filled.NoteAdd } else { Icons.Filled.Save },
                         contentDescription = "Add note"
                     )
                 }
