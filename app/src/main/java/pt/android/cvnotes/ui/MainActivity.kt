@@ -225,7 +225,7 @@ class MainActivity : ComponentActivity() {
                                 ) { withSelectedSectionsBottomSheetVisible = false }
                                 if (newSectionNameDialogVisible) {
                                     TextFieldDialog(
-                                        value = "",
+                                        initialValue = "",
                                         setShowDialog = { enabled -> newSectionNameDialogVisible = enabled },
                                         setValue = { newValue -> dashboardViewModel.addSectionOtherType(newValue) }
                                     )

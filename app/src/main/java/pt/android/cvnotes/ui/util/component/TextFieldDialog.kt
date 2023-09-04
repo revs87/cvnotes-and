@@ -48,13 +48,13 @@ import pt.android.cvnotes.ui.util.component.cvn.CVNText
 @Preview(showBackground = true)
 @Composable
 fun TextFieldDialog(
-    value: String = "",
+    initialValue: String = "",
     setShowDialog: (Boolean) -> Unit = {},
     setValue: (String) -> Unit = {}
 ) {
 
     val txtFieldError = remember { mutableStateOf("") }
-    val txtField = remember { mutableStateOf(value) }
+    val txtField = remember { mutableStateOf(initialValue) }
 
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
