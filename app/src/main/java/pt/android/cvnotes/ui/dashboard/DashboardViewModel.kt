@@ -66,6 +66,26 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    fun addSectionOtherType(sectionName: String) {
+        viewModelScope.launch(Dispatchers.Default) {
+            val section = Section(
+                typeId = SectionType.OTHER.typeId,
+                description = sectionName
+            )
+            sectionUseCases.insertSection(section)
+            val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this)
+
+            withContext(Dispatchers.Main) {
+                _state.value = _state.value.copy(
+                    sectionsWithNotes = sectionWithNotes,
+                    sectionsHasSelected = sectionUseCases.hasSelectedSections(),
+                    scrollToBottom = true,
+                    isLoading = false
+                )
+            }
+        }
+    }
+
     fun selectSection(id: Int) {
         _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
         viewModelScope.launch(Dispatchers.Default) {
@@ -121,21 +141,15 @@ class DashboardViewModel @Inject constructor(
                 sectionUseCases.deleteSection(it.section)
             }
 
-            sectionUseCases.insertSection(Section(SectionType.PROFILE.typeId))
-            sectionUseCases.insertSection(Section(SectionType.SUMMARY.typeId))
-            sectionUseCases.insertSection(Section(SectionType.EXPERIENCE.typeId))
-//            sectionUseCases.insertSection(Section(SectionType.SKILLS.typeId))
-//            sectionUseCases.insertSection(Section(SectionType.HISTORY.typeId))
-//            sectionUseCases.insertSection(Section(SectionType.EDUCATION.typeId))
+            sectionUseCases.insertSection(Section(SectionType.PROFILE.typeId, description = SectionType.PROFILE.sectionName))
+            sectionUseCases.insertSection(Section(SectionType.SUMMARY.typeId, description = SectionType.SUMMARY.sectionName))
+            sectionUseCases.insertSection(Section(SectionType.EXPERIENCE.typeId, description = SectionType.EXPERIENCE.sectionName))
 
             sectionUseCases.getSectionsWithNotes(this).value.map { sectionWithNotes ->
                 when (sectionWithNotes.section.typeId) {
                     SectionType.PROFILE.typeId -> addRuiVieiraProfileNotes(sectionWithNotes.section.id ?: 0)
                     SectionType.SUMMARY.typeId -> addRuiVieiraSummaryNotes(sectionWithNotes.section.id ?: 0)
                     SectionType.EXPERIENCE.typeId -> addRuiVieiraExperienceNotes(sectionWithNotes.section.id ?: 0)
-                    SectionType.SKILLS.typeId -> addRuiVieiraSkillsNotes(sectionWithNotes.section.id ?: 0)
-                    SectionType.HISTORY.typeId -> addRuiVieiraHistoryNotes(sectionWithNotes.section.id ?: 0)
-                    SectionType.EDUCATION.typeId -> addRuiVieiraEducationNotes(sectionWithNotes.section.id ?: 0)
                     else -> {}
                 }
             }
@@ -178,7 +192,8 @@ class DashboardViewModel @Inject constructor(
         noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id, "\uD83C\uDDF5\uD83C\uDDF9 employee", "3+ years"))
         noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id, "\uD83C\uDDE8\uD83C\uDDED employee", "0 days"))
     }
-    private suspend fun addRuiVieiraSkillsNotes(sectionId: Int) {}
-    private suspend fun addRuiVieiraHistoryNotes(sectionId: Int) {}
-    private suspend fun addRuiVieiraEducationNotes(sectionId: Int) {}
+
+    companion object {
+        const val MAX_SECTION_NAME_SIZE = 24
+    }
 }

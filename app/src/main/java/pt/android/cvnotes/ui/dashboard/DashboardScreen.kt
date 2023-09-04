@@ -27,7 +27,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import pt.android.cvnotes.domain.model.SectionWithNotes
-import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.MyTheme
 import pt.android.cvnotes.theme.SpNormal
@@ -99,9 +98,8 @@ fun DashboardScreen(
                         ) { index, sectionWithNotes ->
                             SectionListCard(
                                 modifier = Modifier.animateItemPlacement(),
-                                type = sectionWithNotes.section.typeId.toSectionType(),
                                 index = index,
-                                description = sectionWithNotes.section.typeId.toSectionType().sectionName,
+                                description = sectionWithNotes.section.description,
                                 hasSelected = hasSelectedSections,
                                 isSelected = sectionWithNotes.section.isSelected,
                                 colorId = sectionWithNotes.section.colorId,

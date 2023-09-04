@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
 import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.SpHuge
 import pt.android.cvnotes.theme.SpMedium
 import pt.android.cvnotes.theme.TextColor
 import pt.android.cvnotes.ui.util.component.cvn.CVNText
@@ -31,7 +31,7 @@ import java.util.Date
 @Composable
 fun SectionDetailsNoteCards(
     modifier: Modifier = Modifier,
-    type: SectionType = SectionType.EDUCATION,
+    description: String = SectionType.EDUCATION.sectionName,
     onNoteClick: (Long) -> Unit = {},
     notes: List<Note> = listOf(
         Note(1, 1, "Hello my friends!", "", timestamp = Date().time, id = 0),
@@ -50,8 +50,8 @@ fun SectionDetailsNoteCards(
                 CVNText(
                     modifier = Modifier
                         .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 10.dp),
-                    text = type.sectionName,
-                    fontSize = 38.sp,
+                    text = description,
+                    fontSize = SpHuge,
                     color = TextColor
                 )
             }

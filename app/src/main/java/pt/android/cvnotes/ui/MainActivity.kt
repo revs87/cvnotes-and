@@ -74,6 +74,7 @@ import pt.android.cvnotes.ui.util.Screen.SectionDetails
 import pt.android.cvnotes.ui.util.Screen.Splash
 import pt.android.cvnotes.ui.util.component.AddSectionBottomSheet
 import pt.android.cvnotes.ui.util.component.BottomBarWithFab
+import pt.android.cvnotes.ui.util.component.TextFieldDialog
 import pt.android.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
 import pt.android.cvnotes.ui.util.component.cvn.CVNText
 
@@ -164,6 +165,7 @@ class MainActivity : ComponentActivity() {
                                 val aboutViewModel: AboutViewModel = hiltViewModel()
                                 var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
                                 var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
+                                var newSectionNameDialogVisible by remember { mutableStateOf(false) }
                                 val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
                                 val initialScrollPosition = prefs.getInt("scroll_position", 0)
                                 BottomBarWithFab(
@@ -210,6 +212,7 @@ class MainActivity : ComponentActivity() {
                                 )
                                 AddSectionBottomSheet(
                                     bottomSheetVisible = newSectionBottomSheetVisible,
+                                    onOtherClicked = { newSectionNameDialogVisible = true },
                                     onRuiVieiraClicked = { dashboardViewModel.addPersonalDataFromRuiVieira() }
                                 ) { sectionType ->
                                     newSectionBottomSheetVisible = false
@@ -220,6 +223,13 @@ class MainActivity : ComponentActivity() {
                                     unselectAllSelected = dashboardViewModel::unselectAllSelectedSections,
                                     deleteAllSelected = dashboardViewModel::deleteSelectedSections,
                                 ) { withSelectedSectionsBottomSheetVisible = false }
+                                if (newSectionNameDialogVisible) {
+                                    TextFieldDialog(
+                                        value = "",
+                                        setShowDialog = { enabled -> newSectionNameDialogVisible = enabled },
+                                        setValue = { newValue -> dashboardViewModel.addSectionOtherType(newValue) }
+                                    )
+                                }
                             }
                             composable(
                                 route = "${SectionDetails.route}/{sectionId}",

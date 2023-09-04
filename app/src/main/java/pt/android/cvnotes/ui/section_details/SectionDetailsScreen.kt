@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import pt.android.cvnotes.domain.util.toSectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background3
@@ -92,7 +91,7 @@ fun SectionDetailsScreen(
             } else {
                 SectionDetailsNoteCards(
                     modifier = Modifier,
-                    type = state.section.typeId.toSectionType(),
+                    description = state.section.description,
                     onNoteClick = { noteId -> editNoteListener.invoke(noteId) },
                     notes = notes
                 )

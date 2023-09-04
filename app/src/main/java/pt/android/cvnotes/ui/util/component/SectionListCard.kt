@@ -20,13 +20,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
 import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.BackgroundCardColor
 import pt.android.cvnotes.theme.Gray300
 import pt.android.cvnotes.theme.MyTheme
+import pt.android.cvnotes.theme.SpHuge
 import pt.android.cvnotes.theme.SpNormal
 import pt.android.cvnotes.theme.TextColor
 import pt.android.cvnotes.ui.util.component.cvn.CVNText
@@ -36,9 +36,8 @@ import java.util.Date
 @Composable
 fun SectionListCard(
     modifier: Modifier = Modifier,
-    type: SectionType = SectionType.EDUCATION,
     index: Int = 1,
-    description: String = type.sectionName,
+    description: String = SectionType.EDUCATION.sectionName,
     hasSelected: Boolean = false,
     isSelected: Boolean = false,
     colorId: Int = 0,
@@ -69,7 +68,7 @@ fun SectionListCard(
             Column {
                 CVNText(
                     text = description,
-                    fontSize = 38.sp,
+                    fontSize = SpHuge,
                     color = TextColor
                 )
                 Column(
