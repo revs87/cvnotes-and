@@ -141,6 +141,9 @@ private fun TitleBox(
                                 handleColor = focusColor,
                                 backgroundColor = focusColor
                             ),
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
                         ),
                         trailingIcon = {
                             Icon(

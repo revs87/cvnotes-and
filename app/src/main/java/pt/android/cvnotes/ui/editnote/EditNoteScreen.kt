@@ -49,6 +49,7 @@ import pt.android.cvnotes.domain.model.asString
 import pt.android.cvnotes.domain.model.isDoubleContent
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.domain.util.toNoteType
+import pt.android.cvnotes.theme.Green300
 import pt.android.cvnotes.theme.Green500
 import pt.android.cvnotes.theme.Green500_Background2
 import pt.android.cvnotes.theme.Green500_Background3
@@ -105,8 +106,8 @@ fun EditNoteScreen(
                 navBarTitle2,
                 sectionNameEditState = sectionNameEditState,
                 editSectionNameTextListener = editSectionNameTextListener,
-                focusColor = Green500,
-                backgroundColor =Green500,
+                focusColor = Green300,
+                backgroundColor = Green500,
                 contentColor = Green500_Background3,
                 scrollBehavior = scrollBehavior,
                 onTitleSave = { newName -> editSectionListener.invoke(state.section?.id ?: 0, newName) },
