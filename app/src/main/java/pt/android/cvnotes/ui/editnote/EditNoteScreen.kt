@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
@@ -123,7 +124,8 @@ fun EditNoteScreen(
                         saveNoteListener.invoke(state.note ?: Note.Default)
                         coroutineScope.launch {
                             val action = if (navBarTitle2 == "New Note") { "added" } else { "saved" }
-                            state.note?.let { snackbarHostState.showSnackbar("Note $action: ${it.asString()}") }
+                            state.note?.let { snackbarHostState.showSnackbar("Note $action: ${it.asString().take(250)}") }
+                            onBackPressed.invoke() // runs after the snackbar closes
                         }
                     }
                 ) {
