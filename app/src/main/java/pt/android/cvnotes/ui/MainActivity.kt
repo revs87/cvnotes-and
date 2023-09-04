@@ -261,7 +261,7 @@ class MainActivity : ComponentActivity() {
                                 EditNoteScreen(
                                     state = viewModel.state.value,
                                     navBarTitle1 = sdViewModel.sectionNameEditState.value,
-                                    navBarTitle2 = EditNote.title,
+                                    navBarTitle2 = NewNote.title,
                                     sectionNameEditState = sdViewModel.sectionNameEditState.value,
                                     editSectionNameTextListener = { nameChange -> sdViewModel.updateSectionNewNameState(nameChange) },
                                     editSectionListener = { sectionId, newName -> sdViewModel.updateSection(sectionId, newName) },

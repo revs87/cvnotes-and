@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -125,7 +126,9 @@ private fun TitleBox(
             if (isExpanded) {
                 if (isEdit) {
                     TextField(
-                        modifier = Modifier.padding(bottom = 30.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 30.dp, end = 12.dp),
                         value = sectionNameEditState,
                         onValueChange = { editSectionNameTextListener(it) },
                         colors = TextFieldDefaults.colors(
@@ -177,14 +180,16 @@ private fun TitleNavBack(
     contentColor: Color = Blue500_Background3,
     icon: ImageVector = Icons.Filled.ArrowBack
 ) {
-    Icon(
-        modifier = Modifier
-            .padding(12.dp)
-            .clickable { onBackPressed.invoke() },
-        imageVector = icon,
-        contentDescription = "TitleNavArrowBack",
-        tint = contentColor
-    )
+    IconButton(
+        onClick = { onBackPressed.invoke() },
+        modifier = Modifier.padding(6.dp)
+    ){
+        Icon(
+            imageVector = icon,
+            contentDescription = "TitleNavArrowBack",
+            tint = contentColor
+        )
+    }
 }
 
 @Composable

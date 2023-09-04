@@ -161,7 +161,7 @@ fun EditNoteScreen(
                 ) {
                     Card(
                         modifier = Modifier
-                            .heightIn(max = 250.dp)
+                            .heightIn(max = 200.dp)
                             .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
                     ) {
                         Box(

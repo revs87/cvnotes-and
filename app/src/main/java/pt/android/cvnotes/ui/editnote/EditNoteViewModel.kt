@@ -65,10 +65,14 @@ class EditNoteViewModel @Inject constructor(
     }
 
     fun setSectionId(sectionId: Int) {
-        _state.value = _state.value.copy(
-            note = Note(sectionId = sectionId),
-            isLoading = false
-        )
+        viewModelScope.launch(Dispatchers.Default) {
+            val section = sectionUseCases.getSectionById(sectionId)
+            _state.value = _state.value.copy(
+                section = section,
+                note = Note(sectionId = sectionId),
+                isLoading = false
+            )
+        }
     }
 
     fun saveStatePartialNote(note: Note): Note {

@@ -63,7 +63,7 @@ class SectionDetailsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Default) {
             val section = sectionUseCases.getSectionById(sectionId)
             section ?: return@launch
-            sectionUseCases.insertSection(section.apply { description = newName })
+            sectionUseCases.insertSection(section.apply { description = newName.trim() })
             val newSection = async { sectionUseCases.getSectionById(sectionId) }.await()
             val notes = async { noteUseCases.getNotesBySectionId(sectionId) }.await()
             val hasSelectedNote = async { noteUseCases.hasSelectedNote(sectionId) }.await()
