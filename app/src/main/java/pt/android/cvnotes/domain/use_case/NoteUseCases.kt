@@ -4,7 +4,7 @@ import pt.android.cvnotes.domain.use_case.note.DeleteNote
 import pt.android.cvnotes.domain.use_case.note.GetNoteById
 import pt.android.cvnotes.domain.use_case.note.GetNotes
 import pt.android.cvnotes.domain.use_case.note.GetNotesBySectionId
-import pt.android.cvnotes.domain.use_case.note.HasSelectedNote
+import pt.android.cvnotes.domain.use_case.note.HasSelectedNotes
 import pt.android.cvnotes.domain.use_case.note.InsertNote
 
 data class NoteUseCases(
@@ -13,5 +13,5 @@ data class NoteUseCases(
     val getNoteById: GetNoteById,
     val insertNote: InsertNote,
     val deleteNote: DeleteNote,
-    val hasSelectedNote: HasSelectedNote,
+    val hasSelectedNotes: HasSelectedNotes,
 )

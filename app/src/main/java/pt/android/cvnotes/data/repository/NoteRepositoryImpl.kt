@@ -28,7 +28,7 @@ class NoteRepositoryImpl(
         dao.deleteNote(note)
     }
 
-    override fun hasSelectedNote(sectionId: Int): Flow<Boolean> {
-        return dao.hasSelectedNote(sectionId)
+    override fun hasSelectedNotes(sectionId: Int): Flow<Boolean> {
+        return dao.hasSelectedNotes(sectionId)
     }
 }

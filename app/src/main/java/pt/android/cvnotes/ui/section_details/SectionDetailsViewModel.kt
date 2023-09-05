@@ -30,8 +30,6 @@ class SectionDetailsViewModel @Inject constructor(
     val sectionNameEditState: State<String> = _sectionNameEditState
 
     private var getSectionJob: Job? = null
-    private var addNoteJob: Job? = null
-
     fun getSection(sectionId: Int) {
         L.i("SectionDetailsViewModel", "Entered sectionId: $sectionId, ${viewModelScope.isActive}")
         getSectionJob?.let { if (it.isActive) { it.cancel() } }
@@ -41,13 +39,13 @@ class SectionDetailsViewModel @Inject constructor(
             }
             val section = async { sectionUseCases.getSectionById(sectionId) }.await()
             val notes = async { noteUseCases.getNotesBySectionId(sectionId) }.await()
-            val hasSelectedNote = async { noteUseCases.hasSelectedNote(sectionId) }.await()
+            val hasSelectedNote = async { noteUseCases.hasSelectedNotes(sectionId) }.await()
             withContext(Dispatchers.Main) {
                 _sectionNameEditState.value = section?.description ?: ""
                 _state.value = _state.value.copy(
                     section = section ?: Section.Default,
                     notes = notes,
-                    hasSelectedNote = hasSelectedNote,
+                    hasSelectedNotes = hasSelectedNote,
                     isLoading = false,
                     errorMessage = section?.let { "" } ?: "Section not found"
                 )
@@ -66,13 +64,13 @@ class SectionDetailsViewModel @Inject constructor(
             sectionUseCases.insertSection(section.apply { description = newName.trim() })
             val newSection = async { sectionUseCases.getSectionById(sectionId) }.await()
             val notes = async { noteUseCases.getNotesBySectionId(sectionId) }.await()
-            val hasSelectedNote = async { noteUseCases.hasSelectedNote(sectionId) }.await()
+            val hasSelectedNote = async { noteUseCases.hasSelectedNotes(sectionId) }.await()
             withContext(Dispatchers.Main) {
                 _sectionNameEditState.value = section.description
                 _state.value = _state.value.copy(
                     section = newSection ?: Section.Default,
                     notes = notes,
-                    hasSelectedNote = hasSelectedNote,
+                    hasSelectedNotes = hasSelectedNote,
                     isLoading = false,
                     errorMessage = ""
                 )
@@ -80,22 +78,19 @@ class SectionDetailsViewModel @Inject constructor(
         }
     }
 
-    fun addNote(note: Note) {
-        L.i("SectionDetailsViewModel", "Adding new Note to sectionId: ${note.sectionId}, ${viewModelScope.isActive}")
-        addNoteJob?.let { if (it.isActive) { it.cancel() } }
-        addNoteJob = viewModelScope.launch(Dispatchers.Default) {
-            withContext(Dispatchers.Main) {
-                _state.value = _state.value.copy(isLoading = true)
-            }
-            noteUseCases.insertNote(note)
+    private var toggleNoteJob: Job? = null
+    fun toggleNoteSelection(note: Note) {
+        toggleNoteJob?.let { if (it.isActive) { it.cancel() } }
+        toggleNoteJob = viewModelScope.launch(Dispatchers.Default) {
+            noteUseCases.insertNote(note.apply { isSelected = !isSelected })
             val section = async { sectionUseCases.getSectionById(note.sectionId) }.await()
             val notes = async { noteUseCases.getNotesBySectionId(note.sectionId) }.await()
-            val hasSelectedNote = async { noteUseCases.hasSelectedNote(note.sectionId) }.await()
+            val hasSelectedNote = async { noteUseCases.hasSelectedNotes(note.sectionId) }.await()
             withContext(Dispatchers.Main) {
                 _state.value = _state.value.copy(
                     section = section ?: Section.Default,
                     notes = notes,
-                    hasSelectedNote = hasSelectedNote,
+                    hasSelectedNotes = hasSelectedNote,
                     isLoading = false,
                     errorMessage = section?.let { "" } ?: "Section not found"
                 )

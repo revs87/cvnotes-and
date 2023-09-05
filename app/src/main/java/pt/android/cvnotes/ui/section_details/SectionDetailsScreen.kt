@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500
 import pt.android.cvnotes.theme.Blue500_Background3
@@ -52,11 +53,13 @@ fun SectionDetailsScreen(
     addNoteListener: (Int) -> Unit = {},
     editSectionListener: (sectionId: Int, newName: String) -> Unit = {_, _ -> },
     editNoteListener: (noteId: Long) -> Unit = {_ -> },
+    selectNoteListener: (note: Note) -> Unit = { _ -> },
+    hasSelectedNotes: Boolean = false,
     onBackPressed: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val notes by state.notes.collectAsStateWithLifecycle(initialValue = emptyList())
-    val hasSelectedNote by state.hasSelectedNote.collectAsStateWithLifecycle(initialValue = false)
+    val hasSelectedNote by state.hasSelectedNotes.collectAsStateWithLifecycle(initialValue = false)
 
     val appBarState = rememberTopAppBarState(initialHeightOffset = 0f)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(appBarState)
@@ -125,12 +128,11 @@ fun SectionDetailsScreen(
             } else {
                 SectionDetailsNoteCards(
                     modifier = Modifier,
-                    description = state.section.description,
+                    hasSelectedNotes = hasSelectedNotes,
                     onNoteClick = { noteId -> editNoteListener.invoke(noteId) },
+                    onLongNoteClick = { note -> selectNoteListener.invoke(note) },
                     notes = notes
                 )
-                //TODO select note - edit Note button
-                //TODO add new Note button
             }
             LoadingIndicator(
                 modifier = Modifier

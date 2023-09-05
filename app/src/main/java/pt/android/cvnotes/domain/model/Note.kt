@@ -13,7 +13,7 @@ data class Note(
     val type: Int = NoteType.NONE.id,
     val content1: String = "",
     val content2: String = "",
-    val isSelected: Boolean = false,
+    var isSelected: Boolean = false,
     val timestamp: Long = Date().time,
     @PrimaryKey(autoGenerate = true) val id: Long? = null
 ) {

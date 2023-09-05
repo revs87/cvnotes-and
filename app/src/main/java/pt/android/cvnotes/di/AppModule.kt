@@ -25,7 +25,7 @@ import pt.android.cvnotes.domain.use_case.note.DeleteNote
 import pt.android.cvnotes.domain.use_case.note.GetNoteById
 import pt.android.cvnotes.domain.use_case.note.GetNotes
 import pt.android.cvnotes.domain.use_case.note.GetNotesBySectionId
-import pt.android.cvnotes.domain.use_case.note.HasSelectedNote
+import pt.android.cvnotes.domain.use_case.note.HasSelectedNotes
 import pt.android.cvnotes.domain.use_case.note.InsertNote
 import pt.android.cvnotes.domain.use_case.section.DeleteSection
 import pt.android.cvnotes.domain.use_case.section.DeleteSelectedSections
@@ -90,7 +90,7 @@ object AppModule {
             getNoteById = GetNoteById(noteRepository),
             insertNote = InsertNote(noteRepository),
             deleteNote = DeleteNote(noteRepository),
-            hasSelectedNote = HasSelectedNote(noteRepository),
+            hasSelectedNotes = HasSelectedNotes(noteRepository),
         )
     }
 

@@ -5,19 +5,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.domain.model.asString
-import pt.android.cvnotes.domain.util.SectionType
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500_Background3
 import pt.android.cvnotes.theme.MyTheme
@@ -30,11 +39,12 @@ import java.util.Date
 @Composable
 fun SectionDetailsNoteCards(
     modifier: Modifier = Modifier,
-    description: String = SectionType.EDUCATION.sectionName,
+    hasSelectedNotes: Boolean = true,
     onNoteClick: (Long) -> Unit = {},
+    onLongNoteClick: (Note) -> Unit = {},
     notes: List<Note> = listOf(
-        Note(1, 1, "Hello my friends!", "", timestamp = Date().time, id = 0),
-        Note(1, 1, "Hello again!", "", timestamp = Date().time, id = 1),
+        Note(1, 1, "Hello my friends!", "", timestamp = Date().time, id = 0, isSelected = true),
+        Note(1, 1, "Hello again! Yes!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", "", timestamp = Date().time, id = 1),
         Note(1, 1, "Hello goddammit!", "", timestamp = Date().time, id = 2),
     )
 ) {
@@ -45,40 +55,70 @@ fun SectionDetailsNoteCards(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Top
         ) {
-//            item(key = -1L) {
-//                CVNText(
-//                    modifier = Modifier
-//                        .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 10.dp),
-//                    text = description,
-//                    fontSize = SpHuge,
-//                    color = TextColor
-//                )
-//            }
             items(
                 items = notes,
                 key = { note -> note.id ?: 0L }
             ) { note ->
-                Card(
-                    modifier = modifier
-                        .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
-                        modifier = modifier
-                            .background(Blue500_Background3)
-                            .combinedClickable(
-                                onClick = { onNoteClick.invoke(note.id ?: 0L) },
-                                onLongClick = {},
-                            )
+                        modifier = modifier.weight(11f)
                     ) {
-                        CVNText(
+                        Card(
+                            modifier = modifier
+                                .padding(
+                                    start = 12.dp,
+                                    end = if (hasSelectedNotes) { 0.dp } else { 12.dp },
+                                    top = 4.dp,
+                                    bottom = 4.dp
+                                ),
+                        ) {
+                            Box(
+                                modifier = modifier
+                                    .background(Blue500_Background3)
+                                    .combinedClickable(
+                                        onClick = {
+                                            if (hasSelectedNotes) {
+                                                onLongNoteClick.invoke(note)
+                                            } else {
+                                                onNoteClick.invoke(note.id ?: 0L)
+                                            }
+                                        },
+                                        onLongClick = { onLongNoteClick.invoke(note) },
+                                    )
+                            ) {
+                                CVNText(
+                                    modifier = Modifier.padding(8.dp),
+                                    text = note.asString(),
+                                    lineHeight = SpMedium,
+                                    fontSize = SpMedium,
+                                    textAlign = TextAlign.Start,
+                                    color = TextColor
+                                )
+                            }
+                        }
+                    }
+                    if (hasSelectedNotes) {
+                        Column(
                             modifier = Modifier
-                                .padding(8.dp),
-                            text = note.asString(),
-                            lineHeight = SpMedium,
-                            fontSize = SpMedium,
-                            textAlign = TextAlign.Start,
-                            color = TextColor
-                        )
+                                .fillMaxSize()
+                                .weight(2f),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            IconButton(
+                                modifier = Modifier.size(45.dp),
+                                onClick = { onLongNoteClick.invoke(note) },
+                            ) {
+                                Icon(
+                                    imageVector =
+                                        if (note.isSelected) { Icons.Filled.CheckBox }
+                                        else { Icons.Filled.CheckBoxOutlineBlank },
+                                    contentDescription = "noteTick_${note.id ?: 0L}",
+                                    tint = TextColor
+                                )
+                            }
+                        }
                     }
                 }
             }

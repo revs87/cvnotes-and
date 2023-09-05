@@ -9,7 +9,7 @@ import pt.android.cvnotes.domain.model.Section
 data class SectionDetailsState(
     val section: Section = Section.Default,
     val notes: Flow<List<Note>> = flow { emit(emptyList()) },
-    val hasSelectedNote: Flow<Boolean> = flow { emit(false) },
+    val hasSelectedNotes: Flow<Boolean> = flow { emit(false) },
     val isLoading: Boolean = false,
     val errorMessage: String = "",
 )
