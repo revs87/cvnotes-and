@@ -54,12 +54,11 @@ fun SectionDetailsScreen(
     editSectionListener: (sectionId: Int, newName: String) -> Unit = {_, _ -> },
     editNoteListener: (noteId: Long) -> Unit = {_ -> },
     selectNoteListener: (note: Note) -> Unit = { _ -> },
+    notes: List<Note> = emptyList(),
     hasSelectedNotes: Boolean = false,
     onBackPressed: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val notes by state.notes.collectAsStateWithLifecycle(initialValue = emptyList())
-    val hasSelectedNote by state.hasSelectedNotes.collectAsStateWithLifecycle(initialValue = false)
 
     val appBarState = rememberTopAppBarState(initialHeightOffset = 0f)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(appBarState)

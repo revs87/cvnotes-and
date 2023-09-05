@@ -239,7 +239,8 @@ class MainActivity : ComponentActivity() {
                                 val viewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                 val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
                                 LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
-                                val hasSelectedSections by viewModel.state.value.hasSelectedNotes.collectAsStateWithLifecycle(initialValue = false)
+                                val notes by viewModel.state.value.notes.collectAsStateWithLifecycle(initialValue = emptyList())
+                                val hasSelectedNotes by viewModel.state.value.hasSelectedNotes.collectAsStateWithLifecycle(initialValue = false)
                                 SectionDetailsScreen(
                                     state = viewModel.state.value,
                                     sectionNameEditState = viewModel.sectionNameEditState.value,
@@ -248,7 +249,8 @@ class MainActivity : ComponentActivity() {
                                     editSectionListener = { sectionId, newName -> viewModel.updateSection(sectionId, newName) },
                                     editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/${sectionIdState.intValue}/$noteId") },
                                     selectNoteListener = { note -> viewModel.toggleNoteSelection(note) },
-                                    hasSelectedNotes = hasSelectedSections,
+                                    notes = notes,
+                                    hasSelectedNotes = hasSelectedNotes,
                                     onBackPressed = { navController.navigateUp() }
                                 )
                             }
