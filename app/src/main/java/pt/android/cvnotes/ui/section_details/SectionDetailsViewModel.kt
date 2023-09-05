@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,22 +33,7 @@ class SectionDetailsViewModel @Inject constructor(
         L.i("SectionDetailsViewModel", "Entered sectionId: $sectionId, ${viewModelScope.isActive}")
         getSectionJob?.let { if (it.isActive) { it.cancel() } }
         getSectionJob = viewModelScope.launch(Dispatchers.Default) {
-            withContext(Dispatchers.Main) {
-                _state.value = _state.value.copy(isLoading = true)
-            }
-            val section = async { sectionUseCases.getSectionById(sectionId) }.await()
-            val notes = async { noteUseCases.getNotesBySectionId(sectionId) }.await()
-            val hasSelectedNote = async { noteUseCases.hasSelectedNotes(sectionId) }.await()
-            withContext(Dispatchers.Main) {
-                _sectionNameEditState.value = section?.description ?: ""
-                _state.value = _state.value.copy(
-                    section = section ?: Section.Default,
-                    notes = notes,
-                    hasSelectedNotes = hasSelectedNote,
-                    isLoading = false,
-                    errorMessage = section?.let { "" } ?: "Section not found"
-                )
-            }
+            updateUI(sectionId)
         }
     }
 
@@ -62,19 +46,7 @@ class SectionDetailsViewModel @Inject constructor(
             val section = sectionUseCases.getSectionById(sectionId)
             section ?: return@launch
             sectionUseCases.insertSection(section.apply { description = newName.trim() })
-            val newSection = async { sectionUseCases.getSectionById(sectionId) }.await()
-            val notes = async { noteUseCases.getNotesBySectionId(sectionId) }.await()
-            val hasSelectedNote = async { noteUseCases.hasSelectedNotes(sectionId) }.await()
-            withContext(Dispatchers.Main) {
-                _sectionNameEditState.value = section.description
-                _state.value = _state.value.copy(
-                    section = newSection ?: Section.Default,
-                    notes = notes,
-                    hasSelectedNotes = hasSelectedNote,
-                    isLoading = false,
-                    errorMessage = ""
-                )
-            }
+            updateUI(sectionId)
         }
     }
 
@@ -83,18 +55,37 @@ class SectionDetailsViewModel @Inject constructor(
         toggleNoteJob?.let { if (it.isActive) { it.cancel() } }
         toggleNoteJob = viewModelScope.launch(Dispatchers.Default) {
             noteUseCases.insertNote(note.apply { isSelected = !isSelected })
-            val section = async { sectionUseCases.getSectionById(note.sectionId) }.await()
-            val notes = async { noteUseCases.getNotesBySectionId(note.sectionId) }.await()
-            val hasSelectedNote = async { noteUseCases.hasSelectedNotes(note.sectionId) }.await()
-            withContext(Dispatchers.Main) {
-                _state.value = _state.value.copy(
-                    section = section ?: Section.Default,
-                    notes = notes,
-                    hasSelectedNotes = hasSelectedNote,
-                    isLoading = false,
-                    errorMessage = section?.let { "" } ?: "Section not found"
-                )
-            }
+            updateUI(note.sectionId)
+        }
+    }
+
+    fun unselectAllSelectedNotes(sectionId: Int) {
+        viewModelScope.launch(Dispatchers.Default) {
+            noteUseCases.unselectAllNotes(sectionId)
+            updateUI(sectionId)
+        }
+    }
+
+    fun deleteSelectedNotes(sectionId: Int) {
+        viewModelScope.launch(Dispatchers.Default) {
+            noteUseCases.deleteSelectedNotes(sectionId)
+            updateUI(sectionId)
+        }
+    }
+
+    private suspend fun updateUI(sectionId: Int) {
+        withContext(Dispatchers.Main) { _state.value = _state.value.copy(isLoading = true) }
+        val section = sectionUseCases.getSectionById(sectionId)
+        val notes = noteUseCases.getNotesBySectionId(sectionId)
+        val hasSelectedNote = noteUseCases.hasSelectedNotes(sectionId)
+        withContext(Dispatchers.Main) {
+            _state.value = _state.value.copy(
+                section = section ?: Section.Default,
+                notes = notes,
+                hasSelectedNotes = hasSelectedNote,
+                isLoading = false,
+                errorMessage = section?.let { "" } ?: "Section not found"
+            )
         }
     }
 }

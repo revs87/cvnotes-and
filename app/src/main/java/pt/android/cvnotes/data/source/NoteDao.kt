@@ -28,4 +28,10 @@ interface NoteDao {
 
     @Query("SELECT EXISTS (SELECT * FROM note WHERE sectionId = :sectionId AND isSelected = :isSelected)")
     fun hasSelectedNotes(sectionId: Int, isSelected: Boolean = true): Flow<Boolean>
+
+    @Query("UPDATE note SET isSelected = :isNotSelected WHERE sectionId = :sectionId AND isSelected = :isSelected")
+    fun unselectAllNotes(sectionId: Int, isSelected: Boolean = true, isNotSelected: Boolean = false)
+
+    @Query("DELETE FROM note WHERE sectionId = :sectionId AND isSelected = :isSelected")
+    fun deleteSelectedNotes(sectionId: Int, isSelected: Boolean = true)
 }

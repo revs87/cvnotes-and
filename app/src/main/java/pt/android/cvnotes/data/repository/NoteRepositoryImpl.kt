@@ -31,4 +31,12 @@ class NoteRepositoryImpl(
     override fun hasSelectedNotes(sectionId: Int): Flow<Boolean> {
         return dao.hasSelectedNotes(sectionId)
     }
+
+    override suspend fun unselectAllNotes(sectionId: Int) {
+        dao.unselectAllNotes(sectionId)
+    }
+
+    override suspend fun deleteSelectedNotes(sectionId: Int) {
+        dao.deleteSelectedNotes(sectionId)
+    }
 }

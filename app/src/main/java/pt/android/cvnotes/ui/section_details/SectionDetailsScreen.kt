@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -21,7 +21,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +28,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pt.android.cvnotes.domain.model.Note
 import pt.android.cvnotes.theme.BackgroundColor
 import pt.android.cvnotes.theme.Blue500
@@ -56,6 +54,7 @@ fun SectionDetailsScreen(
     selectNoteListener: (note: Note) -> Unit = { _ -> },
     notes: List<Note> = emptyList(),
     hasSelectedNotes: Boolean = false,
+    onSelectedNotesFABClick: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -92,11 +91,16 @@ fun SectionDetailsScreen(
                 shape = RoundedCornerShape(15.dp),
                 contentColor = Blue500_Background3,
                 containerColor = Blue500,
-                onClick = { addNoteListener.invoke(state.section.id ?: 0) }
+                onClick = {
+                    when {
+                        hasSelectedNotes -> onSelectedNotesFABClick.invoke()
+                        else -> addNoteListener.invoke(state.section.id ?: 0)
+                    }
+                }
             ) {
                 Icon(
                     imageVector = when {
-                        hasSelectedNote -> Icons.Filled.EditNote
+                        hasSelectedNotes -> Icons.Filled.DeleteSweep
                         else -> Icons.Filled.NoteAdd
                     },
                     tint = Blue500_Background3,

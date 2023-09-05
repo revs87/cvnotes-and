@@ -22,11 +22,13 @@ import pt.android.cvnotes.domain.repository.SharedPreferencesRepository
 import pt.android.cvnotes.domain.use_case.NoteUseCases
 import pt.android.cvnotes.domain.use_case.SectionUseCases
 import pt.android.cvnotes.domain.use_case.note.DeleteNote
+import pt.android.cvnotes.domain.use_case.note.DeleteSelectedNotes
 import pt.android.cvnotes.domain.use_case.note.GetNoteById
 import pt.android.cvnotes.domain.use_case.note.GetNotes
 import pt.android.cvnotes.domain.use_case.note.GetNotesBySectionId
 import pt.android.cvnotes.domain.use_case.note.HasSelectedNotes
 import pt.android.cvnotes.domain.use_case.note.InsertNote
+import pt.android.cvnotes.domain.use_case.note.UnselectAllNotes
 import pt.android.cvnotes.domain.use_case.section.DeleteSection
 import pt.android.cvnotes.domain.use_case.section.DeleteSelectedSections
 import pt.android.cvnotes.domain.use_case.section.GetSectionById
@@ -91,6 +93,8 @@ object AppModule {
             insertNote = InsertNote(noteRepository),
             deleteNote = DeleteNote(noteRepository),
             hasSelectedNotes = HasSelectedNotes(noteRepository),
+            unselectAllNotes = UnselectAllNotes(noteRepository),
+            deleteSelectedNotes = DeleteSelectedNotes(noteRepository),
         )
     }
 

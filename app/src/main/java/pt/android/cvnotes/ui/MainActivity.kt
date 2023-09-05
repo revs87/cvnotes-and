@@ -241,6 +241,7 @@ class MainActivity : ComponentActivity() {
                                 LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
                                 val notes by viewModel.state.value.notes.collectAsStateWithLifecycle(initialValue = emptyList())
                                 val hasSelectedNotes by viewModel.state.value.hasSelectedNotes.collectAsStateWithLifecycle(initialValue = false)
+                                var withSelectedNotesBottomSheetVisible by remember { mutableStateOf(false) }
                                 SectionDetailsScreen(
                                     state = viewModel.state.value,
                                     sectionNameEditState = viewModel.sectionNameEditState.value,
@@ -251,8 +252,14 @@ class MainActivity : ComponentActivity() {
                                     selectNoteListener = { note -> viewModel.toggleNoteSelection(note) },
                                     notes = notes,
                                     hasSelectedNotes = hasSelectedNotes,
+                                    onSelectedNotesFABClick = { withSelectedNotesBottomSheetVisible = true},
                                     onBackPressed = { navController.navigateUp() }
                                 )
+                                UnselectDeleteSectionsBottomSheet(
+                                    bottomSheetVisible = withSelectedNotesBottomSheetVisible,
+                                    unselectAllSelected = { viewModel.unselectAllSelectedNotes(sectionIdState.intValue) },
+                                    deleteAllSelected = { viewModel.deleteSelectedNotes(sectionIdState.intValue) },
+                                ) { withSelectedNotesBottomSheetVisible = false }
                             }
                             composable(
                                 route = "${NewNote.route}/{sectionId}",
