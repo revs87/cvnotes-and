@@ -22,10 +22,8 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
+        ksp {
+            arg('room.schemaLocation', "$projectDir/schemas")
         }
     }
 
@@ -41,7 +39,7 @@ android {
             if (keyPropertiesFile.canRead()) {
                 Properties properties = new Properties()
                 properties.load(new FileInputStream(keyPropertiesFile))
-                storeFile     = file(properties["storePath"].toString())
+                storeFile     = file("../../rvcoding/release.jks")
                 storePassword = properties["storePassword"].toString()
                 keyAlias      = properties["keyAlias"].toString()
                 keyPassword   = properties["keyPassword"].toString()
