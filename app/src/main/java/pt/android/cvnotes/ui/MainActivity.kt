@@ -1,12 +1,15 @@
 
 package pt.android.cvnotes.ui
 
-import android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -179,12 +182,12 @@ class MainActivity : ComponentActivity() {
                                 var pdfExportDialogVisible by remember { mutableStateOf(false) }
                                 val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
                                 val initialScrollPosition = prefs.getInt("scroll_position", 0)
+                                val context = LocalContext.current
                                 val launcher = rememberLauncherForActivityResult(
                                     ActivityResultContracts.RequestPermission()
                                 ) { isGranted ->
                                     pdfExportDialogVisible = isGranted
                                 }
-                                val context = LocalContext.current
                                 BottomBarWithFab(
                                     bottomNavItems = listOf(
                                         Dashboard.apply {
@@ -216,7 +219,7 @@ class MainActivity : ComponentActivity() {
                                     bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                     pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
                                     smallFabClickListener = {
-                                        requestPermission(launcher) { pdfExportDialogVisible = true }
+                                        requestPermission(context, launcher) { pdfExportDialogVisible = true }
                                     },
                                     fabClickListener = {
                                         when {
@@ -365,22 +368,26 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun checkPermission() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Environment.isExternalStorageManager()
-        } else {
-            ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
-        }
+    private fun checkPermissionGranted(context: Context) : Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { Environment.isExternalStorageManager() }
+        else { ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED }
 
     private val storageWritePermission =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { MANAGE_EXTERNAL_STORAGE }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION }
         else { WRITE_EXTERNAL_STORAGE }
 
     private fun requestPermission(
+        context: Context,
         launcher: ManagedActivityResultLauncher<String, Boolean>,
         onGranted: () -> Unit
     ) {
-        when (checkPermission() == PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                val uri = Uri.parse("package:${context.applicationContext.packageName}")
+                startActivity(Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri))
+            }
+        }
+        when (checkPermissionGranted(context)) {
             true -> onGranted.invoke()
             false -> launcher.launch(storageWritePermission)
         }
