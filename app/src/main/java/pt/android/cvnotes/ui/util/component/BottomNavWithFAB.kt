@@ -2,8 +2,10 @@ package pt.android.cvnotes.ui.util.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -14,10 +16,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.rounded.PictureAsPdf
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,6 +46,7 @@ fun BottomBarWithFab(
     bottomNavItems: List<Screen> = Screen.Defaults,
     bottomNavSelected: Int = 0,
     pageListener: (Int) -> Unit = {},
+    smallFabClickListener: () -> Unit = {},
     fabClickListener: () -> Unit = {},
     fabIcon: ImageVector = Icons.Filled.Edit,
     fabVisible: Boolean = true
@@ -49,20 +54,40 @@ fun BottomBarWithFab(
     MyTheme {
         Scaffold(
             floatingActionButton = {
-                if (fabVisible) {
-                    FloatingActionButton(
-                        modifier = Modifier
-                            .size(75.dp)
-                            .offset(x = 0.dp, y = 80.dp)
-                            .border(
-                                border = BorderStroke(1.dp, Blue500),
-                                shape = RoundedCornerShape(15.dp)
-                            ),
-                        shape = RoundedCornerShape(15.dp),
-                        contentColor = Blue500_Background3,
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    SmallFloatingActionButton(
+                        modifier = Modifier.offset(x = 0.dp, y = 80.dp),
+                        onClick = { smallFabClickListener.invoke() },
                         containerColor = Blue500,
-                        onClick = { fabClickListener.invoke() }
-                    ) { Icon(imageVector = fabIcon, contentDescription = fabIcon.name) }
+                        shape = RoundedCornerShape(12.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.PictureAsPdf,
+                            contentDescription = "Location FAB",
+                            tint = Blue500_Background3,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (fabVisible) {
+                        FloatingActionButton(
+                            modifier = Modifier
+                                .size(75.dp)
+                                .offset(x = 0.dp, y = 80.dp)
+                                .border(
+                                    border = BorderStroke(1.dp, Blue500),
+                                    shape = RoundedCornerShape(15.dp)
+                                ),
+                            shape = RoundedCornerShape(15.dp),
+                            contentColor = Blue500_Background3,
+                            containerColor = Blue500,
+                            onClick = { fabClickListener.invoke() }
+                        ) { Icon(imageVector = fabIcon, contentDescription = fabIcon.name) }
+                    }
                 }
             },
             bottomBar = {

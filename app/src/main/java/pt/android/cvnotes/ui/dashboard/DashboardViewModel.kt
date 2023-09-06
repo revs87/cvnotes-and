@@ -1,5 +1,6 @@
 package pt.android.cvnotes.ui.dashboard
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ import pt.android.cvnotes.domain.use_case.NoteUseCases
 import pt.android.cvnotes.domain.use_case.SectionUseCases
 import pt.android.cvnotes.domain.util.NoteType
 import pt.android.cvnotes.domain.util.SectionType
+import pt.android.cvnotes.ui.util.PdfGenerator
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -165,6 +167,16 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    fun exportPdfWithName(context: Context, fileName: String) {
+        _state.value = _state.value.copy(isLoading = true)
+        viewModelScope.launch(Dispatchers.Default) {
+            val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this).value
+            withContext(Dispatchers.Main) {
+                PdfGenerator(context).generatePDF(fileName, sectionWithNotes)
+                _state.value = _state.value.copy(isLoading = false)
+            }
+        }
+    }
 
     private suspend fun addRuiVieiraProfileNotes(sectionId: Int) {
         noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "RUI VIEIRA"))

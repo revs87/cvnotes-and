@@ -48,6 +48,8 @@ import pt.android.cvnotes.ui.util.component.cvn.CVNText
 @Preview(showBackground = true)
 @Composable
 fun TextFieldDialog(
+    title: String = "New section name",
+    placeholder: String = "Enter name",
     initialValue: String = "",
     setShowDialog: (Boolean) -> Unit = {},
     setValue: (String) -> Unit = {}
@@ -72,7 +74,7 @@ fun TextFieldDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         CVNText(
-                            text = "New section name",
+                            text = title,
                             style = TextStyle(
                                 fontSize = SpXLarge,
                                 fontWeight = FontWeight.SemiBold
@@ -80,7 +82,7 @@ fun TextFieldDialog(
                         )
                         Icon(
                             imageVector = Icons.Filled.Cancel,
-                            contentDescription = "",
+                            contentDescription = "$title-icon1",
                             tint = Gray500,
                             modifier = Modifier
                                 .width(30.dp)
@@ -101,7 +103,7 @@ fun TextFieldDialog(
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Filled.DriveFileRenameOutline,
-                                contentDescription = "",
+                                contentDescription = "$title-icon2",
                                 tint = Blue500,
                                 modifier = Modifier
                                     .width(20.dp)
@@ -109,7 +111,7 @@ fun TextFieldDialog(
                             )
                         },
                         singleLine = true,
-                        placeholder = { CVNText(text = "Enter name".uppercase(), fontWeight = FontWeight.SemiBold) },
+                        placeholder = { CVNText(text = placeholder.uppercase(), fontWeight = FontWeight.SemiBold) },
                         value = txtField.value,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                         onValueChange = {

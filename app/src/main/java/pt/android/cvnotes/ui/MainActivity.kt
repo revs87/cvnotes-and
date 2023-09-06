@@ -1,9 +1,17 @@
 
 package pt.android.cvnotes.ui
 
+import android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -23,7 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -166,8 +176,15 @@ class MainActivity : ComponentActivity() {
                                 var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
                                 var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
                                 var newSectionNameDialogVisible by remember { mutableStateOf(false) }
+                                var pdfExportDialogVisible by remember { mutableStateOf(false) }
                                 val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
                                 val initialScrollPosition = prefs.getInt("scroll_position", 0)
+                                val launcher = rememberLauncherForActivityResult(
+                                    ActivityResultContracts.RequestPermission()
+                                ) { isGranted ->
+                                    pdfExportDialogVisible = isGranted
+                                }
+                                val context = LocalContext.current
                                 BottomBarWithFab(
                                     bottomNavItems = listOf(
                                         Dashboard.apply {
@@ -198,6 +215,9 @@ class MainActivity : ComponentActivity() {
                                     ),
                                     bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                     pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
+                                    smallFabClickListener = {
+                                        requestPermission(launcher) { pdfExportDialogVisible = true }
+                                    },
                                     fabClickListener = {
                                         when {
                                             hasSelectedSections -> withSelectedSectionsBottomSheetVisible = true
@@ -225,9 +245,20 @@ class MainActivity : ComponentActivity() {
                                 ) { withSelectedSectionsBottomSheetVisible = false }
                                 if (newSectionNameDialogVisible) {
                                     TextFieldDialog(
+                                        title = "New section name",
+                                        placeholder = "Enter name",
                                         initialValue = "",
                                         setShowDialog = { enabled -> newSectionNameDialogVisible = enabled },
                                         setValue = { newValue -> dashboardViewModel.addSectionOtherType(newValue) }
+                                    )
+                                }
+                                if (pdfExportDialogVisible) {
+                                    TextFieldDialog(
+                                        title = "Export as PDF",
+                                        placeholder = "Enter file name",
+                                        initialValue = "myCV",
+                                        setShowDialog = { enabled -> pdfExportDialogVisible = enabled },
+                                        setValue = { newValue -> dashboardViewModel.exportPdfWithName(context, newValue) }
                                     )
                                 }
                             }
@@ -331,6 +362,27 @@ class MainActivity : ComponentActivity() {
                     inclusive = true
                 }
             }
+        }
+    }
+
+    private fun checkPermission() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Environment.isExternalStorageManager()
+        } else {
+            ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
+        }
+
+    private val storageWritePermission =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { MANAGE_EXTERNAL_STORAGE }
+        else { WRITE_EXTERNAL_STORAGE }
+
+    private fun requestPermission(
+        launcher: ManagedActivityResultLauncher<String, Boolean>,
+        onGranted: () -> Unit
+    ) {
+        when (checkPermission() == PERMISSION_GRANTED) {
+            true -> onGranted.invoke()
+            false -> launcher.launch(storageWritePermission)
         }
     }
 }
