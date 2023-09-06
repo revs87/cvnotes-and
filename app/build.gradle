@@ -22,11 +22,50 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile = file("../debug.jks")
+            storePassword = "my4PP!D3bUg"
+            keyAlias = "debug"
+            keyPassword = "my4PP!D3bUg"
+        }
+        create("release") {
+            File keyPropertiesFile = file("../../rvcoding/release.properties")
+            if (keyPropertiesFile.canRead()) {
+                Properties properties = new Properties()
+                properties.load(new FileInputStream(keyPropertiesFile))
+                storeFile     = file(properties["storePath"].toString())
+                storePassword = properties["storePassword"].toString()
+                keyAlias      = properties["keyAlias"].toString()
+                keyPassword   = properties["keyPassword"].toString()
+            }
+        }
     }
 
     buildTypes {
+        debug {
+            debuggable = true
+            minifyEnabled = false
+            isDefault = true
+
+            signingConfig = signingConfigs.debug
+
+//            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "CVNotes Debug")
+        }
         release {
-            minifyEnabled false
+            debuggable = false
+            minifyEnabled = true
+            isDefault = false
+
+            signingConfig = signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
