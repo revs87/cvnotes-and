@@ -8,17 +8,17 @@ plugins {
 }
 
 android {
-    namespace 'pt.android.cvnotes'
+    namespace 'pt.rvcoding.cvnotes'
     compileSdk 34
 
     defaultConfig {
-        applicationId "pt.android.cvnotes"
+        applicationId "pt.rvcoding.cvnotes"
         minSdk 28
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
 
-        testInstrumentationRunner "pt.android.cvnotes.HiltTestRunner"
+        testInstrumentationRunner "pt.rvcoding.cvnotes.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }

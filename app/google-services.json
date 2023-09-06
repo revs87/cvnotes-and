@@ -7,38 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:634060105298:android:9915641b83ff1cd864a18b",
+        "mobilesdk_app_id": "1:634060105298:android:dad58ef50103279f64a18b",
         "android_client_info": {
-          "package_name": "com.example.myfirebaseusertester"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "634060105298-6ejoskopq9qt4c0qspc5r42i4pdg6t8n.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCsid_5t969d3dhYhPCfx-fFnZ84D84oZg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "634060105298-41pe72unbjb8rp4t4pbs8spnhhasldjr.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:634060105298:android:bd9eb967721e5dbd64a18b",
-        "android_client_info": {
-          "package_name": "pt.android.cvnotes"
+          "package_name": "pt.rvcoding.cvnotes"
         }
       },
       "oauth_client": [

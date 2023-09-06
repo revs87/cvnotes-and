@@ -14,7 +14,7 @@
         android:maxSdkVersion="29" />
 
     <application
-        android:name=".CVNotesApp"
+        android:name="pt.rvcoding.cvnotes.CVNotesApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -27,7 +27,7 @@
         android:theme="@style/Theme.CVNotes"
         tools:targetApi="33">
         <activity
-            android:name="pt.android.cvnotes.ui.MainActivity"
+            android:name="pt.rvcoding.cvnotes.ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.CVNotes">
             <intent-filter>
