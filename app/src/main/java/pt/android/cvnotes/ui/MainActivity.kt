@@ -259,7 +259,7 @@ class MainActivity : ComponentActivity() {
                                     TextFieldDialog(
                                         title = "Export as PDF",
                                         placeholder = "Enter file name",
-                                        initialValue = "myCV",
+                                        initialValue = "myCVNotes",
                                         setShowDialog = { enabled -> pdfExportDialogVisible = enabled },
                                         setValue = { newValue -> dashboardViewModel.exportPdfWithName(context, newValue) }
                                     )
