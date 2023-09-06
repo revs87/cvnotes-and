@@ -32,7 +32,7 @@ fun IntroScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CVNText(modifier = Modifier.padding(bottom = 8.dp), text = "Do you already have an account?")
+                CVNText(modifier = Modifier.padding(bottom = 8.dp), text = "Already have an account?")
                 PrimaryButton(modifier = Modifier.padding(bottom = 6.dp), onClick = { onRegisterClick.invoke() }) { CVNText(text = "Create account".uppercase()) }
                 PrimaryButton(onClick = { onLoginClick.invoke() }) { CVNText(text = "Login".uppercase()) }
             }
