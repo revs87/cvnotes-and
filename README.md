@@ -1,3 +1,11 @@
+[![Static Badge](https://img.shields.io/badge/release%20-%20v1.0.0%20-%20%231082C3)](https://github.com/revs87/cvnotes-and/releases/tag/v1.0.0)
+
+![Static Badge](https://img.shields.io/badge/License%20-%20Apache%202.0%20-%20%231082C3)
+
+![image](https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white)
+![image](https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
+
+
 # [CVNotes - A snappy and customizable CV editor](https://play.google.com/store/apps/details?id=pt.rvcoding.cvnotes)
 Thinking through CV writing can be challenging given its complexity and external circumstances.
 
@@ -34,3 +42,4 @@ The latest Android Studio Hedgehog or above (for easy install use JetBrains Tool
 
 ### Networking
 - Firebase Auth
+- Firebase Crashlytics
