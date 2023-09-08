@@ -38,7 +38,7 @@ The latest Android Studio Hedgehog or above (for easy install use JetBrains Tool
 
 ### Local Persistence
 - SharedPreferences (key-value storage)
-- Room DB
+- Room DB (using KSP)
 
 ### Networking
 - Firebase Auth
