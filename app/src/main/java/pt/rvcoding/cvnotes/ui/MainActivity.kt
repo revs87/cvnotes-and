@@ -128,7 +128,8 @@ class MainActivity : ComponentActivity() {
                                 }
                                 IntroScreen(
                                     { authViewModel.cleanFields(); navigateTo(navController, Register.route) },
-                                    { authViewModel.cleanFields(); navigateTo(navController, Login.route)  }
+                                    { authViewModel.cleanFields(); navigateTo(navController, Login.route)  },
+                                    { authViewModel.createUser("", "", isOffline = true) }
                                 )
                             }
                             composable(route = Register.route) {
