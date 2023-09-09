@@ -76,7 +76,7 @@ class PdfGenerator(
 
         // below line is sued for setting color
         // of our text inside our PDF file.
-        section.color = ContextCompat.getColor(context, R.color.purple_200)
+        section.color = ContextCompat.getColor(context, R.color.black)
         note.color = ContextCompat.getColor(context, R.color.black)
 
         // below line is used to draw text in our PDF file.
