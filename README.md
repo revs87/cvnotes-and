@@ -20,7 +20,8 @@ You can:
 - Customize your notes with different note types.
 - Generate a simple Resumé exported as a PDF file.
 
-[![image](https://github.com/revs87/cvnotes-and/assets/556860/68be9cd6-34fb-49e3-8059-1343abdcbd49)](https://play.google.com/store/apps/details?id=pt.rvcoding.cvnotes)
+[<img src="https://lh3.googleusercontent.com/q1k2l5CwMV31JdDXcpN4Ey7O43PxnjAuZBTmcHEwQxVuv_2wCE2gAAQMWxwNUC2FYEOnYgFPOpw6kmHJWuEGeIBLTj9CuxcOEeU8UXyzWJq4NJM3lg=s0">](https://play.google.com/store/apps/details?id=pt.rvcoding.cvnotes)
+
 
 ## Project Requirements
 Java 17+
