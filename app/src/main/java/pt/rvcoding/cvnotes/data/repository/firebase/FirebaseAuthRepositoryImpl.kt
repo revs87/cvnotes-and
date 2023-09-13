@@ -18,16 +18,23 @@ internal class FirebaseAuthRepositoryImpl(
 ) : AuthRepository {
     private val mAuth = FirebaseAuth.getInstance()
 
-    override fun register(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
-        try {
-            val res = mAuth.createUserWithEmailAndPassword(email, pwd).await()
-            if (res.isValid()) {
-                cacheUser(res)
-                emit(Success(res.toUserDTO()))
-            }
-            else { emit(Error("Registered user is not valid")) }
+    override fun register(email: String, pwd: String, isOffline: Boolean): Flow<Result<UserDTO>> = flow {
+        if (isOffline) {
+            val offlineUser = UserDTO(email = email)
+            cacheOfflineUser(offlineUser)
+            emit(Success(offlineUser))
         }
-        catch (e: Exception) { emit(Error("Creating user failed")) }
+        else {
+            try {
+                val res = mAuth.createUserWithEmailAndPassword(email, pwd).await()
+                if (res.isValid()) {
+                    cacheUser(res)
+                    emit(Success(res.toUserDTO()))
+                }
+                else { emit(Error("Registered user is not valid")) }
+            }
+            catch (e: Exception) { emit(Error("Creating user failed")) }
+        }
     }
 
     override fun login(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
@@ -80,5 +87,14 @@ internal class FirebaseAuthRepositoryImpl(
         this.user?.uid.isNullOrBlank() -> false
         this.user?.email.isNullOrBlank() -> false
         else -> true
+    }
+
+    private fun cacheOfflineUser(offlineUser: UserDTO) {
+        spRepository.putString(SPKey.UID.key, offlineUser.uid)
+        spRepository.putString(SPKey.EMAIL.key, offlineUser.email)
+        spRepository.putString(SPKey.DISPLAY_NAME.key, "Offline account")
+        spRepository.putString(SPKey.PHONE_NUMBER.key, "-")
+        spRepository.putString(SPKey.PHOTO_URL.key, "-")
+        spRepository.putString(SPKey.USERNAME.key, offlineUser.email)
     }
 }

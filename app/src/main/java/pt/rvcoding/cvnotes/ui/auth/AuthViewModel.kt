@@ -38,10 +38,10 @@ class AuthViewModel @Inject constructor(
     private var getRegisterJob: Job? = null
     private var getLoginJob: Job? = null
 
-    fun createUser(email: String, pwd: String) {
+    fun createUser(email: String, pwd: String, isOffline: Boolean = false) {
         _state.value = asLoadingActive()
         getRegisterJob?.cancel()
-        getRegisterJob = authRepository.register(email, pwd)
+        getRegisterJob = authRepository.register(if (isOffline) offlineEmail else email, pwd, isOffline)
             .onEach { res ->
                 when (res) {
                     is Result.Error -> _state.value = asError(RegisterError(res.message))
@@ -93,6 +93,7 @@ class AuthViewModel @Inject constructor(
 
 
     companion object {
+        const val offlineEmail: String = "offline@account.cvn"
         const val TAG = "AuthViewModel"
     }
 }

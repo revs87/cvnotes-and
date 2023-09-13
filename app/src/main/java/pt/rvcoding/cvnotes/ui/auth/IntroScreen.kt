@@ -13,12 +13,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.rvcoding.cvnotes.theme.MyTheme
 import pt.rvcoding.cvnotes.theme.button.PrimaryButton
+import pt.rvcoding.cvnotes.theme.button.SecondaryButton
 import pt.rvcoding.cvnotes.ui.util.component.cvn.CVNText
 
 @Composable
 fun IntroScreen(
     onRegisterClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
+    onOfflineClick: () -> Unit = {},
 ) {
     MyTheme {
         Surface(
@@ -34,7 +36,8 @@ fun IntroScreen(
             ) {
                 CVNText(modifier = Modifier.padding(bottom = 8.dp), text = "Already have an account?")
                 PrimaryButton(modifier = Modifier.padding(bottom = 6.dp), onClick = { onRegisterClick.invoke() }) { CVNText(text = "Create account".uppercase()) }
-                PrimaryButton(onClick = { onLoginClick.invoke() }) { CVNText(text = "Login".uppercase()) }
+                PrimaryButton(modifier = Modifier.padding(bottom = 6.dp), onClick = { onLoginClick.invoke() }) { CVNText(text = "Login".uppercase()) }
+                SecondaryButton(onClick = { onOfflineClick.invoke() }) { CVNText(text = "Offline account".uppercase()) }
             }
         }
     }
