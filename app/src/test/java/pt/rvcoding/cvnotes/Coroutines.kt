@@ -23,7 +23,7 @@ class Coroutines {
 
 
     @Test
-    fun `Concurrent coroutine return the sum of each execution time`() {
+    fun `Execution block returns the sum of each delay's execution time`() {
         runBlocking {
             val start = System.currentTimeMillis()
             delay(1000)
@@ -34,7 +34,7 @@ class Coroutines {
     }
 
     @Test
-    fun `Concurrent coroutine return the sum of each execution time - launch without join()`() {
+    fun `Concurrent coroutines return the sum of each execution time - launch without join()`() {
         runBlocking {
             val start = System.currentTimeMillis()
             launch { delay(1000) } // A new instance of Job is always assigned to a new coroutine
@@ -45,7 +45,7 @@ class Coroutines {
     }
 
     @Test
-    fun `Concurrent coroutine return the sum of each execution time - launch with join() - when result doesn't matter`() {
+    fun `Concurrent coroutines return the sum of each execution time - launch with join() - when result doesn't matter`() {
         runBlocking {
             val c1 = launch { delay(1000) }
             val c2 = launch { delay(500) }
