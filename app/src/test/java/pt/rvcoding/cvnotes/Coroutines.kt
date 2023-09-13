@@ -57,7 +57,6 @@ class Coroutines {
         }
     }
 
-    
     @Test
     fun `Asynchronous coroutines return an execution time lesser than the sum of each execution time - async - result matters!`() {
         runBlocking {
