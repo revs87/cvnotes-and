@@ -139,7 +139,7 @@ class PdfGenerator(
         // below line is used to set the name of
         // our PDF file and its path.
 
-        val file: File = File(Environment.getExternalStorageDirectory(), "$fileName.pdf")
+        val file: File = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "$fileName.pdf")
 
         try {
             // after creating a file name we will
@@ -147,15 +147,10 @@ class PdfGenerator(
             pdfDocument.writeTo(FileOutputStream(file))
 
             // on below line we are displaying a toast message as PDF file generated..
-            Toast.makeText(context, "PDF file generated..", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "PDF file generated:\n${file.absolutePath}", Toast.LENGTH_SHORT).show()
 
             // open file
-            val path = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
-            val pdfOpenIntent = Intent(Intent.ACTION_VIEW)
-            pdfOpenIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            pdfOpenIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            pdfOpenIntent.setDataAndType(path, "application/pdf")
-            context.startActivity(pdfOpenIntent)
+            openPdf(file)
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
             Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT)
@@ -178,5 +173,14 @@ class PdfGenerator(
     companion object {
         const val pageHeight = 1120
         const val pageWidth = 792
+    }
+
+    private fun openPdf(file: File) {
+        val path = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
+        val pdfOpenIntent = Intent(Intent.ACTION_VIEW)
+        pdfOpenIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        pdfOpenIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        pdfOpenIntent.setDataAndType(path, "application/pdf")
+        context.startActivity(pdfOpenIntent)
     }
 }
