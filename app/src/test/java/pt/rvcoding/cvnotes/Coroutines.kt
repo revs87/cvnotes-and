@@ -37,7 +37,7 @@ class Coroutines {
     fun `Concurrent coroutine return the sum of each execution time - launch without join()`() {
         runBlocking {
             val start = System.currentTimeMillis()
-            launch { delay(1000) }
+            launch { delay(1000) } // A new instance of Job is always assigned to a new coroutine
             launch { delay(500) }
             val end = System.currentTimeMillis()
             assertThat(end - start).isLessThan(40)
