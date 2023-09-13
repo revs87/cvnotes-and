@@ -2,13 +2,9 @@ package pt.rvcoding.cvnotes.ui
 
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -368,28 +364,21 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun checkPermissionGranted(context: Context) : Boolean =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { Environment.isExternalStorageManager() }
-        else { ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED }
-
-    private val storageWritePermission =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION }
-        else { WRITE_EXTERNAL_STORAGE }
-
     private fun requestPermission(
         context: Context,
         launcher: ManagedActivityResultLauncher<String, Boolean>,
         onGranted: () -> Unit
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!Environment.isExternalStorageManager()) {
-                val uri = Uri.parse("package:${context.applicationContext.packageName}")
-                startActivity(Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri))
+        /**
+         * From Android 13 onwards, READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE are deprecated.
+         * If the app only adds files in the shared storage, it can stop requesting any permission on Android 10+
+         * */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { onGranted.invoke() }
+        else {
+            when (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+                true -> onGranted.invoke()
+                false -> launcher.launch(WRITE_EXTERNAL_STORAGE)
             }
-        }
-        when (checkPermissionGranted(context)) {
-            true -> onGranted.invoke()
-            false -> launcher.launch(storageWritePermission)
         }
     }
 }
