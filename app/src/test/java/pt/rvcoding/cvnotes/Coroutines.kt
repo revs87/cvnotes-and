@@ -34,17 +34,29 @@ class Coroutines {
     }
 
     @Test
-    fun `Concurrent coroutine return the sum of each execution time - launch - when result doesn't matter`() {
+    fun `Concurrent coroutine return the sum of each execution time - launch without join()`() {
+        runBlocking {
+            val start = System.currentTimeMillis()
+            launch { delay(1000) }
+            launch { delay(500) }
+            val end = System.currentTimeMillis()
+            assertThat(end - start).isLessThan(40)
+        }
+    }
+
+    @Test
+    fun `Concurrent coroutine return the sum of each execution time - launch with join() - when result doesn't matter`() {
         runBlocking {
             val c1 = launch { delay(1000) }
             val c2 = launch { delay(500) }
             val start = System.currentTimeMillis()
-            c1.join()
+            c1.join() // Wait for the coroutine to complete
             c2.join()
             val end = System.currentTimeMillis()
             assertThat(end - start).isLessThan(1500)
         }
     }
+
     
     @Test
     fun `Asynchronous coroutines return an execution time lesser than the sum of each execution time - async - result matters!`() {
