@@ -1,7 +1,6 @@
 package pt.rvcoding.cvnotes.ui
 
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
@@ -11,13 +10,18 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.asIntState
 import androidx.compose.runtime.asLongState
 import androidx.compose.runtime.derivedStateOf
@@ -94,254 +98,285 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val systemUiController = rememberSystemUiController()
+            val snackbarHostState = remember { SnackbarHostState() }
             MyTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Splash.route
-                    ) {
-                        composable(route = Splash.route) {
-                            systemUiController.setSystemBarsColor(Black, White)
-                            val authViewModel: AuthViewModel = hiltViewModel()
-                            val startingRoute =
-                                if (authViewModel.state.value.isLoggedIn) { Home.route }
-                                else { Auth.route }
-                            SplashScreen { navigateTo(navController, startingRoute, Splash.route) }
-                        }
-                        navigation(
-                            route = Auth.route,
-                            startDestination = Intro.route
+                    Scaffold(
+                        snackbarHost = { SnackbarHost(snackbarHostState) }
+                    ) { padding ->
+                        NavHost(
+                            modifier = Modifier.padding(padding),
+                            navController = navController,
+                            startDestination = Splash.route
                         ) {
-                            composable(
-                                route = Intro.route
+                            composable(route = Splash.route) {
+                                systemUiController.setSystemBarsColor(Black, White)
+                                val authViewModel: AuthViewModel = hiltViewModel()
+                                val startingRoute =
+                                    if (authViewModel.state.value.isLoggedIn) { Home.route }
+                                    else { Auth.route }
+                                SplashScreen { navigateTo(navController, startingRoute, Splash.route) }
+                            }
+                            navigation(
+                                route = Auth.route,
+                                startDestination = Intro.route
                             ) {
-                                val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
-                                if (authViewModel.state.value.isLoggedIn) {
-                                    LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
+                                composable(
+                                    route = Intro.route
+                                ) {
+                                    val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
+                                    if (authViewModel.state.value.isLoggedIn) {
+                                        LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
+                                    }
+                                    IntroScreen(
+                                        { authViewModel.cleanFields(); navigateTo(navController, Register.route) },
+                                        { authViewModel.cleanFields(); navigateTo(navController, Login.route)  },
+                                        { authViewModel.createUser("", "", isOffline = true) }
+                                    )
                                 }
-                                IntroScreen(
-                                    { authViewModel.cleanFields(); navigateTo(navController, Register.route) },
-                                    { authViewModel.cleanFields(); navigateTo(navController, Login.route)  },
-                                    { authViewModel.createUser("", "", isOffline = true) }
-                                )
+                                composable(route = Register.route) {
+                                    val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
+                                    if (authViewModel.state.value.isLoggedIn) {
+                                        LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
+                                    }
+                                    val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
+                                    RegistrationScreen(
+                                        state = authViewModel.state.value,
+                                        fieldsState = authViewModel.fieldsState.value,
+                                        errorMessage = errorEvent.value,
+                                        updateEmailListener = { authViewModel.updateEmail(it) },
+                                        updatePwdListener = { authViewModel.updatePwd(it) },
+                                        createUserListener = { email, pwd -> authViewModel.createUser(email, pwd) },
+                                    )
+                                }
+                                composable(route = Login.route) {
+                                    val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
+                                    if (authViewModel.state.value.isLoggedIn) {
+                                        LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
+                                    }
+                                    val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
+                                    LoginScreen(
+                                        state = authViewModel.state.value,
+                                        fieldsState = authViewModel.fieldsState.value,
+                                        errorMessage = errorEvent.value,
+                                        updateEmailListener = { authViewModel.updateEmail(it) },
+                                        updatePwdListener = { authViewModel.updatePwd(it) },
+                                        logUserListener = { email, pwd -> authViewModel.logUser(email, pwd) },
+                                    )
+                                }
                             }
-                            composable(route = Register.route) {
-                                val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
-                                if (authViewModel.state.value.isLoggedIn) {
-                                    LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
-                                }
-                                val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
-                                RegistrationScreen(
-                                    state = authViewModel.state.value,
-                                    fieldsState = authViewModel.fieldsState.value,
-                                    errorMessage = errorEvent.value,
-                                    updateEmailListener = { authViewModel.updateEmail(it) },
-                                    updatePwdListener = { authViewModel.updatePwd(it) },
-                                    createUserListener = { email, pwd -> authViewModel.createUser(email, pwd) },
-                                )
-                            }
-                            composable(route = Login.route) {
-                                val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
-                                if (authViewModel.state.value.isLoggedIn) {
-                                    LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
-                                }
-                                val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
-                                LoginScreen(
-                                    state = authViewModel.state.value,
-                                    fieldsState = authViewModel.fieldsState.value,
-                                    errorMessage = errorEvent.value,
-                                    updateEmailListener = { authViewModel.updateEmail(it) },
-                                    updatePwdListener = { authViewModel.updatePwd(it) },
-                                    logUserListener = { email, pwd -> authViewModel.logUser(email, pwd) },
-                                )
-                            }
-                        }
-                        navigation(
-                            route = Home.route,
-                            startDestination = Dashboard.route
-                        ) {
-                            composable(route = Dashboard.route) {
-                                systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
-                                val homeViewModel: HomeViewModel = hiltViewModel()
-                                val isFabVisible by remember { derivedStateOf { homeViewModel.state.value.selectedBottomItem == 0 } }
-                                val dashboardViewModel: DashboardViewModel = hiltViewModel()
-                                val sectionsWithNotes by dashboardViewModel.state.value.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
-                                val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
-                                LaunchedEffect(dashboardViewModel.state) { dashboardViewModel.getAllNotes() }
-                                val aboutViewModel: AboutViewModel = hiltViewModel()
-                                var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
-                                var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
-                                var newSectionNameDialogVisible by remember { mutableStateOf(false) }
-                                var pdfExportDialogVisible by remember { mutableStateOf(false) }
-                                val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
-                                val initialScrollPosition = prefs.getInt("scroll_position", 0)
-                                val context = LocalContext.current
-                                val launcher = rememberLauncherForActivityResult(
-                                    ActivityResultContracts.RequestPermission()
-                                ) { isGranted ->
-                                    pdfExportDialogVisible = isGranted
-                                }
-                                BottomBarWithFab(
-                                    bottomNavItems = listOf(
-                                        Dashboard.apply {
-                                            content = {
-                                                DashboardScreen(
-                                                    state = dashboardViewModel.state.value,
-                                                    sectionsWithNotes = sectionsWithNotes,
-                                                    hasSelectedSections = hasSelectedSections,
-                                                    onSectionClick = { id ->
-                                                        if (hasSelectedSections) { dashboardViewModel.selectSection(id) }
-                                                        else { navigateTo(navController, "${SectionDetails.route}/$id") }
-                                                    },
-                                                    onSectionLongClick = { id -> dashboardViewModel.selectSection(id) },
-                                                    saveToPrefs = { index -> prefs.edit().putInt("scroll_position", index).apply() },
-                                                    initialScrollPosition = initialScrollPosition
+                            navigation(
+                                route = Home.route,
+                                startDestination = Dashboard.route
+                            ) {
+                                composable(route = Dashboard.route) {
+                                    systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
+                                    val homeViewModel: HomeViewModel = hiltViewModel()
+                                    val isFabVisible by remember { derivedStateOf { homeViewModel.state.value.selectedBottomItem == 0 } }
+                                    val dashboardViewModel: DashboardViewModel = hiltViewModel()
+                                    val sectionsWithNotes by dashboardViewModel.state.value.sectionsWithNotes.collectAsStateWithLifecycle(initialValue = emptyList())
+                                    val hasSelectedSections by dashboardViewModel.state.value.sectionsHasSelected.collectAsStateWithLifecycle(initialValue = false)
+                                    LaunchedEffect(dashboardViewModel.state) { dashboardViewModel.getAllNotes() }
+                                    val aboutViewModel: AboutViewModel = hiltViewModel()
+                                    var newSectionBottomSheetVisible by remember { mutableStateOf(false) }
+                                    var withSelectedSectionsBottomSheetVisible by remember { mutableStateOf(false) }
+                                    var newSectionNameDialogVisible by remember { mutableStateOf(false) }
+                                    var pdfExportDialogVisible by remember { mutableStateOf(false) }
+                                    val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
+                                    val initialScrollPosition = prefs.getInt("scroll_position", 0)
+                                    val context = LocalContext.current
+                                    val launcher = rememberLauncherForActivityResult(
+                                        ActivityResultContracts.RequestPermission()
+                                    ) { isGranted ->
+//                                        if (isGranted) {
+//                                            println("[launcher] Granted")
+//                                        } else {
+//                                            println("[launcher] Not granted")
+//                                        }
+                                        pdfExportDialogVisible = isGranted
+                                    }
+                                    val requestPermissionRationaleHitCount = remember { mutableIntStateOf(0) }
+                                    BottomBarWithFab(
+                                        bottomNavItems = listOf(
+                                            Dashboard.apply {
+                                                content = {
+                                                    DashboardScreen(
+                                                        state = dashboardViewModel.state.value,
+                                                        sectionsWithNotes = sectionsWithNotes,
+                                                        hasSelectedSections = hasSelectedSections,
+                                                        onSectionClick = { id ->
+                                                            if (hasSelectedSections) { dashboardViewModel.selectSection(id) }
+                                                            else { navigateTo(navController, "${SectionDetails.route}/$id") }
+                                                        },
+                                                        onSectionLongClick = { id -> dashboardViewModel.selectSection(id) },
+                                                        saveToPrefs = { index -> prefs.edit().putInt("scroll_position", index).apply() },
+                                                        initialScrollPosition = initialScrollPosition
+                                                    )
+                                                }
+                                            },
+                                            About.apply {
+                                                content = {
+                                                    AboutScreen(
+                                                        state = aboutViewModel.state,
+                                                        profileState = aboutViewModel.profileState,
+                                                        logoutListener = aboutViewModel::logout
+                                                    ) { navigateTo(navController, Auth.route, Home.route) }
+                                                }
+                                            },
+                                        ),
+                                        bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
+                                        pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
+                                        smallFabClickListener = {
+                                            if (applicationInfo.targetSdkVersion >= Build.VERSION_CODES.TIRAMISU) {
+                                                //println("[requestPermission] Granted")
+                                                pdfExportDialogVisible = true
+                                            } else {
+                                                requestPermission(
+                                                    launcher,
+                                                    onGranted = {
+                                                        //println("[requestPermission] Granted")
+                                                        pdfExportDialogVisible = true
+                                                                },
+                                                    onShowRequestPermissionRationale = {
+                                                        requestPermissionRationaleHitCount.intValue += 1
+                                                    }
                                                 )
                                             }
                                         },
-                                        About.apply {
-                                            content = {
-                                                AboutScreen(
-                                                    state = aboutViewModel.state,
-                                                    profileState = aboutViewModel.profileState,
-                                                    logoutListener = aboutViewModel::logout
-                                                ) { navigateTo(navController, Auth.route, Home.route) }
+                                        fabClickListener = {
+                                            when {
+                                                hasSelectedSections -> withSelectedSectionsBottomSheetVisible = true
+                                                else -> newSectionBottomSheetVisible = true
                                             }
                                         },
-                                    ),
-                                    bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
-                                    pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
-                                    smallFabClickListener = {
-                                        requestPermission(context, launcher) { pdfExportDialogVisible = true }
-                                    },
-                                    fabClickListener = {
-                                        when {
-                                            hasSelectedSections -> withSelectedSectionsBottomSheetVisible = true
-                                            else -> newSectionBottomSheetVisible = true
-                                        }
-                                    },
-                                    fabIcon = when {
-                                        hasSelectedSections -> Icons.Filled.DeleteSweep
-                                        else -> Icons.Filled.Add
-                                    },
-                                    fabVisible = isFabVisible
-                                )
-                                AddSectionBottomSheet(
-                                    bottomSheetVisible = newSectionBottomSheetVisible,
-                                    onOtherClicked = { newSectionNameDialogVisible = true },
-                                    onRuiVieiraClicked = { dashboardViewModel.addPersonalDataFromRuiVieira() }
-                                ) { sectionType ->
-                                    newSectionBottomSheetVisible = false
-                                    dashboardViewModel.addSection(sectionType)
-                                }
-                                UnselectDeleteSectionsBottomSheet(
-                                    bottomSheetVisible = withSelectedSectionsBottomSheetVisible,
-                                    unselectAllSelected = dashboardViewModel::unselectAllSelectedSections,
-                                    deleteAllSelected = dashboardViewModel::deleteSelectedSections,
-                                ) { withSelectedSectionsBottomSheetVisible = false }
-                                if (newSectionNameDialogVisible) {
-                                    TextFieldDialog(
-                                        title = "New section name",
-                                        placeholder = "Enter name",
-                                        initialValue = "",
-                                        setShowDialog = { enabled -> newSectionNameDialogVisible = enabled },
-                                        setValue = { newValue -> dashboardViewModel.addSectionOtherType(newValue) }
+                                        fabIcon = when {
+                                            hasSelectedSections -> Icons.Filled.DeleteSweep
+                                            else -> Icons.Filled.Add
+                                        },
+                                        fabVisible = isFabVisible
+                                    )
+                                    AddSectionBottomSheet(
+                                        bottomSheetVisible = newSectionBottomSheetVisible,
+                                        onOtherClicked = { newSectionNameDialogVisible = true },
+                                        onRuiVieiraClicked = { dashboardViewModel.addPersonalDataFromRuiVieira() }
+                                    ) { sectionType ->
+                                        newSectionBottomSheetVisible = false
+                                        dashboardViewModel.addSection(sectionType)
+                                    }
+                                    UnselectDeleteSectionsBottomSheet(
+                                        bottomSheetVisible = withSelectedSectionsBottomSheetVisible,
+                                        unselectAllSelected = dashboardViewModel::unselectAllSelectedSections,
+                                        deleteAllSelected = dashboardViewModel::deleteSelectedSections,
+                                    ) { withSelectedSectionsBottomSheetVisible = false }
+                                    if (newSectionNameDialogVisible) {
+                                        TextFieldDialog(
+                                            title = "New section name",
+                                            placeholder = "Enter name",
+                                            initialValue = "",
+                                            setShowDialog = { enabled -> newSectionNameDialogVisible = enabled },
+                                            setValue = { newValue -> dashboardViewModel.addSectionOtherType(newValue) }
+                                        )
+                                    }
+                                    if (pdfExportDialogVisible) {
+                                        TextFieldDialog(
+                                            title = "Export as PDF",
+                                            placeholder = "Enter file name",
+                                            initialValue = "myCVNotes",
+                                            setShowDialog = { enabled -> pdfExportDialogVisible = enabled },
+                                            setValue = { newValue -> dashboardViewModel.exportPdfWithName(context, newValue) }
+                                        )
+                                    }
+                                    ShowSnackbarMessage(
+                                        requestPermissionRationaleHitCount,
+                                        snackbarHostState,
+                                        "You need to go to App Settings and grant the permissions."
                                     )
                                 }
-                                if (pdfExportDialogVisible) {
-                                    TextFieldDialog(
-                                        title = "Export as PDF",
-                                        placeholder = "Enter file name",
-                                        initialValue = "myCVNotes",
-                                        setShowDialog = { enabled -> pdfExportDialogVisible = enabled },
-                                        setValue = { newValue -> dashboardViewModel.exportPdfWithName(context, newValue) }
+                                composable(
+                                    route = "${SectionDetails.route}/{sectionId}",
+                                    arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
+                                ) {
+                                    systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
+                                    val viewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
+                                    val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
+                                    LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
+                                    val notes by viewModel.state.value.notes.collectAsStateWithLifecycle(initialValue = emptyList())
+                                    val hasSelectedNotes by viewModel.state.value.hasSelectedNotes.collectAsStateWithLifecycle(initialValue = false)
+                                    var withSelectedNotesBottomSheetVisible by remember { mutableStateOf(false) }
+                                    SectionDetailsScreen(
+                                        state = viewModel.state.value,
+                                        sectionNameEditState = viewModel.sectionNameEditState.value,
+                                        editSectionNameTextListener = { nameChange -> viewModel.updateSectionNewNameState(nameChange) },
+                                        addNoteListener = { navigateTo(navController, "${NewNote.route}/${sectionIdState.intValue}") },
+                                        editSectionListener = { sectionId, newName -> viewModel.updateSection(sectionId, newName) },
+                                        editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/${sectionIdState.intValue}/$noteId") },
+                                        selectNoteListener = { note -> viewModel.toggleNoteSelection(note) },
+                                        notes = notes,
+                                        hasSelectedNotes = hasSelectedNotes,
+                                        onSelectedNotesFABClick = { withSelectedNotesBottomSheetVisible = true},
+                                        onBackPressed = { navController.navigateUp() }
+                                    )
+                                    UnselectDeleteSectionsBottomSheet(
+                                        bottomSheetVisible = withSelectedNotesBottomSheetVisible,
+                                        unselectAllSelected = { viewModel.unselectAllSelectedNotes(sectionIdState.intValue) },
+                                        deleteAllSelected = { viewModel.deleteSelectedNotes(sectionIdState.intValue) },
+                                    ) { withSelectedNotesBottomSheetVisible = false }
+                                }
+                                composable(
+                                    route = "${NewNote.route}/{sectionId}",
+                                    arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
+                                ) {
+                                    systemUiController.setSystemBarsColor(Green500, Green500_Background3)
+                                    val sdViewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
+                                    val viewModel: EditNoteViewModel = hiltViewModel()
+                                    val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
+                                    LaunchedEffect(sectionIdState) { viewModel.setSectionId(sectionIdState.intValue) }
+                                    EditNoteScreen(
+                                        state = viewModel.state.value,
+                                        navBarTitle1 = sdViewModel.sectionNameEditState.value,
+                                        navBarTitle2 = NewNote.title,
+                                        sectionNameEditState = sdViewModel.sectionNameEditState.value,
+                                        editSectionNameTextListener = { nameChange -> sdViewModel.updateSectionNewNameState(nameChange) },
+                                        editSectionListener = { sectionId, newName -> sdViewModel.updateSection(sectionId, newName) },
+                                        isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
+                                        updateContent1 = { note, newText -> viewModel.updateStateNode(note, newText, true) },
+                                        updateContent2 = { note, newText -> viewModel.updateStateNode(note, newText, false) },
+                                        savePartialListener = { note -> viewModel.saveStatePartialNote(note) },
+                                        saveNoteListener = { note -> viewModel.addNote(note) },
+                                        onBackPressed = { navController.navigateUp() }
                                     )
                                 }
-                            }
-                            composable(
-                                route = "${SectionDetails.route}/{sectionId}",
-                                arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
-                            ) {
-                                systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
-                                val viewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
-                                val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
-                                LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
-                                val notes by viewModel.state.value.notes.collectAsStateWithLifecycle(initialValue = emptyList())
-                                val hasSelectedNotes by viewModel.state.value.hasSelectedNotes.collectAsStateWithLifecycle(initialValue = false)
-                                var withSelectedNotesBottomSheetVisible by remember { mutableStateOf(false) }
-                                SectionDetailsScreen(
-                                    state = viewModel.state.value,
-                                    sectionNameEditState = viewModel.sectionNameEditState.value,
-                                    editSectionNameTextListener = { nameChange -> viewModel.updateSectionNewNameState(nameChange) },
-                                    addNoteListener = { navigateTo(navController, "${NewNote.route}/${sectionIdState.intValue}") },
-                                    editSectionListener = { sectionId, newName -> viewModel.updateSection(sectionId, newName) },
-                                    editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/${sectionIdState.intValue}/$noteId") },
-                                    selectNoteListener = { note -> viewModel.toggleNoteSelection(note) },
-                                    notes = notes,
-                                    hasSelectedNotes = hasSelectedNotes,
-                                    onSelectedNotesFABClick = { withSelectedNotesBottomSheetVisible = true},
-                                    onBackPressed = { navController.navigateUp() }
-                                )
-                                UnselectDeleteSectionsBottomSheet(
-                                    bottomSheetVisible = withSelectedNotesBottomSheetVisible,
-                                    unselectAllSelected = { viewModel.unselectAllSelectedNotes(sectionIdState.intValue) },
-                                    deleteAllSelected = { viewModel.deleteSelectedNotes(sectionIdState.intValue) },
-                                ) { withSelectedNotesBottomSheetVisible = false }
-                            }
-                            composable(
-                                route = "${NewNote.route}/{sectionId}",
-                                arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
-                            ) {
-                                systemUiController.setSystemBarsColor(Green500, Green500_Background3)
-                                val sdViewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
-                                val viewModel: EditNoteViewModel = hiltViewModel()
-                                val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
-                                LaunchedEffect(sectionIdState) { viewModel.setSectionId(sectionIdState.intValue) }
-                                EditNoteScreen(
-                                    state = viewModel.state.value,
-                                    navBarTitle1 = sdViewModel.sectionNameEditState.value,
-                                    navBarTitle2 = NewNote.title,
-                                    sectionNameEditState = sdViewModel.sectionNameEditState.value,
-                                    editSectionNameTextListener = { nameChange -> sdViewModel.updateSectionNewNameState(nameChange) },
-                                    editSectionListener = { sectionId, newName -> sdViewModel.updateSection(sectionId, newName) },
-                                    isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
-                                    updateContent1 = { note, newText -> viewModel.updateStateNode(note, newText, true) },
-                                    updateContent2 = { note, newText -> viewModel.updateStateNode(note, newText, false) },
-                                    savePartialListener = { note -> viewModel.saveStatePartialNote(note) },
-                                    saveNoteListener = { note -> viewModel.addNote(note) },
-                                    onBackPressed = { navController.navigateUp() }
-                                )
-                            }
-                            composable(
-                                route = "${EditNote.route}/{sectionId}/{noteId}",
-                                arguments = listOf(
-                                    navArgument("sectionId") { type = NavType.IntType },
-                                    navArgument("noteId") { type = NavType.LongType }
-                                )
-                            ) {
-                                systemUiController.setSystemBarsColor(Green500, Green500_Background3)
-                                val sdViewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
-                                val viewModel: EditNoteViewModel = hiltViewModel()
-                                val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
-                                val noteIdState = remember { mutableLongStateOf(it.arguments?.getLong("noteId") ?: 0L) }.asLongState()
-                                LaunchedEffect(noteIdState) { viewModel.getNote(sectionIdState.intValue, noteIdState.longValue) }
-                                EditNoteScreen(
-                                    state = viewModel.state.value,
-                                    navBarTitle1 = sdViewModel.sectionNameEditState.value,
-                                    navBarTitle2 = EditNote.title,
-                                    sectionNameEditState = sdViewModel.sectionNameEditState.value,
-                                    editSectionNameTextListener = { nameChange -> sdViewModel.updateSectionNewNameState(nameChange) },
-                                    editSectionListener = { sectionId, newName -> sdViewModel.updateSection(sectionId, newName) },
-                                    isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
-                                    updateContent1 = { note, newText -> viewModel.updateStateNode(note, newText, true) },
-                                    updateContent2 = { note, newText -> viewModel.updateStateNode(note, newText, false) },
-                                    savePartialListener = { note -> viewModel.saveStatePartialNote(note) },
-                                    saveNoteListener = { note -> viewModel.addNote(note) },
-                                    onBackPressed = { navController.navigateUp() }
-                                )
+                                composable(
+                                    route = "${EditNote.route}/{sectionId}/{noteId}",
+                                    arguments = listOf(
+                                        navArgument("sectionId") { type = NavType.IntType },
+                                        navArgument("noteId") { type = NavType.LongType }
+                                    )
+                                ) {
+                                    systemUiController.setSystemBarsColor(Green500, Green500_Background3)
+                                    val sdViewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
+                                    val viewModel: EditNoteViewModel = hiltViewModel()
+                                    val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
+                                    val noteIdState = remember { mutableLongStateOf(it.arguments?.getLong("noteId") ?: 0L) }.asLongState()
+                                    LaunchedEffect(noteIdState) { viewModel.getNote(sectionIdState.intValue, noteIdState.longValue) }
+                                    EditNoteScreen(
+                                        state = viewModel.state.value,
+                                        navBarTitle1 = sdViewModel.sectionNameEditState.value,
+                                        navBarTitle2 = EditNote.title,
+                                        sectionNameEditState = sdViewModel.sectionNameEditState.value,
+                                        editSectionNameTextListener = { nameChange -> sdViewModel.updateSectionNewNameState(nameChange) },
+                                        editSectionListener = { sectionId, newName -> sdViewModel.updateSection(sectionId, newName) },
+                                        isNoteValid = (viewModel::isValid)(viewModel.state.value.note),
+                                        updateContent1 = { note, newText -> viewModel.updateStateNode(note, newText, true) },
+                                        updateContent2 = { note, newText -> viewModel.updateStateNode(note, newText, false) },
+                                        savePartialListener = { note -> viewModel.saveStatePartialNote(note) },
+                                        saveNoteListener = { note -> viewModel.addNote(note) },
+                                        onBackPressed = { navController.navigateUp() }
+                                    )
+                                }
                             }
                         }
                     }
@@ -365,22 +400,26 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestPermission(
-        context: Context,
         launcher: ManagedActivityResultLauncher<String, Boolean>,
-        onGranted: () -> Unit
+        onGranted: () -> Unit,
+        onShowRequestPermissionRationale: () -> Unit
     ) {
-        /**
-         * From Android 13 onwards, READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE are deprecated.
-         * If the app only adds files in the shared storage, it can stop requesting any permission on Android 10+
-         * */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { onGranted.invoke() }
-        else {
-            when (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
-                true -> onGranted.invoke()
-                false -> launcher.launch(WRITE_EXTERNAL_STORAGE)
+        when {
+            checkPermission() -> {
+                //println("[checkPermission] true")
+                onGranted.invoke()
+            }
+            shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE) -> {
+                onShowRequestPermissionRationale.invoke()
+                //println("[showExplanationDialog]")
+            }
+            else -> {
+                //println("[requestPermission]")
+                launcher.launch(WRITE_EXTERNAL_STORAGE)
             }
         }
     }
+    private fun checkPermission(): Boolean = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED
 }
 
 @Composable
@@ -411,4 +450,17 @@ fun SystemUiController.setSystemBarsColor(
 ) {
     this.setStatusBarColor(color = statusBarColor)
     this.setNavigationBarColor(color = navigationBarColor)
+}
+
+@Composable
+fun ShowSnackbarMessage(
+    hitCount: MutableIntState,
+    snackbarHostState: SnackbarHostState,
+    message: String
+) {
+    if (hitCount.intValue > 0) {
+        LaunchedEffect(key1 = hitCount.intValue) {
+            snackbarHostState.showSnackbar(message)
+        }
+    }
 }
