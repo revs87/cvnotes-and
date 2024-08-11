@@ -46,7 +46,6 @@ android {
         }
     }
 
-    val properties = mutableMapOf<String, String>()
     signingConfigs {
         getByName("debug") {
             storeFile = file("../debug.jks")
@@ -124,6 +123,7 @@ android {
     dependencies {
         implementation(libs.androidx.core.ktx)
         implementation(libs.kotlin.reflect)
+        implementation(libs.google.services)
 
         // Compose UI
         platform(libs.androidx.compose.bom).let { composeBom ->
@@ -175,6 +175,7 @@ android {
         implementation(libs.android.google.services.auth)
     }
 
+    apply(plugin = "com.android.application")
     apply(plugin = "com.google.gms.google-services")
     apply(plugin = "com.google.firebase.crashlytics")
 }

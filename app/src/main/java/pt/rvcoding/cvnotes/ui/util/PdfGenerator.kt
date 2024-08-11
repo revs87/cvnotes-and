@@ -10,6 +10,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -139,12 +140,15 @@ class PdfGenerator(
         // below line is used to set the name of
         // our PDF file and its path.
 
-        val file: File = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "$fileName.pdf")
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "$fileName.pdf")
 
         try {
             // after creating a file name we will
             // write our PDF file to that location.
             pdfDocument.writeTo(FileOutputStream(file))
+
+            // on below line we are displaying a toast message as PDF file generated..
+            Toast.makeText(context, "PDF file generated:\n${file.absolutePath}", Toast.LENGTH_SHORT).show()
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
             Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
@@ -153,8 +157,6 @@ class PdfGenerator(
             Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
         }
         try {
-            // on below line we are displaying a toast message as PDF file generated..
-            Toast.makeText(context, "PDF file generated:\n${file.absolutePath}", Toast.LENGTH_SHORT).show()
             // open file
             openPdf(file)
         } catch (e: ActivityNotFoundException) {
@@ -182,8 +184,9 @@ class PdfGenerator(
 
     private fun openPdf(file: File) {
         val path = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
+
         val pdfOpenIntent = Intent(Intent.ACTION_VIEW)
-        pdfOpenIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        pdfOpenIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, path)
         pdfOpenIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         pdfOpenIntent.setDataAndType(path, "application/pdf")
         context.startActivity(pdfOpenIntent)
