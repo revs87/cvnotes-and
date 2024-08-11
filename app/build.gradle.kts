@@ -36,8 +36,8 @@ android {
         applicationId = "pt.rvcoding.cvnotes"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.1.1"
 
         testInstrumentationRunner = "pt.rvcoding.cvnotes.HiltTestRunner"
         vectorDrawables.useSupportLibrary = true
@@ -173,6 +173,38 @@ android {
         implementation(libs.firebase.analytics)
         implementation(libs.firebase.crashlytics.ktx)
         implementation(libs.android.google.services.auth)
+
+        // Unit testing
+        testImplementation(libs.androidx.test.core)
+        testImplementation(libs.androidx.arch.core.testing)
+        testImplementation(libs.junit)
+        testImplementation(libs.junit5.api)
+        testRuntimeOnly(libs.junit5.engine)
+        testImplementation(libs.junit5.params)
+        testImplementation(libs.kotlinx.coroutines.test)
+        testImplementation(libs.okhttp.mockwebserver)
+        testImplementation(libs.google.test.truth)
+        testImplementation(libs.turbine)
+        testImplementation(libs.mockk)
+        testImplementation(libs.assertk)
+
+        testImplementation(libs.androidx.compose.ui.test.junit4)
+
+        // Instrumented testing
+        androidTestImplementation(libs.androidx.test.coreKtx)
+        androidTestImplementation(libs.androidx.test.runner)
+        androidTestImplementation(libs.androidx.test.ext.junit)
+        androidTestImplementation(libs.androidx.arch.core.testing)
+        androidTestImplementation(libs.hilt.android.testing)
+        kspAndroidTest(libs.hilt.android.compiler)
+        androidTestImplementation(libs.junit)
+        androidTestImplementation(libs.kotlinx.coroutines.test)
+        androidTestImplementation(libs.okhttp.mockwebserver)
+        androidTestImplementation(libs.mockk.android)
+        androidTestImplementation(libs.google.test.truth)
+
+        androidTestImplementation(libs.androidx.test.espresso.core)
+        androidTestImplementation(libs.androidx.compose.ui.test)
     }
 
     apply(plugin = "com.android.application")
@@ -182,32 +214,3 @@ android {
 
 
 
-//    // Unit testing
-//    testImplementation "androidx.test:core:1.6.1"
-//    testImplementation "androidx.arch.core:core-testing:2.2.0"
-//    testImplementation "junit:junit:4.13.2"
-//    testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.3"
-//    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.3"
-//    testImplementation "org.junit.jupiter:junit-jupiter-params:5.9.3"
-//    testImplementation "app.cash.turbine:turbine:0.7.0"
-//    testImplementation "com.google.truth:truth:1.1.3"
-//    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
-//    testImplementation "com.squareup.okhttp3:mockwebserver:4.9.1"
-//    testImplementation "io.mockk:mockk:1.12.5"
-//    testImplementation "com.willowtreeapps.assertk:assertk:0.26.1"
-//
-//    // Instrumented testing
-//    androidTestImplementation 'androidx.test:core-ktx:1.6.1'
-//    androidTestImplementation "junit:junit:4.13.2"
-//    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
-//    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
-//    androidTestImplementation "com.google.truth:truth:1.1.3"
-//    androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.9.1"
-//    androidTestImplementation "io.mockk:mockk-android:1.12.5"
-//    androidTestImplementation 'androidx.test:runner:1.6.1'
-//    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-//    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
-//    kspAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
-//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-//    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-//}
