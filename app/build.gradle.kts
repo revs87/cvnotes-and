@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -55,20 +57,19 @@ android {
 
         val keyPropertiesFile = file("../../rvcoding/release.properties")
         if (keyPropertiesFile.canRead()) {
-//            val properties = java.util.Properties()
-//            properties.load(FileInputStream(keyPropertiesFile))
-            keyPropertiesFile.forEachLine { line ->
-                val (key, value) = line.split("=", limit = 2)
-                properties[key] = value
-            }
+            println("Release build set with release keystore")
 
+            val properties = Properties()
+            properties.load(FileInputStream(keyPropertiesFile))
             create("release") {
                 storeFile = file("../../rvcoding/release.jks")
-                storePassword = properties["storePassword"] ?: ""
-                keyAlias = properties["keyAlias"] ?: ""
-                keyPassword = properties["keyPassword"] ?: ""
+                storePassword = properties["storePassword"].toString()
+                keyAlias = properties["keyAlias"].toString()
+                keyPassword = properties["keyPassword"].toString()
             }
         } else {
+            println("Release build set with debug keystore")
+
             create("release") {
                 storeFile = file("../debug.jks")
                 storePassword = "my4PP!D3bUg"
