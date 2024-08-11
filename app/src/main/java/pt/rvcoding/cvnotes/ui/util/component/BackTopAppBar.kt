@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.MoreVert
@@ -63,7 +64,7 @@ fun BackTopAppBar(
     if (!isExpanded) { isEditEnabled = false }
     val backIcon: ImageVector =
         if (isExpanded) { Icons.Filled.ArrowUpward }
-        else { Icons.Filled.ArrowBack }
+        else { Icons.AutoMirrored.Filled.ArrowBack }
     val onBack =
         if (isEditEnabled) { { isEditEnabled = false } }
         else if (isExpanded) { { scrollBehavior.collapse() } }
@@ -93,7 +94,10 @@ fun BackTopAppBar(
                 }
             )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor),
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = backgroundColor,
+            scrolledContainerColor = backgroundColor
+        ),
         navigationIcon = { TitleNavBack(onBack, icon = backIcon) },
         scrollBehavior = scrollBehavior,
         actions = { if (menuIconVisible) { TitleMoreMenu() } }
