@@ -145,21 +145,26 @@ class PdfGenerator(
             // after creating a file name we will
             // write our PDF file to that location.
             pdfDocument.writeTo(FileOutputStream(file))
-
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+        }
+        try {
             // on below line we are displaying a toast message as PDF file generated..
             Toast.makeText(context, "PDF file generated:\n${file.absolutePath}", Toast.LENGTH_SHORT).show()
-
             // open file
             openPdf(file)
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
-            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT)
-            .show()
+            Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
         }
+
         // after storing our pdf to that
         // location we are closing our PDF file.
         pdfDocument.close()

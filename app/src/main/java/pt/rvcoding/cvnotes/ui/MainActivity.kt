@@ -1,11 +1,7 @@
 package pt.rvcoding.cvnotes.ui
 
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,9 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -73,6 +67,7 @@ import pt.rvcoding.cvnotes.ui.home.HomeViewModel
 import pt.rvcoding.cvnotes.ui.section_details.SectionDetailsScreen
 import pt.rvcoding.cvnotes.ui.section_details.SectionDetailsViewModel
 import pt.rvcoding.cvnotes.ui.splash.SplashScreen
+import pt.rvcoding.cvnotes.ui.util.Permissions
 import pt.rvcoding.cvnotes.ui.util.Screen.About
 import pt.rvcoding.cvnotes.ui.util.Screen.Auth
 import pt.rvcoding.cvnotes.ui.util.Screen.Dashboard
@@ -187,16 +182,15 @@ class MainActivity : ComponentActivity() {
                                     var pdfExportDialogVisible by remember { mutableStateOf(false) }
                                     val prefs by lazy { applicationContext.getSharedPreferences("ui_prefs", MODE_PRIVATE) }
                                     val initialScrollPosition = prefs.getInt("scroll_position", 0)
-                                    val context = LocalContext.current
                                     val launcher = rememberLauncherForActivityResult(
                                         ActivityResultContracts.RequestPermission()
                                     ) { isGranted ->
-//                                        if (isGranted) {
-//                                            println("[launcher] Granted")
-//                                        } else {
-//                                            println("[launcher] Not granted")
-//                                        }
                                         pdfExportDialogVisible = isGranted
+                                    }
+                                    val launcherMultiple = rememberLauncherForActivityResult(
+                                        ActivityResultContracts.RequestMultiplePermissions()
+                                    ) { areGranted ->
+                                        pdfExportDialogVisible = areGranted.all { it.value }
                                     }
                                     val requestPermissionRationaleHitCount = remember { mutableIntStateOf(0) }
                                     BottomBarWithFab(
@@ -230,21 +224,13 @@ class MainActivity : ComponentActivity() {
                                         bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                         pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
                                         smallFabClickListener = {
-                                            if (applicationInfo.targetSdkVersion >= Build.VERSION_CODES.TIRAMISU) {
-                                                //println("[requestPermission] Granted")
-                                                pdfExportDialogVisible = true
-                                            } else {
-                                                requestPermission(
-                                                    launcher,
-                                                    onGranted = {
-                                                        //println("[requestPermission] Granted")
-                                                        pdfExportDialogVisible = true
-                                                                },
-                                                    onShowRequestPermissionRationale = {
-                                                        requestPermissionRationaleHitCount.intValue += 1
-                                                    }
-                                                )
-                                            }
+                                            Permissions().handle(
+                                                activity = this@MainActivity,
+                                                launcher = launcher,
+                                                launcherMultiple = launcherMultiple,
+                                                onGranted = { pdfExportDialogVisible = true },
+                                                onShowRequestPermissionRationale = { requestPermissionRationaleHitCount.intValue += 1 }
+                                            )
                                         },
                                         fabClickListener = {
                                             when {
@@ -286,7 +272,7 @@ class MainActivity : ComponentActivity() {
                                             placeholder = "Enter file name",
                                             initialValue = "myCVNotes",
                                             setShowDialog = { enabled -> pdfExportDialogVisible = enabled },
-                                            setValue = { newValue -> dashboardViewModel.exportPdfWithName(context, newValue) }
+                                            setValue = { newValue -> dashboardViewModel.exportPdfWithName(this@MainActivity, newValue) }
                                         )
                                     }
                                     ShowSnackbarMessage(
@@ -398,28 +384,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    private fun requestPermission(
-        launcher: ManagedActivityResultLauncher<String, Boolean>,
-        onGranted: () -> Unit,
-        onShowRequestPermissionRationale: () -> Unit
-    ) {
-        when {
-            checkPermission() -> {
-                //println("[checkPermission] true")
-                onGranted.invoke()
-            }
-            shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE) -> {
-                onShowRequestPermissionRationale.invoke()
-                //println("[showExplanationDialog]")
-            }
-            else -> {
-                //println("[requestPermission]")
-                launcher.launch(WRITE_EXTERNAL_STORAGE)
-            }
-        }
-    }
-    private fun checkPermission(): Boolean = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED
 }
 
 @Composable
