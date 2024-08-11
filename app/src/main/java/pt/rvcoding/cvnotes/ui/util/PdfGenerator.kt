@@ -9,7 +9,9 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
+import android.os.Build
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -139,7 +141,8 @@ class PdfGenerator(
         // below line is used to set the name of
         // our PDF file and its path.
 
-        val file: File = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "$fileName.pdf")
+        val envFolder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) Environment.DIRECTORY_DOCUMENTS else Environment.DIRECTORY_DOWNLOADS
+        val file = File(Environment.getExternalStoragePublicDirectory(envFolder), "$fileName.pdf")
 
         try {
             // after creating a file name we will
@@ -148,18 +151,24 @@ class PdfGenerator(
 
             // on below line we are displaying a toast message as PDF file generated..
             Toast.makeText(context, "PDF file generated:\n${file.absolutePath}", Toast.LENGTH_SHORT).show()
-
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+        }
+        try {
             // open file
             openPdf(file)
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
-            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT)
-            .show()
+            Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
         }
+
         // after storing our pdf to that
         // location we are closing our PDF file.
         pdfDocument.close()
@@ -177,8 +186,9 @@ class PdfGenerator(
 
     private fun openPdf(file: File) {
         val path = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
+
         val pdfOpenIntent = Intent(Intent.ACTION_VIEW)
-        pdfOpenIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { pdfOpenIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, path) }
         pdfOpenIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         pdfOpenIntent.setDataAndType(path, "application/pdf")
         context.startActivity(pdfOpenIntent)

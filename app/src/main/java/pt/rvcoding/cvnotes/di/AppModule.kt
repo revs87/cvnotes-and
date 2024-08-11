@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.room.Room
+import com.google.firebase.FirebaseApp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,7 +60,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesAuthRepository(spRepository: SharedPreferencesRepository): AuthRepository {
+    fun providesAuthRepository(@ApplicationContext context: Context, spRepository: SharedPreferencesRepository): AuthRepository {
+        FirebaseApp.initializeApp(context)
         return FirebaseAuthRepositoryImpl(spRepository)
     }
 

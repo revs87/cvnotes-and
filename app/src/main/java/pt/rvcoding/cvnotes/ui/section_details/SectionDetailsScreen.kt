@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.NoteAdd
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -101,7 +102,7 @@ fun SectionDetailsScreen(
                 Icon(
                     imageVector = when {
                         hasSelectedNotes -> Icons.Filled.DeleteSweep
-                        else -> Icons.Filled.NoteAdd
+                        else -> Icons.AutoMirrored.Filled.NoteAdd
                     },
                     tint = Blue500_Background3,
                     contentDescription = "Add note"

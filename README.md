@@ -1,4 +1,4 @@
-[![Static Badge](https://img.shields.io/badge/release%20-%20v1.1.0%20-%20%231082C3)](https://github.com/revs87/cvnotes-and/releases/tag/v1.1.0)
+[![Static Badge](https://img.shields.io/badge/release%20-%20v1.1.1%20-%20%231082C3)](https://github.com/revs87/cvnotes-and/releases/tag/v1.1.1)
 
 ![Static Badge](https://img.shields.io/badge/License%20-%20Apache%202.0%20-%20%231082C3)
 

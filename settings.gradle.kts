@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "CVNotes"
-include ':app'
+include(":app")
