@@ -14,17 +14,17 @@ Comment prefixes:
 🔴 Deleted
 
 ### [Unreleased]
-### [1.1.2]: TBD
+## [1.1.2] |
 #### 2025-07-28
 - 🟠 Updated hardcoded content
 - 🟢 Changelog format updated
-### [1.1.1]: 2024-08-11
+## [1.1.1] | 2024-08-11
 #### 2024-08-11
 - 🟡 Permissions fixed on Android 9, 10, 11 and 13
 - 🟡 Pdf fix
 - 🟢 Added KotlinDSL migration
-### [1.1.0]
-### [1.0.0]
+## [1.1.0]
+## [1.0.0]
 
 [Unreleased]: https://github.com/revs87/cvnotes-and/compare/v1.1.2...dev
 [1.1.2]: https://github.com/revs87/cvnotes-and/compare/v1.1.1...v1.1.2
