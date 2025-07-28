@@ -117,9 +117,6 @@ android {
             excludes += "/META-INF/LGPL2.1"
         }
     }
-    composeCompiler {
-        enableStrongSkippingMode = true
-    }
     dependencies {
         implementation(libs.androidx.core.ktx)
         implementation(libs.kotlin.reflect)
@@ -144,7 +141,7 @@ android {
         // Compose + Lifecycle
         implementation(libs.androidx.lifecycle.runtime)
         implementation(libs.androidx.lifecycle.runtime.compose)
-        implementation(libs.androidx.lifecycle.viewModelCompose)
+        implementation(libs.androidx.lifecycle.viewmodel.compose)
         implementation(libs.androidx.navigation.compose)
         implementation(libs.androidx.hilt.navigation.compose)
 
@@ -169,9 +166,9 @@ android {
 
         // Firebase
         implementation(platform(libs.firebase.bom))
-        implementation(libs.firebase.auth.ktx)
+        implementation(libs.firebase.auth)
         implementation(libs.firebase.analytics)
-        implementation(libs.firebase.crashlytics.ktx)
+        implementation(libs.firebase.crashlytics)
         implementation(libs.android.google.services.auth)
 
         // Unit testing

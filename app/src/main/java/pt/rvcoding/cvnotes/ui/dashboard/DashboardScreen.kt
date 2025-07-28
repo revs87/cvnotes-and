@@ -3,6 +3,7 @@
 package pt.rvcoding.cvnotes.ui.dashboard
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -97,7 +98,11 @@ fun DashboardScreen(
                             key = { _, sectionWithNotes -> sectionWithNotes.section.id ?: 0 }
                         ) { index, sectionWithNotes ->
                             SectionListCard(
-                                modifier = Modifier.animateItemPlacement(),
+                                modifier = Modifier
+                                    .animateItem(
+                                        fadeInSpec = tween(durationMillis = 500),
+                                        fadeOutSpec = tween(durationMillis = 300)
+                                    ),
                                 index = index,
                                 description = sectionWithNotes.section.description,
                                 hasSelected = hasSelectedSections,

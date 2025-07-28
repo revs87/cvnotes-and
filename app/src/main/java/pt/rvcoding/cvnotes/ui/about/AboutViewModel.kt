@@ -80,5 +80,5 @@ class AboutViewModel @Inject constructor(
             errorMessage = _state.value.errorMessage,
         )
 
-    private fun getVersionName() = packageInfo.versionName
+    private fun getVersionName() = packageInfo.versionName ?: "N/A"
 }
