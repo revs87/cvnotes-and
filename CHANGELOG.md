@@ -13,12 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ## [1.1.2]
-- 2025-07-28 | 🟠Updated hardcoded content
-             | 🟢Changelog format updated
+# 2025-07-28
+- 🟠 Updated hardcoded content
+- 🟢 Changelog format updated
 ## [1.1.1] - 2024-08-11
-- 2024-08-11 | 🟡Permissions fixed on Android 9, 10, 11 and 13
-- 2024-08-11 | 🟡Pdf fix
-- 2024-08-11 | 🟢Added KotlinDSL migration
+# 2024-08-11
+- 🟡 Permissions fixed on Android 9, 10, 11 and 13
+- 🟡 Pdf fix
+- 🟢 Added KotlinDSL migration
 ## [1.1.0]
 ## [1.0.0]
 
