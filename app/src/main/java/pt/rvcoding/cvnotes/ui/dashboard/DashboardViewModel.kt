@@ -136,7 +136,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun addPersonalDataFromRuiVieira() {
+    fun addMyHardcodedData() {
         _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch(Dispatchers.Default) {
             sectionUseCases.getSectionsWithNotes(this).value.forEach {
@@ -149,9 +149,9 @@ class DashboardViewModel @Inject constructor(
 
             sectionUseCases.getSectionsWithNotes(this).value.map { sectionWithNotes ->
                 when (sectionWithNotes.section.typeId) {
-                    SectionType.PROFILE.typeId -> addRuiVieiraProfileNotes(sectionWithNotes.section.id ?: 0)
-                    SectionType.SUMMARY.typeId -> addRuiVieiraSummaryNotes(sectionWithNotes.section.id ?: 0)
-                    SectionType.EXPERIENCE.typeId -> addRuiVieiraExperienceNotes(sectionWithNotes.section.id ?: 0)
+                    SectionType.PROFILE.typeId -> addMyProfileNotes(sectionWithNotes.section.id ?: 0)
+                    SectionType.SUMMARY.typeId -> addMySummaryNotes(sectionWithNotes.section.id ?: 0)
+                    SectionType.EXPERIENCE.typeId -> addMyExperienceNotes(sectionWithNotes.section.id ?: 0)
                     else -> {}
                 }
             }
@@ -178,31 +178,29 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private suspend fun addRuiVieiraProfileNotes(sectionId: Int) {
-        noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "RUI VIEIRA"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "36 y/o"))
+    private suspend fun addMyProfileNotes(sectionId: Int) {
+        noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "My Name"))
+        noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "## y/o"))
         noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "\uD83C\uDDF5\uD83C\uDDF9 (+351) XXX XXX XXX"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "revs87@msn.com"))
+        noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "my@email.com"))
         noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "Porto, Portugal"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "LinkedIn", "https://www.linkedin.com/in/revs87"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "Twitter", "https://twitter.com/revs87"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "X", "https://x.com/revs87"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "GitHub",  "https://github.com/revs87"))
+        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "LinkedIn", "https://www.linkedin.com/in/myId"))
+        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "X", "https://x.com/myId"))
+        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED.id, "GitHub",  "https://github.com/myId"))
     }
-    private suspend fun addRuiVieiraSummaryNotes(sectionId: Int) {
-        noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "With over a decade of experience, I am seeking a professional position in Schweiz - whereas I intend to become firmly established.\n" +
+    private suspend fun addMySummaryNotes(sectionId: Int) {
+        noteUseCases.insertNote(Note(sectionId, NoteType.TEXT.id, "With over a decade of experience, I am seeking a professional position.\n" +
                 "Offering solid and clean coding principles around Android’s infrastructure while promoting quality via pair-programming and peer-review. I aim to take a development role of short- and long-term impact:"))
         noteUseCases.insertNote(Note(sectionId, NoteType.BULLET.id, "planning and implementing top to bottom and full fledged features;"))
         noteUseCases.insertNote(Note(sectionId, NoteType.BULLET.id, "taking and anticipating challenges according to the company's strategy/vision;"))
         noteUseCases.insertNote(Note(sectionId, NoteType.BULLET.id, "reviewing and scaling the current code base;"))
         noteUseCases.insertNote(Note(sectionId, NoteType.BULLET.id, "mentoring, delegating and documenting."))
     }
-    private suspend fun addRuiVieiraExperienceNotes(sectionId: Int) {
-        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id,"Software development", "12+ years"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id, "Android coder", "10 years"))
+    private suspend fun addMyExperienceNotes(sectionId: Int) {
+        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id,"Software development", "15+ years"))
+        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id, "Android development", "10+ years"))
         noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id, "\uD83C\uDDEC\uD83C\uDDE7 employee", "6+ years"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id, "\uD83C\uDDF5\uD83C\uDDF9 employee", "3+ years"))
-        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id, "\uD83C\uDDE8\uD83C\uDDED employee", "0 days"))
+        noteUseCases.insertNote(Note(sectionId, NoteType.KEY_VALUE_COLON_SEPARATED_WITH_BULLET.id, "\uD83C\uDDF5\uD83C\uDDF9 employee", "6+ years"))
     }
 
     companion object {

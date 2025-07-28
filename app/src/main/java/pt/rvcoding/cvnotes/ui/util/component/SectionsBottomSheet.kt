@@ -29,7 +29,7 @@ import pt.rvcoding.cvnotes.ui.util.component.cvn.CVNText
 @Composable
 fun AddSectionBottomSheet(
     bottomSheetVisible: Boolean = false,
-    onRuiVieiraClicked: () -> Unit = {},
+    onMyHardcodedDataClicked: () -> Unit = {},
     onOtherClicked: () -> Unit = {},
     onDismiss: (SectionType) -> Unit = {}
 ) {
@@ -54,8 +54,8 @@ fun AddSectionBottomSheet(
                             TextButton(
                                 onClick = {
                                     when (sectionType) {
-                                        SectionType.RUI_VIEIRA_HARDCODED_DATA -> {
-                                            onRuiVieiraClicked.invoke()
+                                        SectionType.MY_HARDCODED_DATA -> {
+                                            onMyHardcodedDataClicked.invoke()
                                             onDismiss.invoke(SectionType.NONE)
                                         }
                                         SectionType.OTHER -> {

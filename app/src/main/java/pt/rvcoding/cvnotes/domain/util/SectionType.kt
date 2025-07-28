@@ -11,7 +11,7 @@ enum class SectionType(val typeId: Int, val sectionName: String, val color: Int 
     HISTORY(5, "Work History"),
     EDUCATION(6, "Education"),
     OTHER(7, "Other"),
-    RUI_VIEIRA_HARDCODED_DATA(8, "Rui Vieira's Template"),
+    MY_HARDCODED_DATA(8, "My Template"),
 }
 
 fun Int.toSectionType(): SectionType = when (this) {
@@ -22,6 +22,6 @@ fun Int.toSectionType(): SectionType = when (this) {
     SectionType.HISTORY.typeId -> SectionType.HISTORY
     SectionType.EDUCATION.typeId -> SectionType.EDUCATION
     SectionType.OTHER.typeId -> SectionType.OTHER
-    SectionType.RUI_VIEIRA_HARDCODED_DATA.typeId -> SectionType.RUI_VIEIRA_HARDCODED_DATA
+    SectionType.MY_HARDCODED_DATA.typeId -> SectionType.MY_HARDCODED_DATA
     else -> SectionType.ALL
 }

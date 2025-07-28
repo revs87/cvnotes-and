@@ -37,7 +37,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 3
-        versionName = "1.1.1"
+        versionName = "1.1.2"
 
         testInstrumentationRunner = "pt.rvcoding.cvnotes.HiltTestRunner"
         vectorDrawables.useSupportLibrary = true
