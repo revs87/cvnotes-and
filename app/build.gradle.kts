@@ -136,7 +136,6 @@ android {
         implementation(libs.androidx.compose.material.iconsExtended)
         implementation(libs.androidx.compose.material3)
         implementation(libs.lottie.compose)
-        implementation(libs.accompanist.systemuicontroller)
 
         // Compose + Lifecycle
         implementation(libs.androidx.lifecycle.runtime)

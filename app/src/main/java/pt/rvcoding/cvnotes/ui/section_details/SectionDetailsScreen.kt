@@ -4,13 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NoteAdd
 import androidx.compose.material.icons.filled.DeleteSweep
-import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -36,6 +36,7 @@ import pt.rvcoding.cvnotes.theme.Blue500_Background3
 import pt.rvcoding.cvnotes.theme.Blue700
 import pt.rvcoding.cvnotes.theme.MyTheme
 import pt.rvcoding.cvnotes.theme.SpNormal
+import pt.rvcoding.cvnotes.ui.isLandscape
 import pt.rvcoding.cvnotes.ui.util.component.BackTopAppBar
 import pt.rvcoding.cvnotes.ui.util.component.LoadingIndicator
 import pt.rvcoding.cvnotes.ui.util.component.LoadingIndicatorSize
@@ -88,7 +89,9 @@ fun SectionDetailsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                modifier = Modifier.size(75.dp),
+                modifier = Modifier
+                    .size(75.dp)
+                    .offset(x = if (isLandscape()) (-60).dp else 0.dp),
                 shape = RoundedCornerShape(15.dp),
                 contentColor = Blue500_Background3,
                 containerColor = Blue500,

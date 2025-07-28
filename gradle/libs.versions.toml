@@ -1,5 +1,4 @@
 [versions]
-accompanist = "0.34.0"
 androidGradlePlugin = "8.11.1"
 androidx-activity-compose = "1.10.1"
 androidx-appcompat = "1.7.1"
@@ -75,12 +74,6 @@ firebase-crashlytics-ktx = "19.0.3"
 lottie = "6.0.0"
 
 [libraries]
-#accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
-#accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
-#accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
-#accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
-#accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 #androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }

@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -41,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import pt.rvcoding.cvnotes.domain.model.Note
@@ -56,6 +60,7 @@ import pt.rvcoding.cvnotes.theme.MyTheme
 import pt.rvcoding.cvnotes.theme.SpMedium
 import pt.rvcoding.cvnotes.theme.TextColor
 import pt.rvcoding.cvnotes.theme.White
+import pt.rvcoding.cvnotes.ui.isLandscape
 import pt.rvcoding.cvnotes.ui.util.component.BackTopAppBar
 import pt.rvcoding.cvnotes.ui.util.component.LoadingIndicator
 import pt.rvcoding.cvnotes.ui.util.component.LoadingIndicatorSize
@@ -88,13 +93,20 @@ fun EditNoteScreen(
     var noteTypeState = state.note?.type?.toNoteType() ?: NoteType.NONE
     val isUnselected = noteTypeState.id == NoteType.NONE.id
 
-    val appBarState = rememberTopAppBarState(initialHeightOffset = 0f)
+    val appBarState = rememberTopAppBarState(
+        initialHeightOffset = 0f,
+    )
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(appBarState)
     LaunchedEffect(state.section?.description) {
         editSectionNameTextListener(state.section?.description ?: "")
     }
 
+    LaunchedEffect(appBarState) {
+        println("appBarState: ${appBarState.heightOffset}")
+    }
+
     Scaffold(
+        containerColor = Green500_Background3,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -116,7 +128,9 @@ fun EditNoteScreen(
         floatingActionButton = {
             if (isNoteValid) {
                 FloatingActionButton(
-                    modifier = Modifier.size(75.dp),
+                    modifier = Modifier
+                        .size(75.dp)
+                        .offset(x = if (isLandscape()) (-60).dp else 0.dp),
                     shape = RoundedCornerShape(15.dp),
                     contentColor = Green500_Background3,
                     containerColor = Green500,
@@ -142,7 +156,13 @@ fun EditNoteScreen(
             modifier = Modifier
                 .background(Green500_Background3)
                 .fillMaxSize()
-                .padding(padding),
+                .windowInsetsPadding(
+                    WindowInsets(
+                        top = padding.calculateTopPadding(),
+                        right = padding.calculateRightPadding(LayoutDirection.Ltr)
+                    )
+                )
+            ,
         ) {
             Column(
                 verticalArrangement = Arrangement.Top,
@@ -196,7 +216,9 @@ fun EditNoteScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp)
                     ) {
                         Header(
                             text = "Note type:",
@@ -220,7 +242,9 @@ fun EditNoteScreen(
                     }
                     if (!isUnselected) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp)
                         ) {
                             Header(
                                 text = if (isDoubleContent) "Content 1:" else "Content:",
@@ -235,7 +259,9 @@ fun EditNoteScreen(
                     }
                     if (!isUnselected && isDoubleContent) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp)
                         ) {
                             Header(
                                 text = "Content 2:",
@@ -249,7 +275,9 @@ fun EditNoteScreen(
                         }
                     }
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp)
                     ) {
                         Header(
                             text = "Modified:",
