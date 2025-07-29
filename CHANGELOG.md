@@ -20,6 +20,7 @@ Comment prefixes:
 - 🔵 Upgraded android targetSdk to 36
 - 🟢 Added edge-to-edge UI compliant with android targetSdk 36
 - 🟠 Updated top bar default state to collapsed
+- 🟡 Gradle build properties contents are now sourced externally
 #### 2025-07-28
 - 🟠 Updated hardcoded content
 - 🟢 Changelog format updated
