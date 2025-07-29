@@ -15,6 +15,11 @@ Comment prefixes:
 
 ### [Unreleased]
 ## | [1.1.2] |
+#### 2025-07-29
+- 🔵 Upgraded kotlin version (2.2.0) and several libraries
+- 🔵 Upgraded android targetSdk to 36
+- 🟢 Added edge-to-edge UI compliant with android targetSdk 36
+- 🟠 Updated top bar default state to collapsed
 #### 2025-07-28
 - 🟠 Updated hardcoded content
 - 🟢 Changelog format updated
