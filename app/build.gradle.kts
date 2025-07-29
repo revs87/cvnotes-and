@@ -35,8 +35,8 @@ android {
         applicationId = "pt.rvcoding.cvnotes"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 4
-        versionName = "1.1.2"
+        versionCode = 5
+        versionName = "1.1.3-SNAPSHOT"
 
         testInstrumentationRunner = "pt.rvcoding.cvnotes.HiltTestRunner"
         vectorDrawables.useSupportLibrary = true
@@ -65,6 +65,7 @@ android {
             getByName("debug") {
                 isDebuggable = true
                 isMinifyEnabled = false
+                isShrinkResources = false
                 isDefault = true
 
                 signingConfig = signingConfigs.getByName("debug")
@@ -75,6 +76,7 @@ android {
             getByName("release") {
                 isDebuggable = false
                 isMinifyEnabled = true
+                isShrinkResources = true
                 isDefault = false
 
                 signingConfig = signingConfigs.getByName("release")
