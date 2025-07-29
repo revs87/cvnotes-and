@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.PictureAsPdf
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -26,6 +28,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +39,7 @@ import pt.rvcoding.cvnotes.theme.Blue500
 import pt.rvcoding.cvnotes.theme.Blue500_Background3
 import pt.rvcoding.cvnotes.theme.MyTheme
 import pt.rvcoding.cvnotes.theme.SpSmall
+import pt.rvcoding.cvnotes.ui.isLandscape
 import pt.rvcoding.cvnotes.ui.util.Screen
 import pt.rvcoding.cvnotes.ui.util.component.cvn.CVNText
 
@@ -53,13 +57,16 @@ fun BottomBarWithFab(
 ) {
     MyTheme {
         Scaffold(
+            containerColor = Color.Transparent,
+            contentWindowInsets = WindowInsets(top = 0, left = 0),
+            floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
                 Column(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.Center,
                 ) {
                     SmallFloatingActionButton(
-                        modifier = Modifier.offset(x = 0.dp, y = 80.dp),
+                        modifier = Modifier.offset(x = if (isLandscape()) (-60).dp else 0.dp, y = 80.dp),
                         onClick = { smallFabClickListener.invoke() },
                         containerColor = Blue500,
                         shape = RoundedCornerShape(12.dp),
@@ -77,7 +84,7 @@ fun BottomBarWithFab(
                         FloatingActionButton(
                             modifier = Modifier
                                 .size(75.dp)
-                                .offset(x = 0.dp, y = 80.dp)
+                                .offset(x = if (isLandscape()) (-60).dp else 0.dp, y = 80.dp)
                                 .border(
                                     border = BorderStroke(1.dp, Blue500),
                                     shape = RoundedCornerShape(15.dp)
@@ -92,10 +99,10 @@ fun BottomBarWithFab(
             },
             bottomBar = {
                 BottomAppBar(
-                    modifier = Modifier.height(80.dp),
                     containerColor = BackgroundColor
                 ) {
                     LazyRow(
+                        modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         itemsIndexed(bottomNavItems) { index, item ->
@@ -103,7 +110,8 @@ fun BottomBarWithFab(
                                 pageListener,
                                 index,
                                 item,
-                                bottomNavSelected)
+                                bottomNavSelected
+                            )
                         }
                     }
                 }

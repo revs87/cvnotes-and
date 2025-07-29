@@ -13,8 +13,14 @@ Comment prefixes:
 🔵 Upgrade
 🔴 Deleted
 
-### [Unreleased]
-## | [1.1.2] |
+## | [1.1.2-SNAPSHOT] |
+#### 2025-07-29
+- 🔵 Upgraded kotlin version (2.2.0) and several libraries
+- 🔵 Upgraded android targetSdk to 36
+- 🟢 Added edge-to-edge UI compliant with android targetSdk 36
+- 🔴 Deleted system ui controller accompanist
+- 🟠 Updated top bar default state to collapsed
+- 🟡 Gradle build properties contents are now sourced externally
 #### 2025-07-28
 - 🟠 Updated hardcoded content
 - 🟢 Changelog format updated
@@ -25,7 +31,6 @@ Comment prefixes:
 - 🟢 Added KotlinDSL migration
 ## | [1.1.0] |
 
-[Unreleased]: https://github.com/revs87/cvnotes-and/compare/v1.1.2...dev
-[1.1.2]: https://github.com/revs87/cvnotes-and/compare/v1.1.1...v1.1.2
+[1.1.2-SNAPSHOT]: https://github.com/revs87/cvnotes-and/compare/v1.1.1...dev
 [1.1.1]: https://github.com/revs87/cvnotes-and/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/revs87/cvnotes-and/compare/v1.0.0...v1.1.0

@@ -22,6 +22,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,11 @@ fun BackTopAppBar(
     onTitleSave: (newName: String) -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
+    // Forcefully set the initial state
+    LaunchedEffect(Unit) {
+        scrollBehavior.collapse()
+    }
+
     var isEditEnabled by remember { mutableStateOf(false) }
     var isExpanded = !scrollBehavior.isCollapsed()
 
@@ -66,9 +72,11 @@ fun BackTopAppBar(
         if (isExpanded) { Icons.Filled.ArrowUpward }
         else { Icons.AutoMirrored.Filled.ArrowBack }
     val onBack =
-        if (isEditEnabled) { { isEditEnabled = false } }
-        else if (isExpanded) { { scrollBehavior.collapse() } }
-        else { onBackPressed }
+        when {
+            isEditEnabled -> { { isEditEnabled = false } }
+            isExpanded -> { { scrollBehavior.collapse() } }
+            else -> onBackPressed
+        }
 
     LargeTopAppBar(
         modifier = Modifier.fillMaxWidth(),

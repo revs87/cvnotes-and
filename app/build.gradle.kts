@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -36,7 +35,7 @@ android {
         applicationId = "pt.rvcoding.cvnotes"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 3
+        versionCode = 4
         versionName = "1.1.2"
 
         testInstrumentationRunner = "pt.rvcoding.cvnotes.HiltTestRunner"
@@ -48,33 +47,18 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("../debug.jks")
-            storePassword = "my4PP!D3bUg"
-            keyAlias = "debug"
-            keyPassword = "my4PP!D3bUg"
+            val debugPath = "../rvcoding/debug.properties"
+            storeFile = file("../../rvcoding/debug.jks")
+            storePassword = project.loadLocalProperty(debugPath, "storePassword")
+            keyAlias = project.loadLocalProperty(debugPath, "keyAlias")
+            keyPassword = project.loadLocalProperty(debugPath, "keyPassword")
         }
-
-        val keyPropertiesFile = file("../../rvcoding/release.properties")
-        if (keyPropertiesFile.canRead()) {
-            println("Release build set with release keystore")
-
-            val properties = Properties()
-            properties.load(FileInputStream(keyPropertiesFile))
-            create("release") {
-                storeFile = file("../../rvcoding/release.jks")
-                storePassword = properties["storePassword"].toString()
-                keyAlias = properties["keyAlias"].toString()
-                keyPassword = properties["keyPassword"].toString()
-            }
-        } else {
-            println("Release build set with debug keystore")
-
-            create("release") {
-                storeFile = file("../debug.jks")
-                storePassword = "my4PP!D3bUg"
-                keyAlias = "debug"
-                keyPassword = "my4PP!D3bUg"
-            }
+        create("release") {
+            val releasePath = "../rvcoding/release.properties"
+            storeFile = file("../../rvcoding/release.jks")
+            storePassword = project.loadLocalProperty(releasePath, "storePassword")
+            keyAlias = project.loadLocalProperty(releasePath, "keyAlias")
+            keyPassword = project.loadLocalProperty(releasePath, "keyPassword")
         }
 
         buildTypes {
@@ -117,9 +101,6 @@ android {
             excludes += "/META-INF/LGPL2.1"
         }
     }
-    composeCompiler {
-        enableStrongSkippingMode = true
-    }
     dependencies {
         implementation(libs.androidx.core.ktx)
         implementation(libs.kotlin.reflect)
@@ -139,12 +120,11 @@ android {
         implementation(libs.androidx.compose.material.iconsExtended)
         implementation(libs.androidx.compose.material3)
         implementation(libs.lottie.compose)
-        implementation(libs.accompanist.systemuicontroller)
 
         // Compose + Lifecycle
         implementation(libs.androidx.lifecycle.runtime)
         implementation(libs.androidx.lifecycle.runtime.compose)
-        implementation(libs.androidx.lifecycle.viewModelCompose)
+        implementation(libs.androidx.lifecycle.viewmodel.compose)
         implementation(libs.androidx.navigation.compose)
         implementation(libs.androidx.hilt.navigation.compose)
 
@@ -169,9 +149,9 @@ android {
 
         // Firebase
         implementation(platform(libs.firebase.bom))
-        implementation(libs.firebase.auth.ktx)
+        implementation(libs.firebase.auth)
         implementation(libs.firebase.analytics)
-        implementation(libs.firebase.crashlytics.ktx)
+        implementation(libs.firebase.crashlytics)
         implementation(libs.android.google.services.auth)
 
         // Unit testing
@@ -212,5 +192,20 @@ android {
     apply(plugin = "com.google.firebase.crashlytics")
 }
 
+fun Project.loadLocalProperty(
+    path: String,
+    propertyName: String,
+): String {
+    val localProperties = Properties()
+    val localPropertiesFile = project.rootProject.file(path)
+    return try {
+        localProperties.load(localPropertiesFile.inputStream())
+        val property = localProperties.getProperty(propertyName)
+        property
+    } catch (e: Exception) {
+        println(GradleException("Error loading local property $propertyName: ${e.toString()}"))
+        ""
+    }
+}
 
 

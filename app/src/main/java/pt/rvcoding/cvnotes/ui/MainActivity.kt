@@ -1,10 +1,13 @@
 package pt.rvcoding.cvnotes.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -29,7 +32,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,10 +49,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import pt.rvcoding.cvnotes.theme.Black
 import pt.rvcoding.cvnotes.theme.Blue500
 import pt.rvcoding.cvnotes.theme.Blue500_Background1
 import pt.rvcoding.cvnotes.theme.Green500
@@ -86,13 +89,22 @@ import pt.rvcoding.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
 import pt.rvcoding.cvnotes.ui.util.component.cvn.CVNText
 
 
+@Composable
+fun isLandscape(): Boolean {
+    val configuration = LocalConfiguration.current
+    return configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+}
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             val navController = rememberNavController()
-            val systemUiController = rememberSystemUiController()
             val snackbarHostState = remember { SnackbarHostState() }
             MyTheme {
                 Surface(
@@ -100,6 +112,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(
+                        containerColor = Color.Transparent,
+                        contentWindowInsets = WindowInsets(0, 0, 0, 0),
                         snackbarHost = { SnackbarHost(snackbarHostState) }
                     ) { padding ->
                         NavHost(
@@ -108,7 +122,7 @@ class MainActivity : ComponentActivity() {
                             startDestination = Splash.route
                         ) {
                             composable(route = Splash.route) {
-                                systemUiController.setSystemBarsColor(Black, White)
+                                setSystemBarsColor(White, White, false)
                                 val authViewModel: AuthViewModel = hiltViewModel()
                                 val startingRoute =
                                     if (authViewModel.state.value.isLoggedIn) { Home.route }
@@ -122,6 +136,7 @@ class MainActivity : ComponentActivity() {
                                 composable(
                                     route = Intro.route
                                 ) {
+                                    setSystemBarsColor(White, White, false)
                                     val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
                                     if (authViewModel.state.value.isLoggedIn) {
                                         LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
@@ -133,6 +148,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 composable(route = Register.route) {
+                                    setSystemBarsColor(White, White, false)
                                     val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
                                     if (authViewModel.state.value.isLoggedIn) {
                                         LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
@@ -148,6 +164,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 composable(route = Login.route) {
+                                    setSystemBarsColor(White, White, false)
                                     val authViewModel = it.sharedViewModel<AuthViewModel>(navController = navController)
                                     if (authViewModel.state.value.isLoggedIn) {
                                         LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
@@ -168,7 +185,6 @@ class MainActivity : ComponentActivity() {
                                 startDestination = Dashboard.route
                             ) {
                                 composable(route = Dashboard.route) {
-                                    systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
                                     val homeViewModel: HomeViewModel = hiltViewModel()
                                     val isFabVisible by remember { derivedStateOf { homeViewModel.state.value.selectedBottomItem == 0 } }
                                     val dashboardViewModel: DashboardViewModel = hiltViewModel()
@@ -197,6 +213,7 @@ class MainActivity : ComponentActivity() {
                                         bottomNavItems = listOf(
                                             Dashboard.apply {
                                                 content = {
+                                                    setSystemBarsColor(Blue500_Background1, Blue500_Background1, false)
                                                     DashboardScreen(
                                                         state = dashboardViewModel.state.value,
                                                         sectionsWithNotes = sectionsWithNotes,
@@ -213,6 +230,7 @@ class MainActivity : ComponentActivity() {
                                             },
                                             About.apply {
                                                 content = {
+                                                    setSystemBarsColor(Blue500, Blue500_Background1, true)
                                                     AboutScreen(
                                                         state = aboutViewModel.state,
                                                         profileState = aboutViewModel.profileState,
@@ -285,7 +303,7 @@ class MainActivity : ComponentActivity() {
                                     route = "${SectionDetails.route}/{sectionId}",
                                     arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
                                 ) {
-                                    systemUiController.setSystemBarsColor(Blue500, Blue500_Background1)
+                                    setSystemBarsColor(Blue500, Blue500_Background1, true)
                                     val viewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                     val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
                                     LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
@@ -315,7 +333,7 @@ class MainActivity : ComponentActivity() {
                                     route = "${NewNote.route}/{sectionId}",
                                     arguments = listOf(navArgument("sectionId") { type = NavType.IntType })
                                 ) {
-                                    systemUiController.setSystemBarsColor(Green500, Green500_Background3)
+                                    setSystemBarsColor(Green500, Green500_Background3, true)
                                     val sdViewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                     val viewModel: EditNoteViewModel = hiltViewModel()
                                     val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
@@ -342,7 +360,7 @@ class MainActivity : ComponentActivity() {
                                         navArgument("noteId") { type = NavType.LongType }
                                     )
                                 ) {
-                                    systemUiController.setSystemBarsColor(Green500, Green500_Background3)
+                                    setSystemBarsColor(Green500, Green500_Background3, true)
                                     val sdViewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                     val viewModel: EditNoteViewModel = hiltViewModel()
                                     val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
@@ -408,12 +426,19 @@ fun DefaultPreview() {
     }
 }
 
-fun SystemUiController.setSystemBarsColor(
+@Composable
+fun ComponentActivity.setSystemBarsColor(
     statusBarColor: Color = Blue500,
-    navigationBarColor: Color = Blue500_Background1
+    navigationBarColor: Color = Blue500_Background1,
+    showStatusBarTextAndIconsAsWhite: Boolean = false
 ) {
-    this.setStatusBarColor(color = statusBarColor)
-    this.setNavigationBarColor(color = navigationBarColor)
+    // for old Android versions only
+    window.statusBarColor = statusBarColor.toArgb()
+    window.navigationBarColor = navigationBarColor.toArgb()
+
+    val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+    insetsController.isAppearanceLightStatusBars = !showStatusBarTextAndIconsAsWhite // Set to true for dark icons on light status bar
+    insetsController.isAppearanceLightNavigationBars = true // Set to true for dark icons on light navigation bar
 }
 
 @Composable
