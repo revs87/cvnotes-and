@@ -18,6 +18,7 @@ Comment prefixes:
 - 🔵 Upgraded kotlin version (2.2.0) and several libraries
 - 🔵 Upgraded android targetSdk to 36
 - 🟢 Added edge-to-edge UI compliant with android targetSdk 36
+- 🔴 Deleted system ui controller accompanist
 - 🟠 Updated top bar default state to collapsed
 - 🟡 Gradle build properties contents are now sourced externally
 #### 2025-07-28
