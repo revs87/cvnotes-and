@@ -45,10 +45,14 @@ class AboutViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    fun setProfessionOverridePreference() = spRepository.putBoolean(SPKey.PROFESSION_OVERRIDE.key, true)
+
     private fun getProfile() {
         _state.value = asLoadingActive()
         _profileState.value = AboutProfileState(
-            email = spRepository.getString(SPKey.EMAIL.key)
+            email = spRepository.getString(SPKey.EMAIL.key),
+            profession = spRepository.getString(SPKey.PROFESSION.key),
+            professionOverride = spRepository.getBoolean(SPKey.PROFESSION_OVERRIDE.key)
         )
         _state.value = _state.value.copy(
             version = getVersionName(),

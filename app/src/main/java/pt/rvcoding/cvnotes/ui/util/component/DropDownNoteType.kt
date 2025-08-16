@@ -18,7 +18,7 @@ fun DropDownNoteType(
     expanded: Boolean = false,
     onDismissRequest: ()-> Unit = {},
     onItemClick: (NoteType) -> Unit = {},
-    items: List<NoteType> = NoteType.values().asList()
+    items: List<NoteType> = NoteType.entries
 ) {
     DropdownMenu(
         modifier = modifier,

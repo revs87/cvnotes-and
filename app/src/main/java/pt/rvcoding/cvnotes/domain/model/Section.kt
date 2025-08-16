@@ -21,7 +21,7 @@ data class Section(
 ) {
     companion object {
         val Default by lazy { Section(userId = "", typeId = SectionType.ALL.typeId) }
-        val Sections by lazy { SectionType.values().toList().filter { it != SectionType.ALL && it != SectionType.NONE} }
+        val Sections by lazy { SectionType.entries.filter { it != SectionType.ALL && it != SectionType.NONE} }
         val Colors by lazy { listOf(Blue200, Blue300, Blue500, Green300, Green500, Gray300) }
     }
 }

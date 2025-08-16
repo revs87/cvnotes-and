@@ -14,6 +14,10 @@ Comment prefixes:
 🔴 Deleted
 
 ## | [1.1.3-SNAPSHOT] |
+#### 2025-08-16
+- 🟢 Added generative AI for section name suggestions
+- 🟢 Added applicant role context and UI
+- 🔵 Upgraded kotlin version (2.2.10) and several libraries
 ## | [1.1.2] | 2025-07-29 |
 #### 2025-07-29
 - 🔵 Upgraded kotlin version (2.2.0) and several libraries

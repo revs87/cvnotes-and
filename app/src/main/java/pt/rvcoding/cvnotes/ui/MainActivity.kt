@@ -50,6 +50,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import pt.rvcoding.cvnotes.theme.Blue500
 import pt.rvcoding.cvnotes.theme.Blue500_Background1
 import pt.rvcoding.cvnotes.theme.Green500
@@ -67,6 +71,8 @@ import pt.rvcoding.cvnotes.ui.dashboard.DashboardViewModel
 import pt.rvcoding.cvnotes.ui.editnote.EditNoteScreen
 import pt.rvcoding.cvnotes.ui.editnote.EditNoteViewModel
 import pt.rvcoding.cvnotes.ui.home.HomeViewModel
+import pt.rvcoding.cvnotes.ui.profession.ProfessionScreenRoot
+import pt.rvcoding.cvnotes.ui.profession.ProfessionViewModel
 import pt.rvcoding.cvnotes.ui.section_details.SectionDetailsScreen
 import pt.rvcoding.cvnotes.ui.section_details.SectionDetailsViewModel
 import pt.rvcoding.cvnotes.ui.splash.SplashScreen
@@ -79,6 +85,7 @@ import pt.rvcoding.cvnotes.ui.util.Screen.Home
 import pt.rvcoding.cvnotes.ui.util.Screen.Intro
 import pt.rvcoding.cvnotes.ui.util.Screen.Login
 import pt.rvcoding.cvnotes.ui.util.Screen.NewNote
+import pt.rvcoding.cvnotes.ui.util.Screen.Profession
 import pt.rvcoding.cvnotes.ui.util.Screen.Register
 import pt.rvcoding.cvnotes.ui.util.Screen.SectionDetails
 import pt.rvcoding.cvnotes.ui.util.Screen.Splash
@@ -182,8 +189,22 @@ class MainActivity : ComponentActivity() {
                             }
                             navigation(
                                 route = Home.route,
-                                startDestination = Dashboard.route
+                                startDestination = Profession.route
                             ) {
+                                composable(route = Profession.route) {
+                                    val vm = hiltViewModel<ProfessionViewModel>()
+                                    if (!vm.hasProfessionPreference() || vm.hasProfessionOverridePreference()) {
+                                        ProfessionScreenRoot(
+                                            vm = vm,
+                                            onDone = { navigateTo(navController, Dashboard.route, Home.route) }
+                                        )
+                                    } else {
+                                        LaunchedEffect(true) {
+                                            navigateTo(navController, Dashboard.route, Home.route)
+                                        }
+                                    }
+
+                                }
                                 composable(route = Dashboard.route) {
                                     val homeViewModel: HomeViewModel = hiltViewModel()
                                     val isFabVisible by remember { derivedStateOf { homeViewModel.state.value.selectedBottomItem == 0 } }
@@ -234,6 +255,10 @@ class MainActivity : ComponentActivity() {
                                                     AboutScreen(
                                                         state = aboutViewModel.state,
                                                         profileState = aboutViewModel.profileState,
+                                                        updateRoleListener = {
+                                                            aboutViewModel.setProfessionOverridePreference()
+                                                            navigateTo(navController, Home.route, Home.route)
+                                                        },
                                                         logoutListener = aboutViewModel::logout
                                                     ) { navigateTo(navController, Auth.route, Home.route) }
                                                 }

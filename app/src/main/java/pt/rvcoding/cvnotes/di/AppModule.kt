@@ -4,18 +4,21 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.room.Room
+import com.google.ai.client.generativeai.GenerativeModel
 import com.google.firebase.FirebaseApp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import pt.rvcoding.cvnotes.BuildConfig
 import pt.rvcoding.cvnotes.data.repository.NoteRepositoryImpl
 import pt.rvcoding.cvnotes.data.repository.SectionRepositoryImpl
 import pt.rvcoding.cvnotes.data.repository.SharedPreferencesRepositoryImpl
 import pt.rvcoding.cvnotes.data.repository.firebase.FirebaseAuthRepositoryImpl
 import pt.rvcoding.cvnotes.data.source.NoteDatabase
 import pt.rvcoding.cvnotes.data.source.SectionDatabase
+import pt.rvcoding.cvnotes.domain.CVGenerativeLLM.Companion.GEMINI_LLM_VERSION
 import pt.rvcoding.cvnotes.domain.repository.AuthRepository
 import pt.rvcoding.cvnotes.domain.repository.NoteRepository
 import pt.rvcoding.cvnotes.domain.repository.SectionRepository
@@ -32,6 +35,7 @@ import pt.rvcoding.cvnotes.domain.use_case.note.InsertNote
 import pt.rvcoding.cvnotes.domain.use_case.note.UnselectAllNotes
 import pt.rvcoding.cvnotes.domain.use_case.section.DeleteSection
 import pt.rvcoding.cvnotes.domain.use_case.section.DeleteSelectedSections
+import pt.rvcoding.cvnotes.domain.use_case.section.GetGeneratedSectionsUseCase
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSectionById
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSections
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSectionsWithNotes
@@ -135,4 +139,15 @@ object AppModule {
             unselectAllSections = UnselectAllSections(spRepository, sectionRepository),
         )
     }
+
+    val provideGenerativeLLM: GenerativeModel by lazy {
+        GenerativeModel(
+            modelName = GEMINI_LLM_VERSION,
+            apiKey = BuildConfig.GEMINI_API_KEY
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetGeneratedSections() = GetGeneratedSectionsUseCase(provideGenerativeLLM)
 }

@@ -9,10 +9,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import pt.rvcoding.cvnotes.data.SPKey
 import pt.rvcoding.cvnotes.domain.model.Note
 import pt.rvcoding.cvnotes.domain.model.Section
+import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
 import pt.rvcoding.cvnotes.domain.use_case.NoteUseCases
 import pt.rvcoding.cvnotes.domain.use_case.SectionUseCases
+import pt.rvcoding.cvnotes.domain.use_case.section.GetGeneratedSectionsUseCase
 import pt.rvcoding.cvnotes.domain.util.NoteType
 import pt.rvcoding.cvnotes.domain.util.SectionType
 import pt.rvcoding.cvnotes.ui.util.PdfGenerator
@@ -22,7 +25,9 @@ import kotlin.random.Random
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val sectionUseCases: SectionUseCases,
-    private val noteUseCases: NoteUseCases
+    private val noteUseCases: NoteUseCases,
+    private val getGeneratedSectionsUseCase: GetGeneratedSectionsUseCase,
+    private val spRepository: SharedPreferencesRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(DashboardState())
@@ -47,13 +52,28 @@ class DashboardViewModel @Inject constructor(
         if (sectionType != SectionType.NONE) {
             _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
             viewModelScope.launch(Dispatchers.Default) {
-                sectionUseCases.insertSection(
-                    Section(
-                        typeId = sectionType.typeId,
-                        description = sectionType.sectionName,
-                        colorId = Random.nextInt(from = 0, until = Section.Colors.size)
+
+                if (sectionType == SectionType.AI) {
+                    val generatedSections = getGeneratedSectionsUseCase.invoke(profession = spRepository.getString(SPKey.PROFESSION.key))
+                    generatedSections.forEach { sectionName ->
+                        sectionUseCases.insertSection(
+                            Section(
+                                typeId = sectionType.typeId,
+                                description = sectionName,
+                                colorId = Random.nextInt(from = 0, until = Section.Colors.size)
+                            )
+                        )
+                    }
+                } else {
+                    sectionUseCases.insertSection(
+                        Section(
+                            typeId = sectionType.typeId,
+                            description = sectionType.sectionName,
+                            colorId = Random.nextInt(from = 0, until = Section.Colors.size)
+                        )
                     )
-                )
+                }
+
                 val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this)
 
                 withContext(Dispatchers.Main) {
