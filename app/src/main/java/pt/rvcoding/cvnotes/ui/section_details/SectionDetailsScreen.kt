@@ -2,6 +2,7 @@ package pt.rvcoding.cvnotes.ui.section_details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -22,7 +23,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -37,6 +41,7 @@ import pt.rvcoding.cvnotes.theme.Blue700
 import pt.rvcoding.cvnotes.theme.MyTheme
 import pt.rvcoding.cvnotes.theme.SpNormal
 import pt.rvcoding.cvnotes.ui.isLandscape
+import pt.rvcoding.cvnotes.ui.util.component.AIButton
 import pt.rvcoding.cvnotes.ui.util.component.BackTopAppBar
 import pt.rvcoding.cvnotes.ui.util.component.LoadingIndicator
 import pt.rvcoding.cvnotes.ui.util.component.LoadingIndicatorSize
@@ -51,6 +56,7 @@ fun SectionDetailsScreen(
     sectionNameEditState: String = "",
     editSectionNameTextListener: (newChange: String) -> Unit = {},
     addNoteListener: (Int) -> Unit = {},
+    aiGenerateListener: (Int) -> Unit = {},
     editSectionListener: (sectionId: Int, newName: String) -> Unit = {_, _ -> },
     editNoteListener: (noteId: Long) -> Unit = {_ -> },
     selectNoteListener: (note: Note) -> Unit = { _ -> },
@@ -88,28 +94,46 @@ fun SectionDetailsScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier
-                    .size(75.dp)
-                    .offset(x = if (isLandscape()) (-60).dp else 0.dp),
-                shape = RoundedCornerShape(15.dp),
-                contentColor = Blue500_Background3,
-                containerColor = Blue500,
-                onClick = {
-                    when {
-                        hasSelectedNotes -> onSelectedNotesFABClick.invoke()
-                        else -> addNoteListener.invoke(state.section.id ?: 0)
-                    }
-                }
+            Column(
+                modifier = Modifier,
+                horizontalAlignment = Alignment.End
             ) {
-                Icon(
-                    imageVector = when {
-                        hasSelectedNotes -> Icons.Filled.DeleteSweep
-                        else -> Icons.AutoMirrored.Filled.NoteAdd
-                    },
-                    tint = Blue500_Background3,
-                    contentDescription = "Add note"
+                // Show button only if no loading and no notes selected
+                var showAIButton by remember { mutableStateOf(true) }
+                LaunchedEffect(hasSelectedNotes || state.isLoading) {
+                    showAIButton = !(hasSelectedNotes || state.isLoading)
+                }
+                AIButton(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .offset(x = if (isLandscape()) (-60).dp else 0.dp),
+                    generateListener = { aiGenerateListener.invoke(state.section.id ?: 0) },
+                    visible = showAIButton
                 )
+
+                FloatingActionButton(
+                    modifier = Modifier
+                        .size(75.dp)
+                        .offset(x = if (isLandscape()) (-60).dp else 0.dp),
+                    shape = RoundedCornerShape(15.dp),
+                    contentColor = Blue500_Background3,
+                    containerColor = Blue500,
+                    onClick = {
+                        when {
+                            hasSelectedNotes -> onSelectedNotesFABClick.invoke()
+                            else -> addNoteListener.invoke(state.section.id ?: 0)
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = when {
+                            hasSelectedNotes -> Icons.Filled.DeleteSweep
+                            else -> Icons.AutoMirrored.Filled.NoteAdd
+                        },
+                        tint = Blue500_Background3,
+                        contentDescription = "Add note"
+                    )
+                }
             }
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -144,7 +168,7 @@ fun SectionDetailsScreen(
             LoadingIndicator(
                 modifier = Modifier
                     .size(LoadingIndicatorSize)
-                    .align(Alignment.BottomEnd),
+                    .align(Alignment.BottomCenter),
                 state.isLoading
             )
         }

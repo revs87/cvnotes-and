@@ -77,3 +77,6 @@ lint/tmp/
 app/debug/*
 app/release/*
 app/schemas/*
+
+secrets.properties
+

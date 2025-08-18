@@ -4,10 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -20,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import pt.rvcoding.cvnotes.BuildConfig
 import pt.rvcoding.cvnotes.theme.Blue500_Background1
 import pt.rvcoding.cvnotes.theme.MyTheme
 import pt.rvcoding.cvnotes.theme.button.TertiaryButton
@@ -34,6 +39,7 @@ import pt.rvcoding.cvnotes.ui.util.component.cvn.CVNText
 fun AboutScreen(
     state: State<AboutState> = mutableStateOf(AboutState()),
     profileState: State<AboutProfileState> = mutableStateOf(AboutProfileState()),
+    updateRoleListener: () -> Unit = {},
     logoutListener: () -> Unit = {},
     navigateAuthListener: () -> Unit = {}
 ) {
@@ -51,16 +57,29 @@ fun AboutScreen(
     ) { padding ->
         Box {
             Column(
-                modifier = Modifier.background(Blue500_Background1)
+                modifier = Modifier
+                    .background(Blue500_Background1)
                     .fillMaxSize()
                     .padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 CVNText(text = "Version: ${state.value.version}")
-                CVNText(text = "Logged as: ${profileState.value.email}")
-                TertiaryButton(onClick = { logoutListener.invoke() }) {
-                    CVNText(text = "Log out".uppercase())
+                with(profileState.value) {
+                    CVNText(text = "Logged as: $email")
+                    CVNText(text = "Target role: $profession")
+                    if (BuildConfig.DEBUG) {
+                        CVNText(text = "Override: $professionOverride")
+                    }
+                }
+                Row {
+                    TertiaryButton(onClick = { updateRoleListener.invoke() }) {
+                        CVNText(text = "Update role".uppercase())
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    TertiaryButton(onClick = { logoutListener.invoke() }) {
+                        CVNText(text = "Log out".uppercase())
+                    }
                 }
             }
             LoadingIndicator(
