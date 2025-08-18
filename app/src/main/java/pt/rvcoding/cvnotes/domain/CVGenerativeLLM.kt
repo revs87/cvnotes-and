@@ -26,6 +26,6 @@ open class CVGenerativeLLM {
         private const val START_DELIMITER = "START:"
         private const val END_DELIMITER = "END"
         protected const val QUERY_RESPONSE_FORMAT = "Show the results with the prefix of \"$START_DELIMITER\" and suffix of \"$END_DELIMITER\" for each entry, unenumerated."
-        protected const val NUMBER_OF_SUGGESTIONS = 6
+        protected const val NUMBER_OF_SUGGESTIONS = 5
     }
 }

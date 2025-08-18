@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class SharedPreferencesRepositoryImpl @Inject constructor(
+internal class SharedPreferencesRepositoryImpl @Inject constructor(
     context: Context
 ) : SharedPreferencesRepository {
     private var sp: SharedPreferences = context.getSharedPreferences(context.packageName + ".sp", Context.MODE_PRIVATE)

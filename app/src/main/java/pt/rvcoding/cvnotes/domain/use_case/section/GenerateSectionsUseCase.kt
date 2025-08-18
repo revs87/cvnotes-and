@@ -4,7 +4,7 @@ import com.google.ai.client.generativeai.GenerativeModel
 import pt.rvcoding.cvnotes.domain.CVGenerativeLLM
 import pt.rvcoding.cvnotes.ui.util.L
 
-class GetGeneratedSectionsUseCase(
+class GenerateSectionsUseCase(
     private val model: GenerativeModel
 ) : CVGenerativeLLM() {
     suspend operator fun invoke(profession: String): List<String> {
@@ -26,7 +26,7 @@ class GetGeneratedSectionsUseCase(
         return sections
     }
 
-    companion object {
-        private const val TAG = "GetGeneratedSections"
+    companion object Companion {
+        private const val TAG = "GenerateSectionsUseCase"
     }
 }

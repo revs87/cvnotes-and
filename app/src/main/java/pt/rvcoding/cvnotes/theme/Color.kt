@@ -41,3 +41,10 @@ val BackgroundCardColor = Blue500_Background3
 val BackgroundSecondaryColor = Green500_Background1
 val BackgroundSecondaryCardColor = Green500_Background3
 val TextColor = Gray500
+
+// AI-themed gradient brush
+val aiRadialColors = listOf(
+    Color(0xFF2575FC), // Start
+    Color(0xFF6A11CB), // Middle
+    Color(0xFF2575FC)  // End
+)

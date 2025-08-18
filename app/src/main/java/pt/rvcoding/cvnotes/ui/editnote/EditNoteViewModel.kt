@@ -31,7 +31,7 @@ class EditNoteViewModel @Inject constructor(
 
     fun getNote(sectionId: Int, noteId: Long) {
         _state.value = _state.value.copy(isLoading = true)
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             val section = sectionUseCases.getSectionById(sectionId)
             val note = noteUseCases.getNoteById(noteId)
 
@@ -50,7 +50,7 @@ class EditNoteViewModel @Inject constructor(
     fun addNote(note: Note) {
         L.i("EditNoteViewModel", "Adding new Note to sectionId: ${note.sectionId}, ${viewModelScope.isActive}")
         addNoteJob?.let { if (it.isActive) { it.cancel() } }
-        addNoteJob = viewModelScope.launch(Dispatchers.Default) {
+        addNoteJob = viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
                 _state.value = _state.value.copy(isLoading = true)
             }
@@ -65,7 +65,7 @@ class EditNoteViewModel @Inject constructor(
     }
 
     fun setSectionId(sectionId: Int) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             val section = sectionUseCases.getSectionById(sectionId)
             _state.value = _state.value.copy(
                 section = section,

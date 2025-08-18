@@ -54,7 +54,7 @@ fun AddSectionBottomSheet(
                             TextButton(
                                 onClick = {
                                     when (sectionType) {
-                                        SectionType.MY_HARDCODED_DATA -> {
+                                        SectionType.TEMPLATE -> {
                                             onMyHardcodedDataClicked.invoke()
                                             onDismiss.invoke(SectionType.NONE)
                                         }

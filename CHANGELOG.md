@@ -14,6 +14,9 @@ Comment prefixes:
 🔴 Deleted
 
 ## | [1.1.3-SNAPSHOT] |
+#### 2025-08-19
+- 🟢 Added generative AI for note suggestions
+- 🟢 Added generative AI dedicated button
 #### 2025-08-16
 - 🟢 Added generative AI for section name suggestions
 - 🟢 Added applicant role context and UI

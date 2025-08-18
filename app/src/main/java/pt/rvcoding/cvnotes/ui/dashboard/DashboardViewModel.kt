@@ -15,7 +15,7 @@ import pt.rvcoding.cvnotes.domain.model.Section
 import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
 import pt.rvcoding.cvnotes.domain.use_case.NoteUseCases
 import pt.rvcoding.cvnotes.domain.use_case.SectionUseCases
-import pt.rvcoding.cvnotes.domain.use_case.section.GetGeneratedSectionsUseCase
+import pt.rvcoding.cvnotes.domain.use_case.section.GenerateSectionsUseCase
 import pt.rvcoding.cvnotes.domain.util.NoteType
 import pt.rvcoding.cvnotes.domain.util.SectionType
 import pt.rvcoding.cvnotes.ui.util.PdfGenerator
@@ -26,7 +26,7 @@ import kotlin.random.Random
 class DashboardViewModel @Inject constructor(
     private val sectionUseCases: SectionUseCases,
     private val noteUseCases: NoteUseCases,
-    private val getGeneratedSectionsUseCase: GetGeneratedSectionsUseCase,
+    private val generateSectionsUseCase: GenerateSectionsUseCase,
     private val spRepository: SharedPreferencesRepository
 ) : ViewModel() {
 
@@ -35,7 +35,7 @@ class DashboardViewModel @Inject constructor(
 
     fun getAllNotes() {
         _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this)
 
             withContext(Dispatchers.Main) {
@@ -51,29 +51,14 @@ class DashboardViewModel @Inject constructor(
     fun addSection(sectionType: SectionType) {
         if (sectionType != SectionType.NONE) {
             _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
-            viewModelScope.launch(Dispatchers.Default) {
-
-                if (sectionType == SectionType.AI) {
-                    val generatedSections = getGeneratedSectionsUseCase.invoke(profession = spRepository.getString(SPKey.PROFESSION.key))
-                    generatedSections.forEach { sectionName ->
-                        sectionUseCases.insertSection(
-                            Section(
-                                typeId = sectionType.typeId,
-                                description = sectionName,
-                                colorId = Random.nextInt(from = 0, until = Section.Colors.size)
-                            )
-                        )
-                    }
-                } else {
-                    sectionUseCases.insertSection(
-                        Section(
-                            typeId = sectionType.typeId,
-                            description = sectionType.sectionName,
-                            colorId = Random.nextInt(from = 0, until = Section.Colors.size)
-                        )
+            viewModelScope.launch(Dispatchers.IO) {
+                sectionUseCases.insertSection(
+                    Section(
+                        typeId = sectionType.typeId,
+                        description = sectionType.sectionName,
+                        colorId = Random.nextInt(from = 0, until = Section.Colors.size)
                     )
-                }
-
+                )
                 val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this)
 
                 withContext(Dispatchers.Main) {
@@ -88,8 +73,35 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    fun generateSections() {
+        _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val generatedSections = generateSectionsUseCase.invoke(profession = spRepository.getString(SPKey.PROFESSION.key))
+            generatedSections.forEach { sectionName ->
+                sectionUseCases.insertSection(
+                    Section(
+                        typeId = SectionType.AI.typeId,
+                        description = sectionName,
+                        colorId = Random.nextInt(from = 0, until = Section.Colors.size)
+                    )
+                )
+            }
+            val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this)
+
+            withContext(Dispatchers.Main) {
+                _state.value = _state.value.copy(
+                    sectionsWithNotes = sectionWithNotes,
+                    sectionsHasSelected = sectionUseCases.hasSelectedSections(),
+                    scrollToBottom = true,
+                    isLoading = false
+                )
+            }
+        }
+    }
+
     fun addSectionOtherType(sectionName: String) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             val section = Section(
                 typeId = SectionType.OTHER.typeId,
                 description = sectionName
@@ -110,7 +122,7 @@ class DashboardViewModel @Inject constructor(
 
     fun selectSection(id: Int) {
         _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             sectionUseCases.selectSection(id)
             val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this)
 
@@ -126,7 +138,7 @@ class DashboardViewModel @Inject constructor(
 
     fun unselectAllSelectedSections() {
         _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             sectionUseCases.unselectAllSections()
             val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this)
 
@@ -142,7 +154,7 @@ class DashboardViewModel @Inject constructor(
 
     fun deleteSelectedSections() {
         _state.value = _state.value.copy(scrollToBottom = false, isLoading = true)
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             sectionUseCases.deleteSelectedSections()
             val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this)
 
@@ -158,7 +170,7 @@ class DashboardViewModel @Inject constructor(
 
     fun addMyHardcodedData() {
         _state.value = _state.value.copy(isLoading = true)
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             sectionUseCases.getSectionsWithNotes(this).value.forEach {
                 sectionUseCases.deleteSection(it.section)
             }
@@ -189,7 +201,7 @@ class DashboardViewModel @Inject constructor(
 
     fun exportPdfWithName(context: Context, fileName: String) {
         _state.value = _state.value.copy(isLoading = true)
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this).value
             withContext(Dispatchers.Main) {
                 PdfGenerator(context).generatePDF(fileName, sectionWithNotes)

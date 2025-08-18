@@ -26,6 +26,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,10 +55,13 @@ fun BottomBarWithFab(
     bottomNavItems: List<Screen> = Screen.Defaults,
     bottomNavSelected: Int = 0,
     pageListener: (Int) -> Unit = {},
+    aiGenerateListener: () -> Unit = {},
     smallFabClickListener: () -> Unit = {},
     fabClickListener: () -> Unit = {},
     fabIcon: ImageVector = Icons.Filled.Edit,
-    fabVisible: Boolean = true
+    fabVisible: Boolean = true,
+    smallFabVisible: Boolean = true,
+    aiGenerateVisible: Boolean = true
 ) {
     MyTheme {
         Scaffold(
@@ -62,23 +70,41 @@ fun BottomBarWithFab(
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
                 Column(
+                    modifier = Modifier,
                     horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.Bottom,
                 ) {
-                    SmallFloatingActionButton(
-                        modifier = Modifier.offset(x = if (isLandscape()) (-60).dp else 0.dp, y = 80.dp),
-                        onClick = { smallFabClickListener.invoke() },
-                        containerColor = Blue500,
-                        shape = RoundedCornerShape(12.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.PictureAsPdf,
-                            contentDescription = "Location FAB",
-                            tint = Blue500_Background3,
-                        )
+                    // Show button only if no loading and no notes selected
+                    var showAIButton by remember { mutableStateOf(true) }
+                    LaunchedEffect(aiGenerateVisible && fabVisible) {
+                        showAIButton = aiGenerateVisible && fabVisible
                     }
+                    AIButton(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .offset(x = if (isLandscape()) (-60).dp else 0.dp, y = 80.dp),
+                        generateListener = { aiGenerateListener.invoke() },
+                        visible = showAIButton
+                    )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    if (smallFabVisible) {
+                        SmallFloatingActionButton(
+                            modifier = Modifier
+                                .size(45.dp)
+                                .offset(x = if (isLandscape()) (-60).dp else 0.dp, y = 80.dp),
+                            onClick = { smallFabClickListener.invoke() },
+                            containerColor = Blue500,
+                            shape = RoundedCornerShape(12.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.PictureAsPdf,
+                                contentDescription = "Location FAB",
+                                tint = Blue500_Background3,
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
                     if (fabVisible) {
                         FloatingActionButton(

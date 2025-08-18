@@ -11,8 +11,8 @@ enum class SectionType(val typeId: Int, val order: Int, val sectionName: String,
     HISTORY(5, 6, "Work History"),
     EDUCATION(6, 7, "Education"),
     OTHER(7, 8, "Other"),
-    MY_HARDCODED_DATA(8, 9, "Template"),
-    AI(9, 1, "Ask AI"),
+    TEMPLATE(8, 9, "Template (Will delete all records)"),
+    AI(9, 1, "AI Generated"),
 }
 
 fun Int.toSectionType(): SectionType = when (this) {
@@ -23,6 +23,7 @@ fun Int.toSectionType(): SectionType = when (this) {
     SectionType.HISTORY.typeId -> SectionType.HISTORY
     SectionType.EDUCATION.typeId -> SectionType.EDUCATION
     SectionType.OTHER.typeId -> SectionType.OTHER
-    SectionType.MY_HARDCODED_DATA.typeId -> SectionType.MY_HARDCODED_DATA
+    SectionType.TEMPLATE.typeId -> SectionType.TEMPLATE
+    SectionType.AI.typeId -> SectionType.AI
     else -> SectionType.ALL
 }

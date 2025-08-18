@@ -50,10 +50,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import pt.rvcoding.cvnotes.theme.Blue500
 import pt.rvcoding.cvnotes.theme.Blue500_Background1
 import pt.rvcoding.cvnotes.theme.Green500
@@ -266,6 +262,7 @@ class MainActivity : ComponentActivity() {
                                         ),
                                         bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                         pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
+                                        aiGenerateListener = { dashboardViewModel.generateSections() },
                                         smallFabClickListener = {
                                             Permissions().handle(
                                                 activity = this@MainActivity,
@@ -285,7 +282,9 @@ class MainActivity : ComponentActivity() {
                                             hasSelectedSections -> Icons.Filled.DeleteSweep
                                             else -> Icons.Filled.Add
                                         },
-                                        fabVisible = isFabVisible
+                                        fabVisible = isFabVisible,
+                                        smallFabVisible = isFabVisible && !hasSelectedSections,
+                                        aiGenerateVisible = !(hasSelectedSections || newSectionBottomSheetVisible || dashboardViewModel.state.value.isLoading)
                                     )
                                     AddSectionBottomSheet(
                                         bottomSheetVisible = newSectionBottomSheetVisible,
@@ -340,6 +339,7 @@ class MainActivity : ComponentActivity() {
                                         sectionNameEditState = viewModel.sectionNameEditState.value,
                                         editSectionNameTextListener = { nameChange -> viewModel.updateSectionNewNameState(nameChange) },
                                         addNoteListener = { navigateTo(navController, "${NewNote.route}/${sectionIdState.intValue}") },
+                                        aiGenerateListener = { viewModel.generateNotes(sectionIdState.intValue) },
                                         editSectionListener = { sectionId, newName -> viewModel.updateSection(sectionId, newName) },
                                         editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/${sectionIdState.intValue}/$noteId") },
                                         selectNoteListener = { note -> viewModel.toggleNoteSelection(note) },

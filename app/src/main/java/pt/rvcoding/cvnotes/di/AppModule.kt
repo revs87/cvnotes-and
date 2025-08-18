@@ -27,6 +27,7 @@ import pt.rvcoding.cvnotes.domain.use_case.NoteUseCases
 import pt.rvcoding.cvnotes.domain.use_case.SectionUseCases
 import pt.rvcoding.cvnotes.domain.use_case.note.DeleteNote
 import pt.rvcoding.cvnotes.domain.use_case.note.DeleteSelectedNotes
+import pt.rvcoding.cvnotes.domain.use_case.note.GenerateNotesUseCase
 import pt.rvcoding.cvnotes.domain.use_case.note.GetNoteById
 import pt.rvcoding.cvnotes.domain.use_case.note.GetNotes
 import pt.rvcoding.cvnotes.domain.use_case.note.GetNotesBySectionId
@@ -35,7 +36,7 @@ import pt.rvcoding.cvnotes.domain.use_case.note.InsertNote
 import pt.rvcoding.cvnotes.domain.use_case.note.UnselectAllNotes
 import pt.rvcoding.cvnotes.domain.use_case.section.DeleteSection
 import pt.rvcoding.cvnotes.domain.use_case.section.DeleteSelectedSections
-import pt.rvcoding.cvnotes.domain.use_case.section.GetGeneratedSectionsUseCase
+import pt.rvcoding.cvnotes.domain.use_case.section.GenerateSectionsUseCase
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSectionById
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSections
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSectionsWithNotes
@@ -94,7 +95,7 @@ object AppModule {
     fun providesNoteUseCases(noteRepository: NoteRepository): NoteUseCases {
         return NoteUseCases(
             getNotes = GetNotes(noteRepository),
-            getNotesBySectionId = GetNotesBySectionId(noteRepository),
+            getNotesBySectionId = providesGetNotesBySectionId(noteRepository),
             getNoteById = GetNoteById(noteRepository),
             insertNote = InsertNote(noteRepository),
             deleteNote = DeleteNote(noteRepository),
@@ -140,14 +141,29 @@ object AppModule {
         )
     }
 
-    val provideGenerativeLLM: GenerativeModel by lazy {
-        GenerativeModel(
-            modelName = GEMINI_LLM_VERSION,
-            apiKey = BuildConfig.GEMINI_API_KEY
-        )
-    }
+    @Provides
+    @Singleton
+    fun provideGenerativeLLM() = GenerativeModel(
+        modelName = GEMINI_LLM_VERSION,
+        apiKey = BuildConfig.GEMINI_API_KEY
+    )
 
     @Provides
     @Singleton
-    fun providesGetGeneratedSections() = GetGeneratedSectionsUseCase(provideGenerativeLLM)
+    fun providesGenerateSections() = GenerateSectionsUseCase(
+        model = provideGenerativeLLM()
+    )
+
+    @Provides
+    @Singleton
+    fun providesGetNotesBySectionId(noteRepository: NoteRepository) = GetNotesBySectionId(
+        noteRepository = noteRepository
+    )
+
+    @Provides
+    @Singleton
+    fun providesGenerateNotes(noteRepository: NoteRepository) = GenerateNotesUseCase(
+        model = provideGenerativeLLM(),
+        noteRepository = noteRepository
+    )
 }
