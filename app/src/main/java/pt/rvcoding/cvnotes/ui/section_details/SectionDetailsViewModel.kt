@@ -56,11 +56,11 @@ class SectionDetailsViewModel @Inject constructor(
         }
     }
 
-    private var toggleNoteJob: Job? = null
     fun toggleNoteSelection(note: Note) {
-        toggleNoteJob?.let { if (it.isActive) { it.cancel() } }
-        toggleNoteJob = viewModelScope.launch(Dispatchers.IO) {
-            noteUseCases.insertNote(note.apply { isSelected = !isSelected })
+        viewModelScope.launch(Dispatchers.IO) {
+            val isSelected = note.isSelected
+            note.isSelected = !isSelected
+            noteUseCases.insertNote(note)
             updateUI(note.sectionId)
         }
     }
