@@ -9,6 +9,9 @@
 # [CVNotes - A snappy and customizable CV editor](https://play.google.com/store/apps/details?id=pt.rvcoding.cvnotes)
 A snappy and customizable CV editor
 
+[<img src="https://lh3.googleusercontent.com/q1k2l5CwMV31JdDXcpN4Ey7O43PxnjAuZBTmcHEwQxVuv_2wCE2gAAQMWxwNUC2FYEOnYgFPOpw6kmHJWuEGeIBLTj9CuxcOEeU8UXyzWJq4NJM3lg=s0">](https://play.google.com/store/apps/details?id=pt.rvcoding.cvnotes)
+
+
 ## 📜 Summary
 
 Thinking through CV writing can be challenging given its complexity and external circumstances.
@@ -25,8 +28,6 @@ With this app you can have an immediate CV Hands-on when an idea comes to mind o
 - Create and edit CV sections and notes.
 - Customize your notes with different note types.
 - Generate a simple Resumé exported as a PDF file.
-
-[<img src="https://lh3.googleusercontent.com/q1k2l5CwMV31JdDXcpN4Ey7O43PxnjAuZBTmcHEwQxVuv_2wCE2gAAQMWxwNUC2FYEOnYgFPOpw6kmHJWuEGeIBLTj9CuxcOEeU8UXyzWJq4NJM3lg=s0">](https://play.google.com/store/apps/details?id=pt.rvcoding.cvnotes)
 
 
 ### 🚀 Technical Highlights
@@ -65,14 +66,14 @@ With this app you can have an immediate CV Hands-on when an idea comes to mind o
 - SharedPreferences (key-value storage)
 
 
-### Networking
+### 🌐 Networking
 
 - Firebase Auth
 - Firebase Crashlytics
 - Generative UI (Gemini LLM)
 
 
-## Project Requirements
+### Project Requirements
 
 - Java 17+
 - The latest Android Studio Hedgehog or above (for easy install use JetBrains Toolbox)
