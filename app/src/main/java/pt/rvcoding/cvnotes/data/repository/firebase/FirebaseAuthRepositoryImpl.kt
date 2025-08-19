@@ -54,8 +54,8 @@ internal class FirebaseAuthRepositoryImpl(
 
     override fun logout() = flow {
         try {
-            mAuth.signOut()
             spRepository.purgeAll()
+            mAuth.signOut()
             emit(Success(Unit))
         }
         catch (e: Exception) { emit(Error("Signing out failed")) }
