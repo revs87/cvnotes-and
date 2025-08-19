@@ -75,7 +75,7 @@ With this app you can have an immediate CV Hands-on when an idea comes to mind o
 
 ### ☑ Project Requirements
 
-- Java 17+
+- Java 21+
 - The latest Android Studio Hedgehog or above (for easy install use JetBrains Toolbox)
 - Minimum SDK: 28 (Android 9)
 - Target SDK: 36 (Android 16)
