@@ -17,6 +17,7 @@ Comment prefixes:
 #### 2025-08-19
 - 🟢 Added generative AI for note suggestions
 - 🟢 Added generative AI dedicated button
+- 🟠 Updated README and LICENCE
 #### 2025-08-16
 - 🟢 Added generative AI for section name suggestions
 - 🟢 Added applicant role context and UI
