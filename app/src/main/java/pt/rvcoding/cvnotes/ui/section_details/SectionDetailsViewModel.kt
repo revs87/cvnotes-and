@@ -56,8 +56,9 @@ class SectionDetailsViewModel @Inject constructor(
         }
     }
 
-    fun toggleNoteSelection(note: Note) {
+    fun toggleNoteSelection(noteId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            val note = noteUseCases.getNoteById(noteId) ?: return@launch
             val isSelected = note.isSelected
             note.isSelected = !isSelected
             noteUseCases.insertNote(note)

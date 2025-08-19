@@ -59,7 +59,7 @@ fun SectionDetailsScreen(
     aiGenerateListener: (Int) -> Unit = {},
     editSectionListener: (sectionId: Int, newName: String) -> Unit = {_, _ -> },
     editNoteListener: (noteId: Long) -> Unit = {_ -> },
-    selectNoteListener: (note: Note) -> Unit = { _ -> },
+    selectNoteListener: (noteId: Long) -> Unit = { _ -> },
     notes: List<Note> = emptyList(),
     hasSelectedNotes: Boolean = false,
     onSelectedNotesFABClick: () -> Unit = {},
@@ -161,7 +161,7 @@ fun SectionDetailsScreen(
                     modifier = Modifier,
                     hasSelectedNotes = hasSelectedNotes,
                     onNoteClick = { noteId -> editNoteListener.invoke(noteId) },
-                    onLongNoteClick = { note -> selectNoteListener.invoke(note) },
+                    onLongNoteClick = { noteId -> selectNoteListener.invoke(noteId) },
                     notes = notes
                 )
             }

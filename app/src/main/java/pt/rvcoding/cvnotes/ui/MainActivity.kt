@@ -355,7 +355,7 @@ class MainActivity : ComponentActivity() {
                                         aiGenerateListener = { viewModel.generateNotes(sectionIdState.intValue) },
                                         editSectionListener = { sectionId, newName -> viewModel.updateSection(sectionId, newName) },
                                         editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/${sectionIdState.intValue}/$noteId") },
-                                        selectNoteListener = { note -> viewModel.toggleNoteSelection(note) },
+                                        selectNoteListener = { noteId -> viewModel.toggleNoteSelection(noteId) },
                                         notes = viewModel.state.value.notes,
                                         hasSelectedNotes = viewModel.state.value.hasSelectedNotes,
                                         onSelectedNotesFABClick = { withSelectedNotesBottomSheetVisible = true},
