@@ -73,7 +73,7 @@ With this app you can have an immediate CV Hands-on when an idea comes to mind o
 - Generative UI (Gemini LLM)
 
 
-### Project Requirements
+### ☑ Project Requirements
 
 - Java 17+
 - The latest Android Studio Hedgehog or above (for easy install use JetBrains Toolbox)
