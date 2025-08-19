@@ -21,7 +21,7 @@ internal class FirebaseAuthRepositoryImpl(
 
     override fun register(email: String, pwd: String, isOffline: Boolean): Flow<Result<UserDTO>> = flow {
         if (isOffline) {
-            val offlineUser = UserDTO(email = email)
+            val offlineUser = UserDTO(uid = email, email = email)
             cacheOfflineUser(offlineUser)
             emit(Success(offlineUser))
         }
