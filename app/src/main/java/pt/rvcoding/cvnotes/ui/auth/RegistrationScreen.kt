@@ -10,7 +10,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -30,7 +29,6 @@ import pt.rvcoding.cvnotes.ui.util.component.LoadingIndicatorSize
 fun RegistrationScreen(
     state: AuthState = AuthState(),
     fieldsState: AuthFieldsState = AuthFieldsState(),
-    errorMessage: String = "",
     updateEmailListener: (newValue: String) -> Unit = {},
     updatePwdListener: (newValue: String) -> Unit = {},
     createUserListener: (email: String, pwd: String) -> Unit = { _, _ -> },
@@ -68,11 +66,6 @@ fun RegistrationScreen(
                             .align(Alignment.BottomEnd),
                         state.isLoading
                     )
-                }
-                if (errorMessage.isNotBlank()) {
-                    LaunchedEffect(true) {
-                        snackbarHostState.showSnackbar(errorMessage)
-                    }
                 }
             }
         }

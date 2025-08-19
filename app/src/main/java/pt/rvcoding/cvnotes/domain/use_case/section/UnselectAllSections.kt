@@ -3,6 +3,7 @@ package pt.rvcoding.cvnotes.domain.use_case.section
 import pt.rvcoding.cvnotes.data.SPKey
 import pt.rvcoding.cvnotes.domain.repository.SectionRepository
 import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
+import pt.rvcoding.cvnotes.domain.util.sha256
 
 class UnselectAllSections(
     private val spRepository: SharedPreferencesRepository,

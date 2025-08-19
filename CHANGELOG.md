@@ -19,6 +19,7 @@ Comment prefixes:
 - 🟢 Added generative AI dedicated button
 - 🟠 Updated README and LICENCE
 - 🟡 Fixed notes selection bug
+- 🟡 Fixed auth error handling bug
 #### 2025-08-16
 - 🟢 Added generative AI for section name suggestions
 - 🟢 Added applicant role context and UI

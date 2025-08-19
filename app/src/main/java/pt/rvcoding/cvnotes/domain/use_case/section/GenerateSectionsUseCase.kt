@@ -8,6 +8,7 @@ class GenerateSectionsUseCase(
     private val model: GenerativeModel
 ) : CVGenerativeLLM() {
     suspend operator fun invoke(profession: String): List<String> {
+        L.i(TAG, "Invoked with profession: $profession")
         val sections = mutableListOf<String>()
         try {
             val prompt = """

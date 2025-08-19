@@ -87,6 +87,7 @@ import pt.rvcoding.cvnotes.ui.util.Screen.SectionDetails
 import pt.rvcoding.cvnotes.ui.util.Screen.Splash
 import pt.rvcoding.cvnotes.ui.util.component.AddSectionBottomSheet
 import pt.rvcoding.cvnotes.ui.util.component.BottomBarWithFab
+import pt.rvcoding.cvnotes.ui.util.component.ObserveAsEvents
 import pt.rvcoding.cvnotes.ui.util.component.TextFieldDialog
 import pt.rvcoding.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
 import pt.rvcoding.cvnotes.ui.util.component.cvn.CVNText
@@ -156,11 +157,18 @@ class MainActivity : ComponentActivity() {
                                     if (authViewModel.state.value.isLoggedIn) {
                                         LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
                                     }
-                                    val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
+                                    var localError by remember { mutableStateOf("") }
+                                    LaunchedEffect(localError) {
+                                        if (localError.isNotBlank()) {
+                                            snackbarHostState.showSnackbar(localError)
+                                            localError = ""
+                                        }
+                                    }
+                                    ObserveAsEvents(flow = authViewModel.errors) { error -> localError = error }
+
                                     RegistrationScreen(
                                         state = authViewModel.state.value,
                                         fieldsState = authViewModel.fieldsState.value,
-                                        errorMessage = errorEvent.value,
                                         updateEmailListener = { authViewModel.updateEmail(it) },
                                         updatePwdListener = { authViewModel.updatePwd(it) },
                                         createUserListener = { email, pwd -> authViewModel.createUser(email, pwd) },
@@ -172,11 +180,18 @@ class MainActivity : ComponentActivity() {
                                     if (authViewModel.state.value.isLoggedIn) {
                                         LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
                                     }
-                                    val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
+                                    var localError by remember { mutableStateOf("") }
+                                    LaunchedEffect(localError) {
+                                        if (localError.isNotBlank()) {
+                                            snackbarHostState.showSnackbar(localError)
+                                            localError = ""
+                                        }
+                                    }
+                                    ObserveAsEvents(flow = authViewModel.errors) { error -> localError = error }
+
                                     LoginScreen(
                                         state = authViewModel.state.value,
                                         fieldsState = authViewModel.fieldsState.value,
-                                        errorMessage = errorEvent.value,
                                         updateEmailListener = { authViewModel.updateEmail(it) },
                                         updatePwdListener = { authViewModel.updatePwd(it) },
                                         logUserListener = { email, pwd -> authViewModel.logUser(email, pwd) },

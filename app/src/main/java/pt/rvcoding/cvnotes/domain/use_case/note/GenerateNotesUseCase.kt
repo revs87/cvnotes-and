@@ -28,12 +28,9 @@ class GenerateNotesUseCase(
                 ${currentNotesStr.ifEmpty { "" }}
                 $QUERY_RESPONSE_FORMAT
             """
-            L.i(TAG, "Prompt: ${prompt.trim()}")
 
             val response = model.generateContent(prompt)
             val responseStr = response.text ?: "No response text found."
-            L.i(TAG, "Response: $responseStr")
-
             notes.addAll(parseGeneratedList(responseStr))
             L.i(TAG, "Notes generated and parsed: $notes")
             return notes

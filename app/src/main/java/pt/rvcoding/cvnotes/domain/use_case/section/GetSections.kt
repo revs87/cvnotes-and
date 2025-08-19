@@ -5,6 +5,7 @@ import pt.rvcoding.cvnotes.data.SPKey
 import pt.rvcoding.cvnotes.domain.model.Section
 import pt.rvcoding.cvnotes.domain.repository.SectionRepository
 import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
+import pt.rvcoding.cvnotes.domain.util.sha256
 
 class GetSections(
     private val spRepository: SharedPreferencesRepository,

@@ -9,6 +9,7 @@ import pt.rvcoding.cvnotes.domain.model.SectionWithNotes
 import pt.rvcoding.cvnotes.domain.repository.NoteRepository
 import pt.rvcoding.cvnotes.domain.repository.SectionRepository
 import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
+import pt.rvcoding.cvnotes.domain.util.sha256
 
 class GetSectionsWithNotes(
     private val spRepository: SharedPreferencesRepository,
