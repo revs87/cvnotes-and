@@ -119,7 +119,7 @@ fun DashboardScreen(
             LoadingIndicator(
                 modifier = Modifier
                     .size(LoadingIndicatorSize)
-                    .align(Alignment.BottomEnd),
+                    .align(Alignment.BottomCenter),
                 state.isLoading
             )
         }

@@ -19,7 +19,7 @@ data class Note(
 ) {
     companion object {
         val Default by lazy { Note(sectionId = 0, type = NoteType.NONE.id) }
-        val Types by lazy { NoteType.values().toList().filter { it != NoteType.NONE } }
+        val Types by lazy { NoteType.entries.filter { it != NoteType.NONE } }
     }
 }
 

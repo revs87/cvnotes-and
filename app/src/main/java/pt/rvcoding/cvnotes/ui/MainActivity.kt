@@ -34,7 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -67,6 +70,8 @@ import pt.rvcoding.cvnotes.ui.dashboard.DashboardViewModel
 import pt.rvcoding.cvnotes.ui.editnote.EditNoteScreen
 import pt.rvcoding.cvnotes.ui.editnote.EditNoteViewModel
 import pt.rvcoding.cvnotes.ui.home.HomeViewModel
+import pt.rvcoding.cvnotes.ui.profession.ProfessionScreenRoot
+import pt.rvcoding.cvnotes.ui.profession.ProfessionViewModel
 import pt.rvcoding.cvnotes.ui.section_details.SectionDetailsScreen
 import pt.rvcoding.cvnotes.ui.section_details.SectionDetailsViewModel
 import pt.rvcoding.cvnotes.ui.splash.SplashScreen
@@ -79,11 +84,13 @@ import pt.rvcoding.cvnotes.ui.util.Screen.Home
 import pt.rvcoding.cvnotes.ui.util.Screen.Intro
 import pt.rvcoding.cvnotes.ui.util.Screen.Login
 import pt.rvcoding.cvnotes.ui.util.Screen.NewNote
+import pt.rvcoding.cvnotes.ui.util.Screen.Profession
 import pt.rvcoding.cvnotes.ui.util.Screen.Register
 import pt.rvcoding.cvnotes.ui.util.Screen.SectionDetails
 import pt.rvcoding.cvnotes.ui.util.Screen.Splash
 import pt.rvcoding.cvnotes.ui.util.component.AddSectionBottomSheet
 import pt.rvcoding.cvnotes.ui.util.component.BottomBarWithFab
+import pt.rvcoding.cvnotes.ui.util.component.ObserveAsEvents
 import pt.rvcoding.cvnotes.ui.util.component.TextFieldDialog
 import pt.rvcoding.cvnotes.ui.util.component.UnselectDeleteSectionsBottomSheet
 import pt.rvcoding.cvnotes.ui.util.component.cvn.CVNText
@@ -153,11 +160,18 @@ class MainActivity : ComponentActivity() {
                                     if (authViewModel.state.value.isLoggedIn) {
                                         LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
                                     }
-                                    val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
+                                    var localError by remember { mutableStateOf("") }
+                                    LaunchedEffect(localError) {
+                                        if (localError.isNotBlank()) {
+                                            snackbarHostState.showSnackbar(localError)
+                                            localError = ""
+                                        }
+                                    }
+                                    ObserveAsEvents(flow = authViewModel.errors) { error -> localError = error }
+
                                     RegistrationScreen(
                                         state = authViewModel.state.value,
                                         fieldsState = authViewModel.fieldsState.value,
-                                        errorMessage = errorEvent.value,
                                         updateEmailListener = { authViewModel.updateEmail(it) },
                                         updatePwdListener = { authViewModel.updatePwd(it) },
                                         createUserListener = { email, pwd -> authViewModel.createUser(email, pwd) },
@@ -169,11 +183,18 @@ class MainActivity : ComponentActivity() {
                                     if (authViewModel.state.value.isLoggedIn) {
                                         LaunchedEffect(true) { navigateTo(navController, Home.route, Auth.route) }
                                     }
-                                    val errorEvent = authViewModel.errors.collectAsStateWithLifecycle(initialValue = "")
+                                    var localError by remember { mutableStateOf("") }
+                                    LaunchedEffect(localError) {
+                                        if (localError.isNotBlank()) {
+                                            snackbarHostState.showSnackbar(localError)
+                                            localError = ""
+                                        }
+                                    }
+                                    ObserveAsEvents(flow = authViewModel.errors) { error -> localError = error }
+
                                     LoginScreen(
                                         state = authViewModel.state.value,
                                         fieldsState = authViewModel.fieldsState.value,
-                                        errorMessage = errorEvent.value,
                                         updateEmailListener = { authViewModel.updateEmail(it) },
                                         updatePwdListener = { authViewModel.updatePwd(it) },
                                         logUserListener = { email, pwd -> authViewModel.logUser(email, pwd) },
@@ -182,8 +203,22 @@ class MainActivity : ComponentActivity() {
                             }
                             navigation(
                                 route = Home.route,
-                                startDestination = Dashboard.route
+                                startDestination = Profession.route
                             ) {
+                                composable(route = Profession.route) {
+                                    val vm = hiltViewModel<ProfessionViewModel>()
+                                    if (!vm.hasProfessionPreference() || vm.hasProfessionOverridePreference()) {
+                                        ProfessionScreenRoot(
+                                            vm = vm,
+                                            onDone = { navigateTo(navController, Dashboard.route, Home.route) }
+                                        )
+                                    } else {
+                                        LaunchedEffect(true) {
+                                            navigateTo(navController, Dashboard.route, Home.route)
+                                        }
+                                    }
+
+                                }
                                 composable(route = Dashboard.route) {
                                     val homeViewModel: HomeViewModel = hiltViewModel()
                                     val isFabVisible by remember { derivedStateOf { homeViewModel.state.value.selectedBottomItem == 0 } }
@@ -223,7 +258,7 @@ class MainActivity : ComponentActivity() {
                                                             else { navigateTo(navController, "${SectionDetails.route}/$id") }
                                                         },
                                                         onSectionLongClick = { id -> dashboardViewModel.selectSection(id) },
-                                                        saveToPrefs = { index -> prefs.edit().putInt("scroll_position", index).apply() },
+                                                        saveToPrefs = { index -> prefs.edit { putInt("scroll_position", index) } },
                                                         initialScrollPosition = initialScrollPosition
                                                     )
                                                 }
@@ -234,6 +269,10 @@ class MainActivity : ComponentActivity() {
                                                     AboutScreen(
                                                         state = aboutViewModel.state,
                                                         profileState = aboutViewModel.profileState,
+                                                        updateRoleListener = {
+                                                            aboutViewModel.setProfessionOverridePreference()
+                                                            navigateTo(navController, Home.route, Home.route)
+                                                        },
                                                         logoutListener = aboutViewModel::logout
                                                     ) { navigateTo(navController, Auth.route, Home.route) }
                                                 }
@@ -241,6 +280,7 @@ class MainActivity : ComponentActivity() {
                                         ),
                                         bottomNavSelected = homeViewModel.state.value.selectedBottomItem,
                                         pageListener = { index -> homeViewModel.selectBottomNavPage(index) },
+                                        aiGenerateListener = { dashboardViewModel.generateSections() },
                                         smallFabClickListener = {
                                             Permissions().handle(
                                                 activity = this@MainActivity,
@@ -260,7 +300,9 @@ class MainActivity : ComponentActivity() {
                                             hasSelectedSections -> Icons.Filled.DeleteSweep
                                             else -> Icons.Filled.Add
                                         },
-                                        fabVisible = isFabVisible
+                                        fabVisible = isFabVisible,
+                                        smallFabVisible = isFabVisible && !hasSelectedSections,
+                                        aiGenerateVisible = !(hasSelectedSections || newSectionBottomSheetVisible || dashboardViewModel.state.value.isLoading)
                                     )
                                     AddSectionBottomSheet(
                                         bottomSheetVisible = newSectionBottomSheetVisible,
@@ -284,13 +326,24 @@ class MainActivity : ComponentActivity() {
                                             setValue = { newValue -> dashboardViewModel.addSectionOtherType(newValue) }
                                         )
                                     }
+
+                                    // Get screen width in pixels
+                                    val configuration = LocalConfiguration.current
+                                    val density = LocalDensity.current
+                                    val screenWidthPx = remember { with(density) { configuration.screenWidthDp.dp.toPx() }.toInt() }
                                     if (pdfExportDialogVisible) {
                                         TextFieldDialog(
                                             title = "Export as PDF",
                                             placeholder = "Enter file name",
                                             initialValue = "myCVNotes",
                                             setShowDialog = { enabled -> pdfExportDialogVisible = enabled },
-                                            setValue = { newValue -> dashboardViewModel.exportPdfWithName(this@MainActivity, newValue) }
+                                            setValue = { newValue ->
+                                                dashboardViewModel.exportToPdf(
+                                                    context = this@MainActivity,
+                                                    fileName = newValue,
+                                                    screenWidthPx = screenWidthPx
+                                                )
+                                            }
                                         )
                                     }
                                     ShowSnackbarMessage(
@@ -307,19 +360,18 @@ class MainActivity : ComponentActivity() {
                                     val viewModel = it.sharedViewModel<SectionDetailsViewModel>(navController = navController)
                                     val sectionIdState = remember { mutableIntStateOf(it.arguments?.getInt("sectionId") ?: 0) }.asIntState()
                                     LaunchedEffect(sectionIdState) { viewModel.getSection(sectionIdState.intValue) }
-                                    val notes by viewModel.state.value.notes.collectAsStateWithLifecycle(initialValue = emptyList())
-                                    val hasSelectedNotes by viewModel.state.value.hasSelectedNotes.collectAsStateWithLifecycle(initialValue = false)
                                     var withSelectedNotesBottomSheetVisible by remember { mutableStateOf(false) }
                                     SectionDetailsScreen(
                                         state = viewModel.state.value,
                                         sectionNameEditState = viewModel.sectionNameEditState.value,
                                         editSectionNameTextListener = { nameChange -> viewModel.updateSectionNewNameState(nameChange) },
                                         addNoteListener = { navigateTo(navController, "${NewNote.route}/${sectionIdState.intValue}") },
+                                        aiGenerateListener = { viewModel.generateNotes(sectionIdState.intValue) },
                                         editSectionListener = { sectionId, newName -> viewModel.updateSection(sectionId, newName) },
                                         editNoteListener = { noteId -> navigateTo(navController, "${EditNote.route}/${sectionIdState.intValue}/$noteId") },
-                                        selectNoteListener = { note -> viewModel.toggleNoteSelection(note) },
-                                        notes = notes,
-                                        hasSelectedNotes = hasSelectedNotes,
+                                        selectNoteListener = { noteId -> viewModel.toggleNoteSelection(noteId) },
+                                        notes = viewModel.state.value.notes,
+                                        hasSelectedNotes = viewModel.state.value.hasSelectedNotes,
                                         onSelectedNotesFABClick = { withSelectedNotesBottomSheetVisible = true},
                                         onBackPressed = { navController.navigateUp() }
                                     )

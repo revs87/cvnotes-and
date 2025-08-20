@@ -24,6 +24,7 @@ sealed class Screen(
     data object Login: Screen("login_screen")
 
     data object Home: Screen("home")
+    data object Profession: Screen("profession", "Profession")
     data object Dashboard: Screen("dash_screen", "Dashboard", Icons.Filled.Notes)
     data object About: Screen("about_screen", "About", Icons.Filled.Info)
     data object SectionDetails: Screen("section_details_screen", "Section Details")

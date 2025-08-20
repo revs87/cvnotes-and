@@ -4,18 +4,21 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.room.Room
+import com.google.ai.client.generativeai.GenerativeModel
 import com.google.firebase.FirebaseApp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import pt.rvcoding.cvnotes.BuildConfig
 import pt.rvcoding.cvnotes.data.repository.NoteRepositoryImpl
 import pt.rvcoding.cvnotes.data.repository.SectionRepositoryImpl
 import pt.rvcoding.cvnotes.data.repository.SharedPreferencesRepositoryImpl
 import pt.rvcoding.cvnotes.data.repository.firebase.FirebaseAuthRepositoryImpl
 import pt.rvcoding.cvnotes.data.source.NoteDatabase
 import pt.rvcoding.cvnotes.data.source.SectionDatabase
+import pt.rvcoding.cvnotes.domain.CVGenerativeLLM.Companion.GEMINI_LLM_VERSION
 import pt.rvcoding.cvnotes.domain.repository.AuthRepository
 import pt.rvcoding.cvnotes.domain.repository.NoteRepository
 import pt.rvcoding.cvnotes.domain.repository.SectionRepository
@@ -24,6 +27,7 @@ import pt.rvcoding.cvnotes.domain.use_case.NoteUseCases
 import pt.rvcoding.cvnotes.domain.use_case.SectionUseCases
 import pt.rvcoding.cvnotes.domain.use_case.note.DeleteNote
 import pt.rvcoding.cvnotes.domain.use_case.note.DeleteSelectedNotes
+import pt.rvcoding.cvnotes.domain.use_case.note.GenerateNotesUseCase
 import pt.rvcoding.cvnotes.domain.use_case.note.GetNoteById
 import pt.rvcoding.cvnotes.domain.use_case.note.GetNotes
 import pt.rvcoding.cvnotes.domain.use_case.note.GetNotesBySectionId
@@ -32,6 +36,7 @@ import pt.rvcoding.cvnotes.domain.use_case.note.InsertNote
 import pt.rvcoding.cvnotes.domain.use_case.note.UnselectAllNotes
 import pt.rvcoding.cvnotes.domain.use_case.section.DeleteSection
 import pt.rvcoding.cvnotes.domain.use_case.section.DeleteSelectedSections
+import pt.rvcoding.cvnotes.domain.use_case.section.GenerateSectionsUseCase
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSectionById
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSections
 import pt.rvcoding.cvnotes.domain.use_case.section.GetSectionsWithNotes
@@ -90,7 +95,7 @@ object AppModule {
     fun providesNoteUseCases(noteRepository: NoteRepository): NoteUseCases {
         return NoteUseCases(
             getNotes = GetNotes(noteRepository),
-            getNotesBySectionId = GetNotesBySectionId(noteRepository),
+            getNotesBySectionId = providesGetNotesBySectionId(noteRepository),
             getNoteById = GetNoteById(noteRepository),
             insertNote = InsertNote(noteRepository),
             deleteNote = DeleteNote(noteRepository),
@@ -135,4 +140,30 @@ object AppModule {
             unselectAllSections = UnselectAllSections(spRepository, sectionRepository),
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideGenerativeLLM() = GenerativeModel(
+        modelName = GEMINI_LLM_VERSION,
+        apiKey = BuildConfig.GEMINI_API_KEY
+    )
+
+    @Provides
+    @Singleton
+    fun providesGenerateSections() = GenerateSectionsUseCase(
+        model = provideGenerativeLLM()
+    )
+
+    @Provides
+    @Singleton
+    fun providesGetNotesBySectionId(noteRepository: NoteRepository) = GetNotesBySectionId(
+        noteRepository = noteRepository
+    )
+
+    @Provides
+    @Singleton
+    fun providesGenerateNotes(noteRepository: NoteRepository) = GenerateNotesUseCase(
+        model = provideGenerativeLLM(),
+        noteRepository = noteRepository
+    )
 }

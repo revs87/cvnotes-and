@@ -13,4 +13,6 @@ data class AboutState(
 
 data class AboutProfileState(
     val email: String = "",
+    val profession: String = "",
+    val professionOverride: Boolean = false
 )

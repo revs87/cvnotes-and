@@ -12,6 +12,7 @@ import pt.rvcoding.cvnotes.data.SPKey
 import pt.rvcoding.cvnotes.data.dto.UserDTO
 import pt.rvcoding.cvnotes.domain.repository.AuthRepository
 import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
+import pt.rvcoding.cvnotes.domain.util.sha256
 
 internal class FirebaseAuthRepositoryImpl(
     private val spRepository: SharedPreferencesRepository
@@ -20,39 +21,41 @@ internal class FirebaseAuthRepositoryImpl(
 
     override fun register(email: String, pwd: String, isOffline: Boolean): Flow<Result<UserDTO>> = flow {
         if (isOffline) {
-            val offlineUser = UserDTO(email = email)
+            val offlineUser = UserDTO(uid = email, email = email)
             cacheOfflineUser(offlineUser)
             emit(Success(offlineUser))
         }
         else {
             try {
-                val res = mAuth.createUserWithEmailAndPassword(email, pwd).await()
+                val safePwd = pwd.sha256()
+                val res = mAuth.createUserWithEmailAndPassword(email, safePwd).await()
                 if (res.isValid()) {
                     cacheUser(res)
                     emit(Success(res.toUserDTO()))
                 }
                 else { emit(Error("Registered user is not valid")) }
             }
-            catch (e: Exception) { emit(Error("Creating user failed")) }
+            catch (e: Exception) { emit(Error("Creating user failed: ${e.message}")) }
         }
     }
 
     override fun login(email: String, pwd: String): Flow<Result<UserDTO>> = flow {
         try {
-            val res = mAuth.signInWithEmailAndPassword(email, pwd).await()
+            val safePwd = pwd.sha256()
+            val res = mAuth.signInWithEmailAndPassword(email, safePwd).await()
             if (res.isValid()) {
                 cacheUser(res)
                 emit(Success(res.toUserDTO()))
             }
             else { emit(Error("User is not valid")) }
         }
-        catch (e: Exception) { emit(Error("Signing in failed")) }
+        catch (e: Exception) { emit(Error("Signing in failed: ${e.message}")) }
     }
 
     override fun logout() = flow {
         try {
-            mAuth.signOut()
             spRepository.purgeAll()
+            mAuth.signOut()
             emit(Success(Unit))
         }
         catch (e: Exception) { emit(Error("Signing out failed")) }

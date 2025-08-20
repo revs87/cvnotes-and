@@ -13,7 +13,26 @@ Comment prefixes:
 🔵 Upgrade
 🔴 Deleted
 
-## | [1.1.2-SNAPSHOT] |
+[//]: # (## | [1.2.1-SNAPSHOT] |)
+## | [1.2.0] | 2025-08-20 |
+#### 2025-08-20
+- 🟠 Updated notes selection UI
+- 🟠 Updated sections selection UI
+- 🟠 Updated generative AI dedicated button UI
+- 🟡 Fixed pdf generation bug
+- 🟠 Updated pdf document format
+#### 2025-08-19
+- 🟢 Added generative AI for note suggestions
+- 🟢 Added generative AI dedicated button
+- 🟠 Updated README and LICENCE
+- 🟡 Fixed notes selection bug
+- 🟡 Fixed auth error handling bug
+- 🟡 Fixed unique profession key per user bug
+#### 2025-08-16
+- 🟢 Added generative AI for section name suggestions
+- 🟢 Added applicant role context and UI
+- 🔵 Upgraded kotlin version (2.2.10) and several libraries
+## | [1.1.2] | 2025-07-29 |
 #### 2025-07-29
 - 🔵 Upgraded kotlin version (2.2.0) and several libraries
 - 🔵 Upgraded android targetSdk to 36
@@ -31,6 +50,8 @@ Comment prefixes:
 - 🟢 Added KotlinDSL migration
 ## | [1.1.0] |
 
-[1.1.2-SNAPSHOT]: https://github.com/revs87/cvnotes-and/compare/v1.1.1...dev
+[//]: # ([1.2.1-SNAPSHOT]: https://github.com/revs87/cvnotes-and/compare/v1.2.0...dev)
+[1.2.0]: https://github.com/revs87/cvnotes-and/compare/v1.1.2...v1.2.0
+[1.1.2]: https://github.com/revs87/cvnotes-and/compare/v1.1.1...v.1.1.2
 [1.1.1]: https://github.com/revs87/cvnotes-and/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/revs87/cvnotes-and/compare/v1.0.0...v1.1.0

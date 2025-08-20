@@ -35,36 +35,43 @@ android {
         applicationId = "pt.rvcoding.cvnotes"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 4
-        versionName = "1.1.2"
+        versionCode = 5
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "pt.rvcoding.cvnotes.HiltTestRunner"
         vectorDrawables.useSupportLibrary = true
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
+
+        android.buildFeatures.buildConfig = true
+        val geminiApiKey = project.loadLocalProperty(
+            path = "secrets.properties",
+            propertyName = "GEMINI_API_KEY",
+        )
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     signingConfigs {
+        val path = "../rvcoding/release.properties"
         getByName("debug") {
-            val debugPath = "../rvcoding/debug.properties"
-            storeFile = file("../../rvcoding/debug.jks")
-            storePassword = project.loadLocalProperty(debugPath, "storePassword")
-            keyAlias = project.loadLocalProperty(debugPath, "keyAlias")
-            keyPassword = project.loadLocalProperty(debugPath, "keyPassword")
+            storeFile = file("../../rvcoding/release.jks")
+            storePassword = project.loadLocalProperty(path, "storePassword")
+            keyAlias = project.loadLocalProperty(path, "keyAlias")
+            keyPassword = project.loadLocalProperty(path, "keyPassword")
         }
         create("release") {
-            val releasePath = "../rvcoding/release.properties"
             storeFile = file("../../rvcoding/release.jks")
-            storePassword = project.loadLocalProperty(releasePath, "storePassword")
-            keyAlias = project.loadLocalProperty(releasePath, "keyAlias")
-            keyPassword = project.loadLocalProperty(releasePath, "keyPassword")
+            storePassword = project.loadLocalProperty(path, "storePassword")
+            keyAlias = project.loadLocalProperty(path, "keyAlias")
+            keyPassword = project.loadLocalProperty(path, "keyPassword")
         }
 
         buildTypes {
             getByName("debug") {
                 isDebuggable = true
                 isMinifyEnabled = false
+                isShrinkResources = false
                 isDefault = true
 
                 signingConfig = signingConfigs.getByName("debug")
@@ -75,6 +82,7 @@ android {
             getByName("release") {
                 isDebuggable = false
                 isMinifyEnabled = true
+                isShrinkResources = true
                 isDefault = false
 
                 signingConfig = signingConfigs.getByName("release")
@@ -111,9 +119,13 @@ android {
             implementation(composeBom)
             androidTestImplementation(composeBom)
         }
+        implementation(libs.androidx.compose.animation)
         implementation(libs.androidx.activity.compose)
         implementation(libs.androidx.activity.ktx)
         implementation(libs.androidx.compose.ui)
+        implementation(libs.androidx.compose.ui.text)
+        implementation(libs.androidx.compose.ui.unit)
+        implementation(libs.androidx.compose.ui.util)
         implementation(libs.androidx.compose.ui.tooling)
         debugImplementation(libs.androidx.compose.ui.tooling.preview)
         debugImplementation(libs.androidx.compose.ui.test.manifest)
@@ -153,6 +165,9 @@ android {
         implementation(libs.firebase.analytics)
         implementation(libs.firebase.crashlytics)
         implementation(libs.android.google.services.auth)
+
+        // AI
+        implementation(libs.ai.client.generativeai)
 
         // Unit testing
         testImplementation(libs.androidx.test.core)

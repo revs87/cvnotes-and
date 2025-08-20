@@ -10,17 +10,23 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import pt.rvcoding.cvnotes.data.SPKey
 import pt.rvcoding.cvnotes.domain.model.Note
 import pt.rvcoding.cvnotes.domain.model.Section
+import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
 import pt.rvcoding.cvnotes.domain.use_case.NoteUseCases
 import pt.rvcoding.cvnotes.domain.use_case.SectionUseCases
+import pt.rvcoding.cvnotes.domain.use_case.note.GenerateNotesUseCase
+import pt.rvcoding.cvnotes.domain.util.NoteType
 import pt.rvcoding.cvnotes.ui.util.L
 import javax.inject.Inject
 
 @HiltViewModel
 class SectionDetailsViewModel @Inject constructor(
     private val sectionUseCases: SectionUseCases,
-    private val noteUseCases: NoteUseCases
+    private val noteUseCases: NoteUseCases,
+    private val generateNotesUseCase: GenerateNotesUseCase,
+    private val spRepository: SharedPreferencesRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(SectionDetailsState())
@@ -32,7 +38,7 @@ class SectionDetailsViewModel @Inject constructor(
     fun getSection(sectionId: Int) {
         L.i("SectionDetailsViewModel", "Entered sectionId: $sectionId, ${viewModelScope.isActive}")
         getSectionJob?.let { if (it.isActive) { it.cancel() } }
-        getSectionJob = viewModelScope.launch(Dispatchers.Default) {
+        getSectionJob = viewModelScope.launch(Dispatchers.IO) {
             updateUI(sectionId)
         }
     }
@@ -42,7 +48,7 @@ class SectionDetailsViewModel @Inject constructor(
     }
 
     fun updateSection(sectionId: Int, newName: String) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             val section = sectionUseCases.getSectionById(sectionId)
             section ?: return@launch
             sectionUseCases.insertSection(section.apply { description = newName.trim() })
@@ -50,24 +56,25 @@ class SectionDetailsViewModel @Inject constructor(
         }
     }
 
-    private var toggleNoteJob: Job? = null
-    fun toggleNoteSelection(note: Note) {
-        toggleNoteJob?.let { if (it.isActive) { it.cancel() } }
-        toggleNoteJob = viewModelScope.launch(Dispatchers.Default) {
-            noteUseCases.insertNote(note.apply { isSelected = !isSelected })
+    fun toggleNoteSelection(noteId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val note = noteUseCases.getNoteById(noteId) ?: return@launch
+            val isSelected = note.isSelected
+            note.isSelected = !isSelected
+            noteUseCases.insertNote(note)
             updateUI(note.sectionId)
         }
     }
 
     fun unselectAllSelectedNotes(sectionId: Int) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             noteUseCases.unselectAllNotes(sectionId)
             updateUI(sectionId)
         }
     }
 
     fun deleteSelectedNotes(sectionId: Int) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             noteUseCases.deleteSelectedNotes(sectionId)
             updateUI(sectionId)
         }
@@ -86,6 +93,31 @@ class SectionDetailsViewModel @Inject constructor(
                 isLoading = false,
                 errorMessage = section?.let { "" } ?: "Section not found"
             )
+        }
+    }
+
+    fun generateNotes(sectionId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isLoading = true)
+            sectionUseCases.getSectionById(sectionId)?.let { section ->
+                L.i("SectionDetailsViewModel", "Generating notes for section: ${section.description}")
+                val generatedDescriptions = generateNotesUseCase.invoke(
+                    profession = spRepository.getString(SPKey.PROFESSION.key),
+                    section = section.description,
+                    sectionId = sectionId
+                )
+                generatedDescriptions.forEach { generatedDescription ->
+                    val generatedNote = Note(
+                        type = NoteType.TEXT.id,
+                        content1 = generatedDescription,
+                        sectionId = sectionId,
+                        isSelected = false
+                    )
+                    noteUseCases.insertNote(generatedNote)
+                    L.i("SectionDetailsViewModel", "Generated note: $generatedDescription")
+                }
+                updateUI(sectionId)
+            } ?: run { _state.value = _state.value.copy(isLoading = false) }
         }
     }
 }

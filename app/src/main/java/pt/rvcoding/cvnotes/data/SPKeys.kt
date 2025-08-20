@@ -3,6 +3,8 @@ package pt.rvcoding.cvnotes.data
 enum class SPKey(val key: String) {
     UID("sp_uid"),
     EMAIL("sp_email"),
+    PROFESSION("sp_profession"),
+    PROFESSION_OVERRIDE("sp_profession_override"),
     USERNAME("sp_username"),
     DISPLAY_NAME("sp_display_name"),
     PHONE_NUMBER("sp_phone_number"),
