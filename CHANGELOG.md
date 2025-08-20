@@ -16,6 +16,8 @@ Comment prefixes:
 ## | [1.1.3-SNAPSHOT] |
 #### 2025-08-20
 - 🟠 Updated notes selection UI
+- 🟠 Updated sections selection UI
+- 🟠 Updated generative AI dedicated button UI
 #### 2025-08-19
 - 🟢 Added generative AI for note suggestions
 - 🟢 Added generative AI dedicated button

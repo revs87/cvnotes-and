@@ -1,22 +1,11 @@
 package pt.rvcoding.cvnotes.ui.util.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckBox
-import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
-import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,7 +13,6 @@ import pt.rvcoding.cvnotes.domain.model.Note
 import pt.rvcoding.cvnotes.domain.model.asString
 import pt.rvcoding.cvnotes.domain.util.SectionType
 import pt.rvcoding.cvnotes.theme.BackgroundCardColor
-import pt.rvcoding.cvnotes.theme.Gray300
 import pt.rvcoding.cvnotes.theme.MyTheme
 import pt.rvcoding.cvnotes.theme.SpHuge
 import pt.rvcoding.cvnotes.theme.SpNormal
@@ -49,56 +37,44 @@ fun SectionListCard(
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
 ) {
-    Card(
+    SelectableCard(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp, bottom = 2.dp, top = if (index == 0) 4.dp else 2.dp)
+            .padding(start = 8.dp, end = 8.dp, bottom = 2.dp, top = if (index == 0) 4.dp else 2.dp),
+        id = index.toLong(),
+        isSelected = isSelected,
+        hasSelected = hasSelected,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        cardContentColor = BackgroundCardColor,
+        cardContentPadding = 2.dp,
+        cardDefaultMinSize = 100.dp
     ) {
-        Box(
-            modifier = Modifier
-                .background(BackgroundCardColor)
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 100.dp)
-                .combinedClickable(
-                    onClick = { onClick.invoke() },
-                    onLongClick = { onLongClick.invoke() },
-                )
-                .padding(2.dp)
+        Column(
+            modifier = Modifier.weight(1f)
         ) {
-            Column {
-                CVNText(
-                    text = description,
-                    fontSize = SpHuge,
-                    color = TextColor
-                )
-                Column(
-                    modifier = Modifier.padding(4.dp)
-                ) {
-                    notes.forEach { note ->
-                        CVNText(
-                            text = note.asString(),
-                            lineHeight = SpNormal,
-                            fontSize = SpNormal,
-                            textAlign = TextAlign.Start,
-                            color = TextColor
-                        )
-                    }
+            CVNText(
+                text = description,
+                fontSize = SpHuge,
+                color = TextColor
+            )
+            Column(
+                modifier = Modifier.padding(4.dp)
+            ) {
+                notes.forEach { note ->
+                    CVNText(
+                        text = note.asString(),
+                        lineHeight = SpNormal,
+                        fontSize = SpNormal,
+                        textAlign = TextAlign.Start,
+                        color = TextColor
+                    )
                 }
-            }
-            if (hasSelected) {
-                Image(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    imageVector = when (isSelected) {
-                        true -> Icons.Filled.CheckBox
-                        false -> Icons.Filled.CheckBoxOutlineBlank
-                    },
-                    contentDescription = "",
-                    colorFilter = ColorFilter.tint(color = Gray300)
-                )
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

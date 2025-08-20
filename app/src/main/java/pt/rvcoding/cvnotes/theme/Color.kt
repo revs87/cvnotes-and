@@ -44,7 +44,7 @@ val TextColor = Gray500
 
 // AI-themed gradient brush
 val aiRadialColors = listOf(
-    Color(0xFF2575FC), // Start
-    Color(0xFF6A11CB), // Middle
-    Color(0xFF2575FC)  // End
+    Blue700, // Start
+    Green300, // Middle
+    Blue500  // End
 )

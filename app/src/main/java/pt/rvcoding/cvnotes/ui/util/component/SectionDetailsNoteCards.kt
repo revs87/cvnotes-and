@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.rvcoding.cvnotes.domain.model.Note
 import pt.rvcoding.cvnotes.domain.model.asString
+import pt.rvcoding.cvnotes.theme.BackgroundCardColor
 import pt.rvcoding.cvnotes.theme.BackgroundColor
 import pt.rvcoding.cvnotes.theme.MyTheme
 import pt.rvcoding.cvnotes.theme.SpMedium
@@ -64,17 +65,20 @@ fun SectionDetailsNoteCards(
                             isSelected = note.isSelected,
                             hasSelected = hasSelectedNotes,
                             onClick = { onNoteClick.invoke(note.id ?: 0L) },
-                            onLongClick = { onLongNoteClick.invoke(note.id ?: 0L) }
-                        ) {
-                            CVNText(
-                                modifier = Modifier.weight(1f),
-                                text = note.asString(),
-                                lineHeight = SpMedium,
-                                fontSize = SpMedium,
-                                textAlign = TextAlign.Start,
-                                color = TextColor
-                            )
-                        }
+                            onLongClick = { onLongNoteClick.invoke(note.id ?: 0L) },
+                            cardContentColor = BackgroundCardColor,
+                            cardContentPadding = 8.dp,
+                            content = {
+                                CVNText(
+                                    modifier = Modifier.weight(1f),
+                                    text = note.asString(),
+                                    lineHeight = SpMedium,
+                                    fontSize = SpMedium,
+                                    textAlign = TextAlign.Start,
+                                    color = TextColor
+                                )
+                            },
+                        )
                     }
                 }
             }
