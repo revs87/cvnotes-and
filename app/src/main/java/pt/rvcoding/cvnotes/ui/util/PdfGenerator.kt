@@ -1,168 +1,136 @@
 package pt.rvcoding.cvnotes.ui.util
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.FileProvider
-import pt.rvcoding.cvnotes.R
+import androidx.core.graphics.createBitmap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import pt.rvcoding.cvnotes.domain.model.SectionWithNotes
-import pt.rvcoding.cvnotes.domain.model.asString
+import pt.rvcoding.cvnotes.theme.MyTheme
+import pt.rvcoding.cvnotes.ui.util.component.SectionListCard
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.coroutines.resume
 
 
 class PdfGenerator(
     val context: Context
 ) {
-
-    // on below line we are creating a generate PDF method
-    // which is use to generate our PDF file.
-    fun generatePDF(
+    suspend fun generatePDF(
         fileName: String,
-        sectionsWithNotes: List<SectionWithNotes>
+        sectionsWithNotes: List<SectionWithNotes>,
+        pageWidthInPixels: Int
     ) {
-        // creating an object variable
-        // for our PDF document.
-        val pdfDocument: PdfDocument = PdfDocument()
-
-        // two variables for paint "paint" is used
-        // for drawing shapes and we will use "title"
-        // for adding text in our PDF file.
-        val paint: Paint = Paint()
-        val section: Paint = Paint()
-        val note: Paint = Paint()
-
-        // we are adding page info to our PDF file
-        // in which we will be passing our pageWidth,
-        // pageHeight and number of pages and after that
-        // we are calling it to create our PDF.
-        val myPageInfo: PdfDocument.PageInfo? =
-            PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
-
-        // below line is used for setting
-        // start page for our PDF file.
-        val myPage: PdfDocument.Page = pdfDocument.startPage(myPageInfo)
-
-        // creating a variable for canvas
-        // from our page of PDF.
-        val canvas: Canvas = myPage.canvas
-
-        // below line is used to draw our image on our PDF file.
-        // the first parameter of our drawbitmap method is
-        // our bitmap
-        // second parameter is position from left
-        // third parameter is position from top and last
-        // one is our variable for paint.
-//        canvas.drawBitmap(scaledBmp, 56F, 40F, paint)
-
-        // below line is used for adding typeface for
-        // our text which we will be adding in our PDF file.
-        section.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-        note.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-
-        // below line is used for setting text size
-        // which we will be displaying in our PDF file.
-        section.textSize = 30F
-        note.textSize = 15F
-
-        // below line is sued for setting color
-        // of our text inside our PDF file.
-        section.color = ContextCompat.getColor(context, R.color.black)
-        note.color = ContextCompat.getColor(context, R.color.black)
-
-        // below line is used to draw text in our PDF file.
-        // the first parameter is our text, second parameter
-        // is position from start, third parameter is position from top
-        // and then we are passing our variable of paint which is title.
-//        canvas.drawText("Geeks for Geeks", 209F, 50F, title)
-//        canvas.drawText("A portal for IT professionals.", 209F, 65F, title)
-
-
-        val sectionYSpace = 35F
-        val noteYSpace = 15F
-
-        val blockInterval = 100
-        var block = ""
-
-        var xPos = 56F
-        var yPos = 65F
-        sectionsWithNotes.onEach { sections ->
-            canvas.drawText(sections.section.description, xPos, yPos, section)
-            yPos += sectionYSpace
-            sections.notes.onEach { noteObj ->
-                val text = noteObj.asString()
-                if (text.length > blockInterval) {
-                    var start = 0
-                    var end = blockInterval
-                    repeat(text.length / blockInterval + 1) {
-                        block = text.substring(start, end).trim()
-
-                        canvas.drawText(block, xPos, yPos, note)
-                        yPos += noteYSpace
-
-                        start += blockInterval
-                        end =
-                            if ((end + blockInterval) < text.length) { end + blockInterval }
-                            else { text.length }
-                    }
-                }
-                else { canvas.drawText(text, xPos, yPos, note) }
-                yPos += noteYSpace
-            }
-            yPos += sectionYSpace
-
-
-        }
-
-//        title.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
-//        title.color = ContextCompat.getColor(context, R.color.purple_200)
-//        title.textSize = 15F
-
-        // below line is used for setting
-        // our text to center of PDF.
-//        title.textAlign = Paint.Align.CENTER
-//        canvas.drawText("This is sample document which we have created.", 396F, 560F, title)
-
-        // after adding all attributes to our
-        // PDF file we will be finishing our page.
-        pdfDocument.finishPage(myPage)
-
-        // below line is used to set the name of
-        // our PDF file and its path.
-        val fileUri: Uri? = generatePdf(fileName, pdfDocument)
-
-        // Open PDF file
-        fileUri?.let {
+        withContext(Dispatchers.IO) { // Perform heavy work on a background thread
+            val pdfDocument = PdfDocument()
             try {
-                openFileWithUri(context, fileUri, "application/pdf")
+                // Define A4 aspect ratio
+                val a4AspectRatio = 1.415f
+                val pageHeightInPixels = (pageWidthInPixels * a4AspectRatio).toInt()
+
+                // Use the dynamic dimensions to create the page info
+                val pageInfo = PdfDocument.PageInfo
+                    .Builder(
+                        /* pageWidth = */ pageWidthInPixels,
+                        /* pageHeight = */ pageHeightInPixels,
+                        /* pageNumber = */ 1
+                    )
+                    .create()
+
+                // Start the first page
+                var currentPage = pdfDocument.startPage(pageInfo)
+                var canvas = currentPage.canvas
+                var yPosition = 20f // Starting Y position with some margin
+
+                sectionsWithNotes.onEachIndexed { index, sectionWithNotes ->
+                    val bitmap = withContext(Dispatchers.Main) { // Capturing must be on the main thread
+                        captureComposableAsBitmap(context) {
+                            MyTheme {
+                                SectionListCard(
+                                    modifier = Modifier,
+                                    index = index,
+                                    description = sectionWithNotes.section.description,
+                                    hasSelected = false,
+                                    isSelected = sectionWithNotes.section.isSelected,
+                                    colorId = sectionWithNotes.section.colorId,
+                                    notes = sectionWithNotes.notes
+                                )
+                            }
+                        }
+                    }
+
+                    // Check if there is enough space on the current page
+                    if (yPosition + bitmap.height > canvas.height) {
+                        // Not enough space, finish this page and start a new one
+                        pdfDocument.finishPage(currentPage)
+                        currentPage = pdfDocument.startPage(pageInfo)
+                        canvas = currentPage.canvas
+                        yPosition = 20f // Reset Y position
+                    }
+
+                    // Draw the bitmap on the canvas
+                    canvas.drawBitmap(bitmap, 0f, yPosition, null)
+                    yPosition += bitmap.height
+                    bitmap.recycle() // Recycle bitmap to save memory
+                }
+
+                // Finish the last page
+                pdfDocument.finishPage(currentPage)
+
+                // Write PDF file
+                val fileUri: Uri? = generatePdf(fileName, pdfDocument)
+
+                // Close PDF document
+                pdfDocument.close()
+
+                // Open PDF file
+                fileUri?.let {
+                    openFileWithUri(context, fileUri, "application/pdf")
+                }
             } catch (e: ActivityNotFoundException) {
                 e.printStackTrace()
-                Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+                }
             }
         }
-
-        // after storing our pdf to that
-        // location we are closing our PDF file.
-        pdfDocument.close()
     }
 
-    private fun generatePdf(fileName: String, pdfDocument: PdfDocument): Uri? {
+    /**
+     * Calculates the path of a file and returns its URI and File.
+     *
+     * @param fileName The file name to use.
+     * @return fileUri The content URI of the file to be written.
+     * @return file The File object representing the file.
+     */
+    private suspend fun getUri(fileName: String): Pair<Uri?, File?> {
         var fileUri: Uri? = null
+        var file: File? = null
 
         try {
             // Check if we are on Android 10 (Q) or higher
@@ -176,12 +144,6 @@ class PdfGenerator(
                 }
 
                 fileUri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
-
-                fileUri?.let {
-                    resolver.openOutputStream(it)?.use { outputStream ->
-                        pdfDocument.writeTo(outputStream)
-                    }
-                }
             } else {
                 // Legacy approach (below API 29)
                 val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
@@ -189,28 +151,135 @@ class PdfGenerator(
                 if (!cvNotesDir.exists()) {
                     cvNotesDir.mkdirs() // Create the directory if it doesn't exist
                 }
-                val pdfFile = File(cvNotesDir, "$fileName.pdf")
-                L.d("PdfGenerator", "PDF file path: ${pdfFile.absolutePath}")
-
-                FileOutputStream(pdfFile).use { outputStream ->
-                    pdfDocument.writeTo(outputStream)
-                }
+                file = File(cvNotesDir, "$fileName.pdf")
+                L.d(TAG, "PDF file path: ${file.absolutePath}")
 
                 // Get a content URI using FileProvider to safely share the file
                 fileUri = FileProvider.getUriForFile(
                     context,
                     "${context.packageName}.provider", // Must match your manifest
-                    pdfFile
+                    file
                 )
             }
-            L.d("PdfGenerator", "PDF file generated: $fileUri")
-            Toast.makeText(context, "PDF file generated:\n${fileUri}", Toast.LENGTH_SHORT).show()
+            L.d(TAG, "PDF file generated: $fileUri")
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "PDF file generated:\n${fileUri}", Toast.LENGTH_SHORT).show()
+            }
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
-            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+            }
+        }
+        return Pair(fileUri, file)
+    }
+
+    /**
+     * Captures a Composable by temporarily attaching it to the Activity's window.
+     *
+     * @param context The context, which must be from an Activity.
+     * @param content The @Composable function to capture.
+     * @return A Bitmap of the rendered composable.
+     */
+    suspend fun captureComposableAsBitmap(
+        context: Context,
+        content: @Composable () -> Unit
+    ): Bitmap = withContext(Dispatchers.Main) { // All view operations must be on the Main thread
+        // 1. Find the root view of the Activity
+        val activity = context.findActivity()
+        val rootView = activity.window.decorView.rootView as ViewGroup
+
+        // 2. Create the ComposeView to be captured
+        val composeView = ComposeView(context).apply {
+            // Set the content of the view
+            setContent(content)
+
+            // Make it completely invisible
+            alpha = 0f
+        }
+
+        // 3. Add the view to the screen and wait for it to be laid out
+        val bitmap = suspendCancellableCoroutine<Bitmap> { continuation ->
+            val onLayoutListener = View.OnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+                // This is called when the view has been measured and laid out
+                val bitmap = createBitmap(view.width, view.height)
+                val canvas = Canvas(bitmap)
+                view.draw(canvas)
+                continuation.resume(bitmap)
+            }
+            composeView.addOnLayoutChangeListener(onLayoutListener)
+            rootView.addView(
+                composeView,
+                ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            )
+        }
+
+        // 4. Clean up by removing the view from the screen
+        rootView.removeView(composeView)
+
+        return@withContext bitmap
+    }
+
+
+    // Helper function to find the Activity from a Context
+    private fun Context.findActivity(): Activity {
+        var context = this
+        while (context is ContextWrapper) {
+            if (context is Activity) return context
+            context = context.baseContext
+        }
+        throw IllegalStateException("You need to use an Activity context to capture a Composable")
+    }
+
+    /**
+     * Generates a file and returns its URI.
+     *
+     * @param fileName The file name to use.
+     * @param pdfDocument The PDF document to write to the file.
+     * @return fileUri The content URI of the file to open.
+     */
+    private suspend fun generatePdf(fileName: String, pdfDocument: PdfDocument): Uri? {
+        val (fileUri, file) = getUri(fileName)
+
+        try {
+            fileUri?.let {
+                // Check if we are on Android 10 (Q) or higher
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // Modern approach (API 29+)
+                    context.contentResolver.openOutputStream(fileUri)?.use { outputStream ->
+                        pdfDocument.writeTo(outputStream)
+                    }
+                    L.d(TAG, "PDF file generated: ${fileUri.path}")
+                } else {
+                    // Legacy approach (below API 29)
+                    FileOutputStream(file).use { outputStream ->
+                        pdfDocument.writeTo(outputStream)
+                    }
+                    L.d(TAG, "PDF file generated: ${file?.absolutePath}")
+                }
+            }
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "PDF file generated:\n${fileUri}", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+            }
         }
         return fileUri
     }
@@ -222,7 +291,7 @@ class PdfGenerator(
      * @param fileUri The content URI of the file to open.
      * @param mimeType The MIME type of the file (e.g., "application/pdf").
      */
-    private fun openFileWithUri(context: Context, fileUri: Uri, mimeType: String) {
+    private suspend fun openFileWithUri(context: Context, fileUri: Uri, mimeType: String) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             // Set the data (the URI) and the type (MIME type)
             setDataAndType(fileUri, mimeType)
@@ -235,14 +304,15 @@ class PdfGenerator(
         try {
             context.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            // Handle the case where the user doesn't have an app to open the file
-            Toast.makeText(context, "No app found to open this file.", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.Main) {
+                // Handle the case where the user doesn't have an app to open the file
+                Toast.makeText(context, "No app found to open this file.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
 
     companion object {
-        const val pageHeight = 1120
-        const val pageWidth = 792
+        const val TAG = "PdfGenerator"
     }
 }

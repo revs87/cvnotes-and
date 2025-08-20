@@ -19,6 +19,7 @@ Comment prefixes:
 - 🟠 Updated sections selection UI
 - 🟠 Updated generative AI dedicated button UI
 - 🟡 Fixed pdf generation bug
+- 🟠 Updated pdf document format
 #### 2025-08-19
 - 🟢 Added generative AI for note suggestions
 - 🟢 Added generative AI dedicated button

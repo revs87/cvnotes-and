@@ -199,12 +199,20 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun exportPdfWithName(context: Context, fileName: String) {
+    fun exportToPdf(
+        context: Context,
+        fileName: String,
+        screenWidthPx: Int
+    ) {
         _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             val sectionWithNotes = sectionUseCases.getSectionsWithNotes(this).value
             withContext(Dispatchers.Main) {
-                PdfGenerator(context).generatePDF(fileName, sectionWithNotes)
+                PdfGenerator(context).generatePDF(
+                    fileName,
+                    sectionWithNotes,
+                    screenWidthPx
+                )
                 _state.value = _state.value.copy(isLoading = false)
             }
         }

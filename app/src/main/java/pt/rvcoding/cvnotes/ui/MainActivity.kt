@@ -34,7 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -255,7 +258,7 @@ class MainActivity : ComponentActivity() {
                                                             else { navigateTo(navController, "${SectionDetails.route}/$id") }
                                                         },
                                                         onSectionLongClick = { id -> dashboardViewModel.selectSection(id) },
-                                                        saveToPrefs = { index -> prefs.edit().putInt("scroll_position", index).apply() },
+                                                        saveToPrefs = { index -> prefs.edit { putInt("scroll_position", index) } },
                                                         initialScrollPosition = initialScrollPosition
                                                     )
                                                 }
@@ -323,13 +326,24 @@ class MainActivity : ComponentActivity() {
                                             setValue = { newValue -> dashboardViewModel.addSectionOtherType(newValue) }
                                         )
                                     }
+
+                                    // Get screen width in pixels
+                                    val configuration = LocalConfiguration.current
+                                    val density = LocalDensity.current
+                                    val screenWidthPx = remember { with(density) { configuration.screenWidthDp.dp.toPx() }.toInt() }
                                     if (pdfExportDialogVisible) {
                                         TextFieldDialog(
                                             title = "Export as PDF",
                                             placeholder = "Enter file name",
                                             initialValue = "myCVNotes",
                                             setShowDialog = { enabled -> pdfExportDialogVisible = enabled },
-                                            setValue = { newValue -> dashboardViewModel.exportPdfWithName(this@MainActivity, newValue) }
+                                            setValue = { newValue ->
+                                                dashboardViewModel.exportToPdf(
+                                                    context = this@MainActivity,
+                                                    fileName = newValue,
+                                                    screenWidthPx = screenWidthPx
+                                                )
+                                            }
                                         )
                                     }
                                     ShowSnackbarMessage(
