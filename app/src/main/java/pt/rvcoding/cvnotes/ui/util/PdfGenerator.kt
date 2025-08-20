@@ -1,25 +1,20 @@
 package pt.rvcoding.cvnotes.ui.util
 
 import android.content.ActivityNotFoundException
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
-import android.os.Build
-import android.os.Environment
-import android.provider.DocumentsContract
+import android.net.Uri
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import pt.rvcoding.cvnotes.R
 import pt.rvcoding.cvnotes.domain.model.SectionWithNotes
 import pt.rvcoding.cvnotes.domain.model.asString
-import java.io.File
-import java.io.FileOutputStream
 
 
 class PdfGenerator(
@@ -140,57 +135,81 @@ class PdfGenerator(
 
         // below line is used to set the name of
         // our PDF file and its path.
-
-        val envFolder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) Environment.DIRECTORY_DOCUMENTS else Environment.DIRECTORY_DOWNLOADS
-        val file = File(Environment.getExternalStoragePublicDirectory(envFolder), "$fileName.pdf")
-
-        try {
-            // after creating a file name we will
-            // write our PDF file to that location.
-            pdfDocument.writeTo(FileOutputStream(file))
-
-            // on below line we are displaying a toast message as PDF file generated..
-            Toast.makeText(context, "PDF file generated:\n${file.absolutePath}", Toast.LENGTH_SHORT).show()
-        } catch (e: ActivityNotFoundException) {
-            e.printStackTrace()
-            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
-        }
-        try {
-            // open file
-            openPdf(file)
-        } catch (e: ActivityNotFoundException) {
-            e.printStackTrace()
-            Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
-        }
+        generateAndOpenPdf(fileName, pdfDocument)
 
         // after storing our pdf to that
         // location we are closing our PDF file.
         pdfDocument.close()
     }
 
-    private val scaledBmp by lazy {
-        val bmp = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_cvnotes)
-        Bitmap.createScaledBitmap(bmp, 140, 140, false)
+    private fun generateAndOpenPdf(fileName: String, pdfDocument: PdfDocument) {
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "$fileName.pdf")
+            put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
+            // For Downloads collection. Change to MediaStore.VOLUME_DOCUMENTS for Documents.
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "Documents/CVNotes")
+        }
+        // Get a URI for the new file
+        val uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
+        uri?.let {
+            L.d("PdfGenerator", "URI: $uri")
+            try {
+                // Open an OutputStream using the URI
+                resolver.openOutputStream(it)?.use { outputStream ->
+                    // Write your PDF content to the outputStream
+                    pdfDocument.writeTo(outputStream)
+                }
+                // on below line we are displaying a toast message as PDF file generated..
+                Toast.makeText(context, "PDF file generated:\n${uri}", Toast.LENGTH_SHORT).show()
+            } catch (e: ActivityNotFoundException) {
+                e.printStackTrace()
+                Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+            }
+
+            try {
+                // open file
+                openFileWithUri(context, uri, "application/pdf")
+            } catch (e: ActivityNotFoundException) {
+                e.printStackTrace()
+                Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
+    /**
+     * Opens a file using an ACTION_VIEW intent.
+     *
+     * @param context The context needed to start the activity.
+     * @param fileUri The content URI of the file to open.
+     * @param mimeType The MIME type of the file (e.g., "application/pdf").
+     */
+    private fun openFileWithUri(context: Context, fileUri: Uri, mimeType: String) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            // Set the data (the URI) and the type (MIME type)
+            setDataAndType(fileUri, mimeType)
+
+            // Grant temporary read permission to the receiving app
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        try {
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            // Handle the case where the user doesn't have an app to open the file
+            Toast.makeText(context, "No app found to open this file.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     companion object {
         const val pageHeight = 1120
         const val pageWidth = 792
-    }
-
-    private fun openPdf(file: File) {
-        val path = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
-
-        val pdfOpenIntent = Intent(Intent.ACTION_VIEW)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { pdfOpenIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, path) }
-        pdfOpenIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        pdfOpenIntent.setDataAndType(path, "application/pdf")
-        context.startActivity(pdfOpenIntent)
     }
 }

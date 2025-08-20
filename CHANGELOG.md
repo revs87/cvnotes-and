@@ -18,6 +18,7 @@ Comment prefixes:
 - 🟠 Updated notes selection UI
 - 🟠 Updated sections selection UI
 - 🟠 Updated generative AI dedicated button UI
+- 🟡 Fixed pdf generation bug
 #### 2025-08-19
 - 🟢 Added generative AI for note suggestions
 - 🟢 Added generative AI dedicated button
