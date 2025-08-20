@@ -9,12 +9,18 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import pt.rvcoding.cvnotes.R
 import pt.rvcoding.cvnotes.domain.model.SectionWithNotes
 import pt.rvcoding.cvnotes.domain.model.asString
+import java.io.File
+import java.io.FileOutputStream
 
 
 class PdfGenerator(
@@ -135,52 +141,78 @@ class PdfGenerator(
 
         // below line is used to set the name of
         // our PDF file and its path.
-        generateAndOpenPdf(fileName, pdfDocument)
+        val fileUri: Uri? = generatePdf(fileName, pdfDocument)
+
+        // Open PDF file
+        fileUri?.let {
+            try {
+                openFileWithUri(context, fileUri, "application/pdf")
+            } catch (e: ActivityNotFoundException) {
+                e.printStackTrace()
+                Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // after storing our pdf to that
         // location we are closing our PDF file.
         pdfDocument.close()
     }
 
-    private fun generateAndOpenPdf(fileName: String, pdfDocument: PdfDocument) {
-        val resolver = context.contentResolver
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, "$fileName.pdf")
-            put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
-            // For Downloads collection. Change to MediaStore.VOLUME_DOCUMENTS for Documents.
-            put(MediaStore.MediaColumns.RELATIVE_PATH, "Documents/CVNotes")
-        }
-        // Get a URI for the new file
-        val uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
-        uri?.let {
-            L.d("PdfGenerator", "URI: $uri")
-            try {
-                // Open an OutputStream using the URI
-                resolver.openOutputStream(it)?.use { outputStream ->
-                    // Write your PDF content to the outputStream
+    private fun generatePdf(fileName: String, pdfDocument: PdfDocument): Uri? {
+        var fileUri: Uri? = null
+
+        try {
+            // Check if we are on Android 10 (Q) or higher
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Modern approach (API 29+)
+                val resolver = context.contentResolver
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, "$fileName.pdf")
+                    put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/CVNotes")
+                }
+
+                fileUri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
+
+                fileUri?.let {
+                    resolver.openOutputStream(it)?.use { outputStream ->
+                        pdfDocument.writeTo(outputStream)
+                    }
+                }
+            } else {
+                // Legacy approach (below API 29)
+                val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                val cvNotesDir = File(documentsDir, "CVNotes")
+                if (!cvNotesDir.exists()) {
+                    cvNotesDir.mkdirs() // Create the directory if it doesn't exist
+                }
+                val pdfFile = File(cvNotesDir, "$fileName.pdf")
+                L.d("PdfGenerator", "PDF file path: ${pdfFile.absolutePath}")
+
+                FileOutputStream(pdfFile).use { outputStream ->
                     pdfDocument.writeTo(outputStream)
                 }
-                // on below line we are displaying a toast message as PDF file generated..
-                Toast.makeText(context, "PDF file generated:\n${uri}", Toast.LENGTH_SHORT).show()
-            } catch (e: ActivityNotFoundException) {
-                e.printStackTrace()
-                Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
-            }
 
-            try {
-                // open file
-                openFileWithUri(context, uri, "application/pdf")
-            } catch (e: ActivityNotFoundException) {
-                e.printStackTrace()
-                Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(context, "Fail to open PDF file..", Toast.LENGTH_SHORT).show()
+                // Get a content URI using FileProvider to safely share the file
+                fileUri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider", // Must match your manifest
+                    pdfFile
+                )
             }
+            L.d("PdfGenerator", "PDF file generated: $fileUri")
+            Toast.makeText(context, "PDF file generated:\n${fileUri}", Toast.LENGTH_SHORT).show()
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
         }
+        return fileUri
     }
 
     /**
@@ -194,6 +226,7 @@ class PdfGenerator(
         val intent = Intent(Intent.ACTION_VIEW).apply {
             // Set the data (the URI) and the type (MIME type)
             setDataAndType(fileUri, mimeType)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { putExtra(DocumentsContract.EXTRA_INITIAL_URI, fileUri) }
 
             // Grant temporary read permission to the receiving app
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
