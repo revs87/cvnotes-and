@@ -14,6 +14,8 @@ Comment prefixes:
 🔴 Deleted
 
 ## | [1.2.1-SNAPSHOT] |
+#### 2025-09-07
+🟠 Updated README file with new screenshots
 ## | [1.2.0] | 2025-08-20 |
 #### 2025-08-20
 - 🟠 Updated notes selection UI

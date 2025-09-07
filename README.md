@@ -31,6 +31,7 @@ With this app you can have an immediate CV Hands-on when an idea comes to mind o
 
 
 ### 🚀 Technical Highlights
+
 - Android Native
 - 100% Kotlin
 - 100% Jetpack Compose
@@ -64,6 +65,17 @@ With this app you can have an immediate CV Hands-on when an idea comes to mind o
 
 - Room DB (on KSP)
 - SharedPreferences (key-value storage)
+
+
+### 📸 Screenshots
+
+| Splash                                                                                      | Role Selection                                                                             | Sections List                                                                                  |
+|---------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| ![1-intro](https://github.com/user-attachments/assets/b6a34432-b5c7-43d3-a72e-0b757179ddac) | ![2-role](https://github.com/user-attachments/assets/98995dfb-bb28-4eef-9e62-c5f34327a8e0) | ![3-sections](https://github.com/user-attachments/assets/1f010083-7af5-4719-83b6-ac73d0438f22) |
+
+| Notes List                                                                                  | Note Edit                                                                                  | Document Generation                                                                            |
+|---------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| ![4-notes](https://github.com/user-attachments/assets/b587602e-81b5-4378-b106-daee41dbce38) | ![5-edit](https://github.com/user-attachments/assets/1106a5a7-d3fd-4514-bc58-f75308b32c34) | ![6-document](https://github.com/user-attachments/assets/6fe22afb-c615-4f22-a371-db729c74953b) |
 
 
 ### 🌐 Networking
