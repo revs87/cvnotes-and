@@ -245,6 +245,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                     val requestPermissionRationaleHitCount = remember { mutableIntStateOf(0) }
                                     BottomBarWithFab(
+                                        snackbarHostState = snackbarHostState,
                                         bottomNavItems = listOf(
                                             Dashboard.apply {
                                                 content = {
