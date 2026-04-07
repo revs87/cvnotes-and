@@ -13,7 +13,9 @@ Comment prefixes:
 🔵 Upgrade
 🔴 Deleted
 
-## | [1.2.1-SNAPSHOT] |
+## | [1.2.2-SNAPSHOT] |
+
+## | [1.2.1] | 2026-04-07 |
 #### 2026-04-07
 - 🟢 Added kotlinx-collections-immutable dependency
 - 🟠 Annotated Section, SectionWithNotes, and DashboardState with Compose Immutable for recomposition stability
@@ -62,8 +64,9 @@ Comment prefixes:
 - 🟢 Added KotlinDSL migration
 ## | [1.1.0] |
 
-[1.2.1-SNAPSHOT]: https://github.com/revs87/cvnotes-and/compare/v1.2.0...dev
+[1.2.2-SNAPSHOT]: https://github.com/revs87/cvnotes-and/compare/v1.2.1...dev
+[1.2.1]: https://github.com/revs87/cvnotes-and/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/revs87/cvnotes-and/compare/v1.1.2...v1.2.0
-[1.1.2]: https://github.com/revs87/cvnotes-and/compare/v1.1.1...v.1.1.2
+[1.1.2]: https://github.com/revs87/cvnotes-and/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/revs87/cvnotes-and/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/revs87/cvnotes-and/compare/v1.0.0...v1.1.0
