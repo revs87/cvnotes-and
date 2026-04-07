@@ -156,6 +156,11 @@ android {
         kspTest(libs.hilt.android.compiler)
         kspAndroidTest(libs.hilt.android.compiler)
 
+        // AppFunctions (schema generated via KSP; Android 16+ runtime)
+        implementation(libs.androidx.appfunctions)
+        implementation(libs.androidx.appfunctions.service)
+        ksp(libs.androidx.appfunctions.compiler)
+
         // Room
         implementation(libs.androidx.room.runtime)
         implementation(libs.androidx.room.ktx) // Kotlin Extensions and Coroutines support for Room

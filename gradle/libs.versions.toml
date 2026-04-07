@@ -73,8 +73,13 @@ firebase-analytics-ktx = "22.0.2"
 firebase-crashlytics-ktx = "19.0.3"
 lottie = "6.0.0"
 generativeai = "0.9.0"
+# AppFunctions (Android 16+ platform; Jetpack preview) — https://developer.android.com/ai/appfunctions
+appfunctions = "1.0.0-alpha08"
 
 [libraries]
+androidx-appfunctions = { module = "androidx.appfunctions:appfunctions", version.ref = "appfunctions" }
+androidx-appfunctions-service = { module = "androidx.appfunctions:appfunctions-service", version.ref = "appfunctions" }
+androidx-appfunctions-compiler = { module = "androidx.appfunctions:appfunctions-compiler", version.ref = "appfunctions" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 #androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }

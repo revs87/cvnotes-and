@@ -22,6 +22,8 @@ Comment prefixes:
 - 🔵 Set Dagger Hilt to 2.57.2 (AGP 8.x; Hilt 2.59+ requires AGP 9+) and added explicit `ksp` dependency on `kotlin-metadata-jvm` aligned with the Kotlin version so Hilt can read Kotlin 2.3 metadata
 - 🟢 Added AI button rate limiting (10 clicks per 10 minutes, sliding window) with click timestamps persisted in SharedPreferences via `SharedPreferencesRepository` and a Hilt `EntryPoint` (survives process death)
 - 🟢 Added snackbar feedback when the AI rate limit is reached; wired `SnackbarHostState` from dashboard and section-details screens into `AIButton`
+- 🟢 Added Jetpack AppFunctions (experimental; Android 16+ pipeline): `CVNotesAppFunctions` for navigation, sections/notes CRUD, and discovery lists; `AppFunctionConfiguration.Provider` on `CVNotesApp`, Hilt `AppFunctionsEntryPoint`, `PendingNavigationHolder` + `MainActivity` destination listener, KSP `appfunctions-compiler`, and ProGuard keeps
+- 🟢 Added `docs/APPFUNCTIONS.md` documenting caller integration with `AppFunctionManager`, AI agents, and Gemini / assistant caveats per Google’s AppFunctions overview
 #### 2025-09-07
 🟠 Updated README file with new screenshots
 ## | [1.2.0] | 2025-08-20 |

@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.asIntState
@@ -44,6 +45,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController.OnDestinationChangedListener
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -53,6 +55,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import pt.rvcoding.cvnotes.appfunctions.PendingNavigationHolder
 import pt.rvcoding.cvnotes.theme.Blue500
 import pt.rvcoding.cvnotes.theme.Blue500_Background1
 import pt.rvcoding.cvnotes.theme.Green500
@@ -104,6 +108,10 @@ fun isLandscape(): Boolean {
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var pendingNavigationHolder: PendingNavigationHolder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -112,6 +120,15 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+            DisposableEffect(navController) {
+                val listener = OnDestinationChangedListener { _, destination, _ ->
+                    if (destination.parent?.route == Home.route) {
+                        pendingNavigationHolder.tryConsume(navController)
+                    }
+                }
+                navController.addOnDestinationChangedListener(listener)
+                onDispose { navController.removeOnDestinationChangedListener(listener) }
+            }
             val snackbarHostState = remember { SnackbarHostState() }
             MyTheme {
                 Surface(

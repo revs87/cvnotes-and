@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# AppFunctions: keep annotated API and generated inventory for release shrinking
+-keep,allowoptimization class pt.rvcoding.cvnotes.appfunctions.CVNotesAppFunctions { *; }
+-keep,allowoptimization class pt.rvcoding.cvnotes.appfunctions.AppFunction* { *; }
