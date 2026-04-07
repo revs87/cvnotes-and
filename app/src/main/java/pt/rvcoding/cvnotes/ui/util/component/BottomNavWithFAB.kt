@@ -23,6 +23,7 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -61,7 +62,8 @@ fun BottomBarWithFab(
     fabIcon: ImageVector = Icons.Filled.Edit,
     fabVisible: Boolean = true,
     smallFabVisible: Boolean = true,
-    aiGenerateVisible: Boolean = true
+    aiGenerateVisible: Boolean = true,
+    snackbarHostState: SnackbarHostState? = null,
 ) {
     MyTheme {
         Scaffold(
@@ -84,7 +86,8 @@ fun BottomBarWithFab(
                             .padding(bottom = 8.dp)
                             .offset(x = if (isLandscape()) (-60).dp else 0.dp, y = 80.dp),
                         generateListener = { aiGenerateListener.invoke() },
-                        visible = showAIButton
+                        visible = showAIButton,
+                        snackbarHostState = snackbarHostState,
                     )
 
                     if (smallFabVisible) {

@@ -17,10 +17,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,21 +32,45 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.launch
+import pt.rvcoding.cvnotes.R
+import pt.rvcoding.cvnotes.data.SPKey
+import pt.rvcoding.cvnotes.di.SharedPreferencesRepositoryEntryPoint
+import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
 import pt.rvcoding.cvnotes.theme.aiRadialColors
 
+private const val AI_BUTTON_MAX_CLICKS_PER_WINDOW = 10
+private const val AI_BUTTON_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000L
 
 @Composable
 fun AIButton(
     modifier: Modifier = Modifier,
     generateListener: () -> Unit = {},
-    visible: Boolean = true
+    visible: Boolean = true,
+    snackbarHostState: SnackbarHostState? = null,
 ) {
+    val rateLimitMessage = stringResource(R.string.ai_button_rate_limit_message)
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val spRepository = remember(context.applicationContext) {
+        runCatching {
+            EntryPointAccessors.fromApplication(
+                context.applicationContext,
+                SharedPreferencesRepositoryEntryPoint::class.java
+            ).sharedPreferencesRepository()
+        }.getOrNull()
+    }
+    val memoryFallback = remember { mutableStateListOf<Long>() }
+
     // ✨ Text font weight animation
     val infiniteTransition = rememberInfiniteTransition(label = "fontWeightAnimation")
     val animatedFontWeight by infiniteTransition.animateFloat(
@@ -105,7 +133,17 @@ fun AIButton(
                             radius = animatedRadius.coerceAtLeast(0.1f)
                         )
                     )
-                    .clickable { generateListener.invoke() },
+                    .clickable {
+                        if (onAiButtonClicked(spRepository, memoryFallback, generateListener) ==
+                            AiButtonClickResult.RateLimited
+                        ) {
+                            snackbarHostState?.let { host ->
+                                scope.launch {
+                                    host.showSnackbar(rateLimitMessage)
+                                }
+                            }
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -125,6 +163,49 @@ fun AIButton(
         }
     }
 }
+
+private enum class AiButtonClickResult {
+    Allowed,
+    RateLimited,
+}
+
+private fun onAiButtonClicked(
+    spRepository: SharedPreferencesRepository?,
+    memoryFallback: MutableList<Long>,
+    generateListener: () -> Unit,
+): AiButtonClickResult {
+    val now = System.currentTimeMillis()
+    val cutoff = now - AI_BUTTON_RATE_LIMIT_WINDOW_MS
+    if (spRepository != null) {
+        val key = SPKey.AI_BUTTON_CLICK_TIMESTAMPS.key
+        val pruned = parseClickTimestamps(spRepository.getString(key))
+            .filter { it >= cutoff }
+            .toMutableList()
+        if (pruned.size < AI_BUTTON_MAX_CLICKS_PER_WINDOW) {
+            pruned.add(now)
+            spRepository.putString(key, serializeClickTimestamps(pruned))
+            generateListener()
+            return AiButtonClickResult.Allowed
+        }
+        spRepository.putString(key, serializeClickTimestamps(pruned))
+        return AiButtonClickResult.RateLimited
+    }
+    memoryFallback.removeAll { it < cutoff }
+    return if (memoryFallback.size < AI_BUTTON_MAX_CLICKS_PER_WINDOW) {
+        memoryFallback.add(now)
+        generateListener()
+        AiButtonClickResult.Allowed
+    } else {
+        AiButtonClickResult.RateLimited
+    }
+}
+
+private fun parseClickTimestamps(raw: String): List<Long> =
+    if (raw.isBlank()) emptyList()
+    else raw.split(',').mapNotNull { it.trim().toLongOrNull() }
+
+private fun serializeClickTimestamps(timestamps: List<Long>): String =
+    timestamps.joinToString(",")
 
 @Preview
 @Composable

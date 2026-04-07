@@ -8,5 +8,6 @@ enum class SPKey(val key: String) {
     USERNAME("sp_username"),
     DISPLAY_NAME("sp_display_name"),
     PHONE_NUMBER("sp_phone_number"),
-    PHOTO_URL("sp_photo_url")
+    PHOTO_URL("sp_photo_url"),
+    AI_BUTTON_CLICK_TIMESTAMPS("sp_ai_button_click_timestamps")
 }

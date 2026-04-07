@@ -108,7 +108,8 @@ fun SectionDetailsScreen(
                         .padding(bottom = 8.dp)
                         .offset(x = if (isLandscape()) (-60).dp else 0.dp),
                     generateListener = { aiGenerateListener.invoke(state.section.id ?: 0) },
-                    visible = showAIButton
+                    visible = showAIButton,
+                    snackbarHostState = snackbarHostState,
                 )
 
                 FloatingActionButton(

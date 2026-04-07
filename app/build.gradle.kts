@@ -35,8 +35,8 @@ android {
         applicationId = "pt.rvcoding.cvnotes"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 6
-        versionName = "1.2.1-SNAPSHOT"
+        versionCode = 7
+        versionName = "1.2.1"
 
         testInstrumentationRunner = "pt.rvcoding.cvnotes.HiltTestRunner"
         vectorDrawables.useSupportLibrary = true
@@ -132,6 +132,7 @@ android {
         implementation(libs.androidx.compose.material.iconsExtended)
         implementation(libs.androidx.compose.material3)
         implementation(libs.lottie.compose)
+        implementation(libs.kotlinx.collections.immutable)
 
         // Compose + Lifecycle
         implementation(libs.androidx.lifecycle.runtime)
@@ -145,7 +146,8 @@ android {
         implementation(libs.kotlinx.coroutines.android)
         testImplementation(libs.kotlinx.coroutines.test)
 
-        // Dagger - Hilt
+        // Dagger - Hilt (explicit kotlin-metadata-jvm: Hilt 2.57.x still depends on 2.1.21; Hilt 2.59+ requires AGP 9+)
+        ksp(libs.kotlin.metadata.jvm)
         implementation(libs.hilt.android)
         ksp(libs.hilt.android.compiler)
         ksp(libs.hilt.compiler)
@@ -153,6 +155,11 @@ android {
         androidTestImplementation(libs.hilt.android.testing)
         kspTest(libs.hilt.android.compiler)
         kspAndroidTest(libs.hilt.android.compiler)
+
+        // AppFunctions (schema generated via KSP; Android 16+ runtime)
+        implementation(libs.androidx.appfunctions)
+        implementation(libs.androidx.appfunctions.service)
+        ksp(libs.androidx.appfunctions.compiler)
 
         // Room
         implementation(libs.androidx.room.runtime)
@@ -222,5 +229,3 @@ fun Project.loadLocalProperty(
         ""
     }
 }
-
-

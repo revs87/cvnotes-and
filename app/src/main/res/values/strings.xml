@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CVNotes</string>
+    <string name="ai_button_rate_limit_message">AI limit reached (10 uses per 10 minutes). Try again later.</string>
 </resources>

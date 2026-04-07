@@ -1,5 +1,6 @@
 package pt.rvcoding.cvnotes.domain.model
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pt.rvcoding.cvnotes.domain.util.SectionType
@@ -10,6 +11,7 @@ import pt.rvcoding.cvnotes.theme.Gray300
 import pt.rvcoding.cvnotes.theme.Green300
 import pt.rvcoding.cvnotes.theme.Green500
 
+@Immutable
 @Entity
 data class Section(
     val typeId: Int,
