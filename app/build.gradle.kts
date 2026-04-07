@@ -146,7 +146,8 @@ android {
         implementation(libs.kotlinx.coroutines.android)
         testImplementation(libs.kotlinx.coroutines.test)
 
-        // Dagger - Hilt
+        // Dagger - Hilt (explicit kotlin-metadata-jvm: Hilt 2.57.x still depends on 2.1.21; Hilt 2.59+ requires AGP 9+)
+        ksp(libs.kotlin.metadata.jvm)
         implementation(libs.hilt.android)
         ksp(libs.hilt.android.compiler)
         ksp(libs.hilt.compiler)

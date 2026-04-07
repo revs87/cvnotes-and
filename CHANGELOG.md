@@ -17,6 +17,9 @@ Comment prefixes:
 #### 2026-04-07
 - 🟢 Added kotlinx-collections-immutable dependency
 - 🟠 Annotated Section, SectionWithNotes, and DashboardState with Compose Immutable for recomposition stability
+- 🔵 Upgraded Kotlin to 2.3.20 and KSP to 2.3.6 (KSP2 line; aligned with current stable toolchain)
+- 🔵 Upgraded Android Gradle Plugin to 8.13.2 (minimum required for Kotlin 2.3 per Android Kotlin support matrix; R8/D8 compatibility)
+- 🔵 Set Dagger Hilt to 2.57.2 (AGP 8.x; Hilt 2.59+ requires AGP 9+) and added explicit `ksp` dependency on `kotlin-metadata-jvm` aligned with the Kotlin version so Hilt can read Kotlin 2.3 metadata
 #### 2025-09-07
 🟠 Updated README file with new screenshots
 ## | [1.2.0] | 2025-08-20 |
