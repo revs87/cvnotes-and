@@ -20,7 +20,7 @@ Comment prefixes:
 - 🔵 Upgraded Kotlin to 2.3.20 and KSP to 2.3.6 (KSP2 line; aligned with current stable toolchain)
 - 🔵 Upgraded Android Gradle Plugin to 8.13.2 (minimum required for Kotlin 2.3 per Android Kotlin support matrix; R8/D8 compatibility)
 - 🔵 Set Dagger Hilt to 2.57.2 (AGP 8.x; Hilt 2.59+ requires AGP 9+) and added explicit `ksp` dependency on `kotlin-metadata-jvm` aligned with the Kotlin version so Hilt can read Kotlin 2.3 metadata
-- 🟢 Added AI button rate limiting (20 clicks per 10 minutes, sliding window) with click timestamps persisted in SharedPreferences via `SharedPreferencesRepository` and a Hilt `EntryPoint` (survives process death)
+- 🟢 Added AI button rate limiting (10 clicks per 10 minutes, sliding window) with click timestamps persisted in SharedPreferences via `SharedPreferencesRepository` and a Hilt `EntryPoint` (survives process death)
 - 🟢 Added snackbar feedback when the AI rate limit is reached; wired `SnackbarHostState` from dashboard and section-details screens into `AIButton`
 #### 2025-09-07
 🟠 Updated README file with new screenshots

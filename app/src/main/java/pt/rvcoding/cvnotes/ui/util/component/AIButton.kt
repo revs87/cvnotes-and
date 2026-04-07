@@ -48,7 +48,7 @@ import pt.rvcoding.cvnotes.di.SharedPreferencesRepositoryEntryPoint
 import pt.rvcoding.cvnotes.domain.repository.SharedPreferencesRepository
 import pt.rvcoding.cvnotes.theme.aiRadialColors
 
-private const val AI_BUTTON_MAX_CLICKS_PER_WINDOW = 20
+private const val AI_BUTTON_MAX_CLICKS_PER_WINDOW = 10
 private const val AI_BUTTON_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000L
 
 @Composable
