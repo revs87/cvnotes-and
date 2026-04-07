@@ -132,6 +132,7 @@ android {
         implementation(libs.androidx.compose.material.iconsExtended)
         implementation(libs.androidx.compose.material3)
         implementation(libs.lottie.compose)
+        implementation(libs.kotlinx.collections.immutable)
 
         // Compose + Lifecycle
         implementation(libs.androidx.lifecycle.runtime)
@@ -222,5 +223,3 @@ fun Project.loadLocalProperty(
         ""
     }
 }
-
-

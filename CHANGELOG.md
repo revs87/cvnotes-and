@@ -14,6 +14,9 @@ Comment prefixes:
 🔴 Deleted
 
 ## | [1.2.1-SNAPSHOT] |
+#### 2026-04-07
+- 🟢 Added kotlinx-collections-immutable dependency
+- 🟠 Annotated Section, SectionWithNotes, and DashboardState with Compose Immutable for recomposition stability
 #### 2025-09-07
 🟠 Updated README file with new screenshots
 ## | [1.2.0] | 2025-08-20 |
