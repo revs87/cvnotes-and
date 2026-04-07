@@ -254,7 +254,7 @@ Parse **`ExecuteAppFunctionResponse`** according to the alpha API you use (respo
 
 For contributors maintaining the app:
 
-- **`CVNotesApp`**: implements `AppFunctionConfiguration.Provider`, returns `AppFunctionConfiguration` mapping `CVNotesAppFunctions::class.java` to a Hilt-provided instance (`AppFunctionsEntryPoint`).
+- **`CVNotesApp`**: implements `AppFunctionConfiguration.Provider` and exposes `appFunctionConfiguration` via `AppFunctionConfiguration.Builder().addEnclosingClassFactory(...)` (the primary `AppFunctionConfiguration` constructor is library-internal).
 - **KSP**: `appfunctions-compiler` generates schema / inventory consumed by the system.
 - **Manifest**: the `appfunctions-service` artifact merges **`PlatformAppFunctionService`** and related metadata (you normally do not declare this service by hand).
 - **ProGuard**: rules in `app/proguard-rules.pro` keep `CVNotesAppFunctions` and `AppFunction*` models for release.
